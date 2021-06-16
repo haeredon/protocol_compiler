@@ -23,10 +23,6 @@ protected:
 
     static inline const std::string TAB = "\t";
 
-    std::string& get_name() {
-        return name;
-    }
-
     std::string get_inheritance() {
         return std::string();
     }
@@ -169,6 +165,10 @@ public:
     void add_name(std::string& name) {
         this->name = name;
     };
+
+    std::string& get_name() {
+        return name;
+    }
 
     virtual std::string to_string() = 0;
 

@@ -18,26 +18,30 @@
 
     int main(int argc, char *argv[]) {
 
-        std::string code;
+        std::string in;
+        std::string out;
 
         for(;;)
         {
-            switch(getopt(argc, argv, "f:h"))
+            switch(getopt(argc, argv, "i:o:h"))
             {
-                case 'f': {
-                    std::ifstream inFile;
-                    inFile.open(optarg);
+                case 'i': {
+                    std::ifstream in_file;
+                    in_file.open(optarg);
 
-                    if (!inFile.good()) {
+                    if (!in_file.good()) {
                         std::cout << "Could not open " << optarg;
                         exit(EXIT_FAILURE);
                     }
 
                     std::stringstream ss;
-                    ss << inFile.rdbuf();
-                    code = ss.str();
+                    ss << in_file.rdbuf();
+                    in = ss.str();
                     continue;
                 }
+                case 'o':
+                    out = optarg;
+                    continue;
                 case '?':
                 case 'h':
                 default :
@@ -50,6 +54,14 @@
             break;
         }
 
+        if(in.empty()) {
+            printf("No input file given\n");
+        }
+
+        if(out.empty()) {
+            out = "./";
+        }
+
 
         using namespace ProtocolParser;
 
@@ -57,7 +69,7 @@
 
         Lexer lexer(LexerDefs::REG_TOKEN, ' ');
 
-        lexer.parse(code);
+        lexer.parse(in);
 
         std::vector<LexerToken> tokens = lexer.get_tokens();
         tokens.push_back(LexerToken("END", "END")); // should be a better way of doing this
@@ -75,7 +87,16 @@
         std::vector<BaseClass*>::iterator it;
 
         for(it = classes.begin() ; it != classes.end() ; ++it) {
-            std::cout << std::endl << std::endl << (*it)->to_string() << std::endl;
+
+            std::ofstream out_file;
+            out_file.open(out + (*it)->get_name() + ".cpp");
+
+            if (!out_file.good()) {
+                std::cout << "Could not open " << optarg;
+                exit(EXIT_FAILURE);
+            }
+
+            out_file << (*it)->to_string();
         }
 
         return 0;
