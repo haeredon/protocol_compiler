@@ -40,7 +40,7 @@ public:
 
         ss << BaseClass::TAB << this->get_getters() << std::endl << std::endl;
 
-        ss << BaseClass::TAB << "}" << std::endl << std::endl;
+        ss << BaseClass::TAB << "};" << std::endl << std::endl;
 
         ss << "}" << std::endl << std::endl;
 
