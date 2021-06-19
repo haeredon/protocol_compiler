@@ -44,7 +44,7 @@ public:
 
         ss << "}" << std::endl << std::endl;
 
-        ss << "#endif PROTOCOL" << "_" << this->get_name() << "_H" << std::endl;
+        ss << "#endif /* PROTOCOL" << "_" << this->get_name() << "_H */" << std::endl;
 
         return ss.str();
     }
