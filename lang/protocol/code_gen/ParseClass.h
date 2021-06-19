@@ -20,19 +20,31 @@ public:
     std::string to_string() {
         std::stringstream ss;
 
-        ss << "class " << this->get_name() << " " << this->get_inheritance() << " { " << std::endl << std::endl;
+        ss << "#ifndef PROTOCOL" << "_" << this->get_name() << "_H" << std::endl;
+        ss << "#define PROTOCOL" << "_" << this->get_name() << "_H" << std::endl << std::endl;
 
-        ss << "private: " << std::endl << std::endl;
+        ss << "#include \"../Bitmap.h\"" << std::endl;
+        ss << "#include \"../BitUtility.h\"" << std::endl << std::endl;
 
-        ss << this->get_privates() << std::endl << std::endl;
+        ss << "namespace protocol {" << std::endl << std::endl;
 
-        ss << "public:" << std::endl << std::endl;
+        ss << BaseClass::TAB << "class " << this->get_name() << " " << this->get_inheritance() << " { " << std::endl << std::endl;
 
-        ss << this->get_constructor() << std::endl << std::endl;
+        ss << BaseClass::TAB << "private: " << std::endl << std::endl;
 
-        ss << this->get_getters() << std::endl << std::endl;
+        ss << BaseClass::TAB << this->get_privates() << std::endl << std::endl;
 
-        ss << "}";
+        ss << BaseClass::TAB << "public:" << std::endl << std::endl;
+
+        ss << BaseClass::TAB << this->get_constructor() << std::endl << std::endl;
+
+        ss << BaseClass::TAB << this->get_getters() << std::endl << std::endl;
+
+        ss << BaseClass::TAB << "}" << std::endl << std::endl;
+
+        ss << "}" << std::endl << std::endl;
+
+        ss << "#endif PROTOCOL" << "_" << this->get_name() << "_H" << std::endl;
 
         return ss.str();
     }

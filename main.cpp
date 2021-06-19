@@ -89,7 +89,7 @@
         for(it = classes.begin() ; it != classes.end() ; ++it) {
 
             std::ofstream out_file;
-            out_file.open(out + (*it)->get_name() + ".cpp");
+            out_file.open(out + (*it)->get_name() + ".h");
 
             if (!out_file.good()) {
                 std::cout << "Could not open " << optarg;
