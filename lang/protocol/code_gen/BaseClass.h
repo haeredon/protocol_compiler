@@ -150,7 +150,7 @@ protected:
                 ss << BaseClass::TAB << "}" << std::endl << std::endl;
             } else {
                 ss << BaseClass::TAB << "uint_arc " << "get_" << val_it->get_name() << "() { " << std::endl;
-                ss << BaseClass::TAB << BaseClass::TAB << "return " << val_it->get_name() << ".get_date();" << std::endl;
+                ss << BaseClass::TAB << BaseClass::TAB << "return " << val_it->get_name() << ".get_data();" << std::endl;
                 ss << BaseClass::TAB << "}" << std::endl << std::endl;
             }
         }
