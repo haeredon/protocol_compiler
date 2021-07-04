@@ -24,7 +24,7 @@ protected:
     static inline const std::string TAB = "\t";
 
     std::string get_inheritance() {
-        return ": public Tunneler::Protocol"; // TODO: Remove this TERRIBLE hack!!!
+        return ": public Protocol";
     }
 
     std::string get_privates() {
@@ -140,7 +140,7 @@ protected:
             }
 
             if(!enumeration.empty()) {
-                ss << BaseClass::TAB << val_it->get_name() << " " << "get_" << val_it->get_name() << "() { " << std::endl;
+                ss << BaseClass::TAB << "Protocols" << " " << "get_" << val_it->get_name() << "() { " << std::endl;
 
                 for(auto it = enumeration.begin() ; it != enumeration.end() ; ++it) {
                     ss << BaseClass::TAB << BaseClass::TAB << "if(static_cast<uint_arc>(" << val_it->get_name() << "::" << it->first << ") == " << val_it->get_name() << ".get_data()) {" << std::endl;

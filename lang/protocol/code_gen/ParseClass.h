@@ -28,7 +28,7 @@ public:
         ss << "#include \"../Protocols.h\"" << std::endl;
         ss << "#include \"../Protocol.h\"" << std::endl << std::endl;
 
-        ss << "namespace protocol {" << std::endl << std::endl;
+        ss << "namespace Tunneler {" << std::endl << std::endl;
 
         ss << BaseClass::TAB << "class " << this->get_name() << " " << this->get_inheritance() << " { " << std::endl << std::endl;
 
