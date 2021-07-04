@@ -60,8 +60,10 @@ protected:
                 ss << "};";
             }
 
-            ss << std::endl;
+            ss << std::endl << std::endl;
         }
+
+        ss << BaseClass::TAB << "std::size_t size;" << std::endl;
 
         return ss.str();
     }
@@ -116,6 +118,8 @@ protected:
             }
         }
 
+        ss << BaseClass::TAB << BaseClass::TAB << "size = num_consumed;" << std::endl;
+
         ss << BaseClass::TAB << "}";
 
         return ss.str();
@@ -154,6 +158,10 @@ protected:
                 ss << BaseClass::TAB << "}" << std::endl << std::endl;
             }
         }
+
+        ss << BaseClass::TAB << "std::size_t " << "get_size() { " << std::endl;
+        ss << BaseClass::TAB << BaseClass::TAB << "return size;" << std::endl;
+        ss << BaseClass::TAB << "}" << std::endl << std::endl;
 
         return ss.str();
     }
