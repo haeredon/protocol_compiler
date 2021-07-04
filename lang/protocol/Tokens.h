@@ -97,7 +97,7 @@ const GrammarToken Tokens::COND_FUN_TOKEN("NON_TERM", "COND_FUN_TOKEN", false);
 const GrammarToken Tokens::ARG_LIST_TOKEN("NON_TERM", "ARG_LIST_TOKEN", false);
 const GrammarToken Tokens::ARG_LIST_1_TOKEN("NON_TERM", "ARG_LIST_1_TOKEN", false);
 
-const GrammarToken Tokens::ID_TOKEN("TERM", Tokens::ID, true, std::regex("[a-zA-Z_]+"));
+const GrammarToken Tokens::ID_TOKEN("TERM", Tokens::ID, true, std::regex("[a-zA-Z_]+[a-zA-Z_0-9]*"));
 const GrammarToken Tokens::INT_TOKEN("TERM", Tokens::INT, true, std::regex("\\d+"));
 const GrammarToken Tokens::PLUS_TOKEN("TERM", Tokens::PLUS, true);
 const GrammarToken Tokens::LEFT_PAR_TOKEN("TERM", Tokens::LEFT_PAR, true);

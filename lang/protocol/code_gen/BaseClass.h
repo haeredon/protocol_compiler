@@ -24,7 +24,7 @@ protected:
     static inline const std::string TAB = "\t";
 
     std::string get_inheritance() {
-        return std::string();
+        return ": public Protocol";
     }
 
     std::string get_privates() {
@@ -144,7 +144,7 @@ protected:
 
                 for(auto it = enumeration.begin() ; it != enumeration.end() ; ++it) {
                     ss << BaseClass::TAB << BaseClass::TAB << "if(static_cast<uint_arc>(" << val_it->get_name() << "::" << it->first << ") == " << val_it->get_name() << ".get_data()) {" << std::endl;
-                    ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return " << val_it->get_name() << "::" << it->first << ";" << std::endl;
+                    ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return " << "Protocols" << "::" << it->first << ";" << std::endl;
                     ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl;
                 }
                 ss << BaseClass::TAB << "}" << std::endl << std::endl;
