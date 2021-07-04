@@ -24,7 +24,7 @@ protected:
     static inline const std::string TAB = "\t";
 
     std::string get_inheritance() {
-        return ": public Protocol";
+        return ": public Tunneler::Protocol"; // TODO: Remove this TERRIBLE hack!!!
     }
 
     std::string get_privates() {
