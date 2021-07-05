@@ -385,26 +385,52 @@ namespace ProtocolParser {
                 }
             }),
 
+            // inner --> inner:
+            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::INNER_TOKEN,
+            std::vector<GrammarToken> { Tokens::INNER_TOKEN_T },
+            [](auto stack) {},
+            std::vector<void (*)(std::deque<ParserAction<Node*>>&)> {
+                 [](auto stack) {
+                     stack[1].add_value(new Node(nullptr, "INNER"));
+                 }
+            }),
+
+            // inner --> epsilon
+            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::INNER_TOKEN,
+            std::vector<GrammarToken> { Tokens::EPS_TOKEN },
+            [](auto stack) {},
+            std::vector<void (*)(std::deque<ParserAction<Node*>>&)> {
+                 [](auto stack) {
+                     ParserAction<Node*>& syn = stack.front();
+                 }
+            }),
+
+
+
             // enum --> 'enum:' id_val_tuple
             Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::ENUM_TOKEN,
-            std::vector<GrammarToken> { Tokens::Tokens::ENUM_TOKEN_T, Tokens::ID_VAL_TUPLE_TOKEN },
+            std::vector<GrammarToken> { Tokens::Tokens::ENUM_TOKEN_T, Tokens::ID_VAL_TUPLE_TOKEN, Tokens::INNER_TOKEN },
             [](auto stack) {},
             std::vector<void (*)(std::deque<ParserAction<Node*>>&)> {
                 [](auto stack) {},
-                        [](auto stack) {
-                            ParserAction<Node*>& syn = stack.front();
-                            std::vector<Node*> values = syn.get_values();
+                [](auto stack) {
+                    ParserAction<Node*>& syn = stack.front();
+                    std::vector<Node*> values = syn.get_values();
 
-                            Node* top = new Node(nullptr, "ENUM");
+                    Node* top = new Node(nullptr, "ENUM");
 
-                            std::vector<Node*>::iterator it;
+                    std::vector<Node*>::iterator it;
 
-                            for(it = values.begin() ; it != values.end() ; ++it) {
-                                top->add_child(*it);
-                            }
+                    for(it = values.begin() ; it != values.end() ; ++it) {
+                        top->add_child(*it);
+                    }
 
-                            stack[1].add_value(top);
-                        }
+                    stack[3].add_value(top);
+                },
+                [](auto stack) {
+                    ParserAction<Node*>& syn = stack.front();
+                    stack[1].add_values(syn.get_values());
+                }
             }),
 
             // enum --> epsilon
@@ -545,3 +571,58 @@ namespace ProtocolParser {
 
 #endif //PARSER_GRAMMARDEFS_H
 
+/*
+
+S -> definition
+
+definition -> protocol termination definition
+definition -> epsilon
+
+protocol -> 'protocol:' '(' expr ')' stmt
+
+termination -> '-' termination
+termination -> epsilon
+
+stmt -> 'field:' '(' ID ',' expr conditional ')' bitmap enum stmt
+stmt -> epsilon
+
+conditional -> ',' cond_fun '(' arg_list ')'
+conditional -> epsilon
+
+cond_fun -> match
+
+arg_list -> arg arg_list_1
+arg_list -> epsilon
+
+arg_list_1 -> ',' arg arg_list_1
+arg_list_1 -> epsilon
+
+bitmap -> 'bitmap:' id_val_tuple
+bitmap -> epsilon
+
+enum -> 'enum:' id_val_tuple inner
+enum -> epsilon
+
+inner -> 'inner:'
+inner -> epsilon
+
+id_val_tuple -> '(' ID ',' expr ')' id_val_tuple_1
+
+id_val_tuple_1 -> ',' '(' ID ',' expr ')' id_val_tuple_1
+id_val_tuple_1 -> epsilon
+
+conditional -> prefix '(' expr ')'
+
+expr --> var expr_1
+
+expr_1 --> op expr
+expr_1 --> epsilon
+
+op --> +
+op --> *
+
+var --> ID
+var --> INT
+var --> HEX
+
+*/

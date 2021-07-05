@@ -18,6 +18,7 @@ namespace ProtocolParser {
         static const std::string PROTOCOL;
         static const std::string ENUM;
         static const std::string BITMAP;
+        static const std::string INNER;
         static const std::string CONDITIONAL;
         static const std::string LEFT_PAR;
         static const std::string RIGHT_PAR;
@@ -40,6 +41,7 @@ namespace ProtocolParser {
         static const GrammarToken OP_TOKEN;
         static const GrammarToken STMT_TOKEN;
         static const GrammarToken BITMAP_TOKEN;
+        static const GrammarToken INNER_TOKEN;
         static const GrammarToken ENUM_TOKEN;
         static const GrammarToken ID_VAL_TUPLE_TOKEN;
         static const GrammarToken ID_VAL_TUPLE_1_TOKEN;
@@ -58,6 +60,7 @@ namespace ProtocolParser {
         static const GrammarToken FIELD_TOKEN;
         static const GrammarToken COMMA_TOKEN;
         static const GrammarToken BITMAP_TOKEN_T;
+        static const GrammarToken INNER_TOKEN_T;
         static const GrammarToken ENUM_TOKEN_T;
         static const GrammarToken COND_TOKEN_T;
 
@@ -68,6 +71,7 @@ const std::string Tokens::FIELD = "FIELD";
 const std::string Tokens::PROTOCOL = "PROTOCOL";
 const std::string Tokens::ENUM = "ENUM";
 const std::string Tokens::BITMAP = "BITMAP";
+const std::string Tokens::INNER = "INNER";
 const std::string Tokens::CONDITIONAL = "CONDITIONAL";
 const std::string Tokens::LEFT_PAR = "LEFT_PAR";
 const std::string Tokens::RIGHT_PAR = "RIGHT_PAR";
@@ -89,6 +93,7 @@ const GrammarToken Tokens::EXPR_1_TOKEN("NON_TERM", "EXPR_1", false);
 const GrammarToken Tokens::OP_TOKEN("NON_TERM", "OP", false);
 const GrammarToken Tokens::STMT_TOKEN("NON_TERM", "STMT", false);
 const GrammarToken Tokens::BITMAP_TOKEN("NON_TERM", "BITMAP", false);
+const GrammarToken Tokens::INNER_TOKEN("NON_TERM", "INNER", false);
 const GrammarToken Tokens::ENUM_TOKEN("NON_TERM", "ENUM", false);
 const GrammarToken Tokens::ID_VAL_TUPLE_TOKEN("NON_TERM", "ID_VAL_TUPLE", false);
 const GrammarToken Tokens::ID_VAL_TUPLE_1_TOKEN("NON_TERM", "ID_VAL_TUPLE_1", false);
@@ -108,6 +113,7 @@ const GrammarToken Tokens::PROTOCOL_TOKEN("TERM", Tokens::PROTOCOL, true);
 const GrammarToken Tokens::FIELD_TOKEN("TERM", Tokens::FIELD, true);
 const GrammarToken Tokens::COMMA_TOKEN("TERM", Tokens::COMMA, true);
 const GrammarToken Tokens::BITMAP_TOKEN_T("TERM", Tokens::BITMAP, true);
+const GrammarToken Tokens::INNER_TOKEN_T("TERM", Tokens::INNER, true);
 const GrammarToken Tokens::ENUM_TOKEN_T("TERM", Tokens::ENUM, true);
 const GrammarToken Tokens::COND_TOKEN_T("TERM", Tokens::CONDITIONAL, true);
 

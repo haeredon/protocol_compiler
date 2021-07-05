@@ -47,7 +47,7 @@ protected:
             }
 
             if(!enumeration.empty()) {
-                ss << BaseClass::TAB << "enum class " << it->get_name() << "{ ";
+                ss << BaseClass::TAB << "enum class " << it->get_name() << "_enum" << " { ";
 
                 for(auto e_it = enumeration.begin() ; e_it != enumeration.end() ; ++e_it) {
                     if(e_it != enumeration.begin()) {
@@ -144,13 +144,20 @@ protected:
             }
 
             if(!enumeration.empty()) {
-                ss << BaseClass::TAB << "Protocols" << " " << "get_" << val_it->get_name() << "() { " << std::endl;
+                std::string return_type = val_it->is_inner() ? "Protocols" : val_it->get_name() + "_enum";
+                std::string method_name = val_it->is_inner() ? "get_inner_protocol" : "get_" + val_it->get_name() + "_enum";
+
+                ss << BaseClass::TAB << return_type << " " << method_name << "() { " << std::endl;
 
                 for(auto it = enumeration.begin() ; it != enumeration.end() ; ++it) {
                     ss << BaseClass::TAB << BaseClass::TAB << "if(static_cast<uint_arc>(" << val_it->get_name() << "::" << it->first << ") == " << val_it->get_name() << ".get_data()) {" << std::endl;
-                    ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return " << "Protocols" << "::" << it->first << ";" << std::endl;
+                    ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return " << return_type << "::" << it->first << ";" << std::endl;
                     ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl;
                 }
+                ss << BaseClass::TAB << "}" << std::endl << std::endl;
+
+                ss << BaseClass::TAB << "uint_arc " << "get_" << val_it->get_name() << "() { " << std::endl;
+                ss << BaseClass::TAB << BaseClass::TAB << "return " << val_it->get_name() << ".get_data();" << std::endl;
                 ss << BaseClass::TAB << "}" << std::endl << std::endl;
             } else {
                 ss << BaseClass::TAB << "uint_arc " << "get_" << val_it->get_name() << "() { " << std::endl;

@@ -73,6 +73,7 @@ public:
         std::string length;
         std::unordered_map<std::string, std::size_t> enumeration;
         std::unordered_map<std::string, std::tuple<std::size_t, std::size_t>> bitmap;
+        bool inner = false;
 
         std::string conditional_name;
         std::vector<std::string> cond_args;
@@ -115,11 +116,14 @@ public:
 
                     enumeration[name] = value;
                 }
+            } else if(attr->get_value() == "INNER") {
+                inner = true;
             }
         }
 
         Field field(name, length, enumeration, bitmap);
         field.set_conditional(conditional_name, cond_args);
+        field.set_inner(inner);
         new_class.add_field(std::move(field));
     }
 
