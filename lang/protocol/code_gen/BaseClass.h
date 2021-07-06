@@ -170,6 +170,13 @@ protected:
         ss << BaseClass::TAB << BaseClass::TAB << "return size;" << std::endl;
         ss << BaseClass::TAB << "}" << std::endl << std::endl;
 
+        std::string name_upper = name;
+        std::transform(name.begin(), name.end(), name_upper.begin(), ::toupper);
+
+        ss << BaseClass::TAB << "Protocols " << "get_protocol_type() { " << std::endl;
+        ss << BaseClass::TAB << BaseClass::TAB << "return Protocols::" << name_upper << ";" << std::endl;
+        ss << BaseClass::TAB << "}" << std::endl << std::endl;
+
         return ss.str();
     }
 
