@@ -150,7 +150,7 @@ protected:
                 ss << BaseClass::TAB << return_type << " " << method_name << "() { " << std::endl;
 
                 for(auto it = enumeration.begin() ; it != enumeration.end() ; ++it) {
-                    ss << BaseClass::TAB << BaseClass::TAB << "if(static_cast<uint_arc>(" << val_it->get_name() << "::" << it->first << ") == " << val_it->get_name() << ".get_data()) {" << std::endl;
+                    ss << BaseClass::TAB << BaseClass::TAB << "if(static_cast<uint_arc>(" << val_it->get_name() << "_enum" << "::" << it->first << ") == " << val_it->get_name() << ".get_data()) {" << std::endl;
                     ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return " << return_type << "::" << it->first << ";" << std::endl;
                     ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl;
                 }
