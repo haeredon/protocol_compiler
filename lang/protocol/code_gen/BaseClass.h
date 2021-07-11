@@ -154,6 +154,7 @@ protected:
                     ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return " << return_type << "::" << it->first << ";" << std::endl;
                     ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl;
                 }
+                ss << BaseClass::TAB << BaseClass::TAB << "return nullptr;" << std::endl;
                 ss << BaseClass::TAB << "}" << std::endl << std::endl;
 
                 ss << BaseClass::TAB << "uint_arc " << "get_" << val_it->get_name() << "() { " << std::endl;
