@@ -35,7 +35,9 @@ namespace ProtocolParser {
 
             bool is_term_match(LexerToken token);
 
+            bool operator==(const GrammarToken& rhs) const;
 
+            bool operator!=(const GrammarToken& rhs) const;
     };
 
 
