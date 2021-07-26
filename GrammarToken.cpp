@@ -33,5 +33,11 @@ namespace ProtocolParser {
         return false;
     }
 
+    bool GrammarToken::operator==(const GrammarToken& rhs) const {
+        return rhs.get_tag() == get_tag() && rhs.get_value() == get_value();
+    }
 
+    bool GrammarToken::operator!=(const GrammarToken& rhs) const {
+        return !(*this == rhs);
+    }
 }
