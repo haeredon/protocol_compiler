@@ -5,15 +5,24 @@
 #ifndef PARSER_CODE_GEN_PARSECLASS_H
 #define PARSER_CODE_GEN_PARSECLASS_H
 
-#include "BaseClass.h"
+#include "ProtocolBaseClass.h"
+#include "BuildClass.h"
 
 #include<sstream>
 
-class ParseClass : public BaseClass {
+class ProtocolClass : public ProtocolBaseClass {
+
+private:
+
+    BuildClass* buildClass;
 
 public:
 
-    ParseClass() : BaseClass("DEFAULT") {
+    ProtocolClass(BuildClass* buildClass) : ProtocolBaseClass("DEFAULT"), buildClass(buildClass) {
+
+    }
+
+    ProtocolClass() : ProtocolBaseClass("DEFAULT") {
 
     }
 
@@ -32,11 +41,13 @@ public:
 
         ss << BaseClass::TAB << "class " << this->get_name() << " " << this->get_inheritance() << " { " << std::endl << std::endl;
 
-        ss << BaseClass::TAB << "private: " << std::endl << std::endl;
+        ss << "private: " << std::endl << std::endl;
 
         ss << BaseClass::TAB << this->get_privates() << std::endl << std::endl;
 
         ss << BaseClass::TAB << "public:" << std::endl << std::endl;
+
+        ss << BaseClass::TAB << buildClass->to_string() << std::endl << std::endl;
 
         ss << BaseClass::TAB << this->get_constructor() << std::endl << std::endl;
 

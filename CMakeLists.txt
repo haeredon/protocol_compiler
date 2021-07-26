@@ -9,7 +9,7 @@ include_directories(.)
 
 add_executable(parser
         lang/protocol/code_gen/BaseClass.h
-        lang/protocol/code_gen/ParseClass.h
+        lang/protocol/code_gen/ProtocolClass.h
         lang/protocol/code_gen/Generator.h
         lang/protocol/code_gen/Field.h
         lang/protocol/Tokens.h
@@ -24,4 +24,4 @@ add_executable(parser
         main.cpp
         Production.h
         Token.cpp
-        Node.h)
+        Node.h lang/protocol/code_gen/BuildClass.h lang/protocol/code_gen/ProtocolBaseClass.h)

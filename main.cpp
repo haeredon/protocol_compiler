@@ -3,7 +3,7 @@
 #include "Grammar.h"
 #include "ParserAction.h"
 #include "Node.h"
-#include "lang/protocol/code_gen/ParseClass.h"
+#include "lang/protocol/code_gen/ProtocolClass.h"
 #include "lang/protocol/code_gen/Generator.h"
 #include "lang/protocol/GrammarDefs.h"
 #include "lang/protocol/LexerDefs.h"
@@ -81,7 +81,7 @@
 
 /******************************************* CODE GENERATION *****************************************************/
 
-        Generator<BaseClass, ParseClass> generator;
+        Generator<BaseClass, ProtocolClass> generator;
         std::vector<BaseClass*> classes = generator.generate(parse_tree);
 
         std::vector<BaseClass*>::iterator it;

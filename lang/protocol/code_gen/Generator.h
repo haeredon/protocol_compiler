@@ -8,6 +8,7 @@
 #include "CodeGen.h"
 #include "BaseClass.h"
 #include "Field.h"
+#include "BuildClass.h"
 
 #include <vector>
 #include <iostream>
@@ -29,7 +30,8 @@ public:
     }
 
     RET_T* gen_class(ProtocolParser::Node* ast) {
-        PARSE_T* new_class = new PARSE_T();
+        BuildClass* buildClass = new BuildClass();
+        PARSE_T* new_class = new PARSE_T(buildClass);
 
         std::vector<ProtocolParser::Node*>::iterator it;
 
@@ -39,6 +41,7 @@ public:
             if(class_attr->get_value() == "NAME") {
                 add_name(class_attr, *new_class);
             } else if(class_attr->get_value() == "ATTRIBUTES") {
+                add_attributes(class_attr, *buildClass);
                 add_attributes(class_attr, *new_class);
             }
         }
@@ -50,7 +53,7 @@ public:
         new_class.add_name(ast->get_children().front()->get_value());
     }
 
-    void add_attributes(ProtocolParser::Node* ast, PARSE_T& new_class) {
+    void add_attributes(ProtocolParser::Node* ast, BaseClass& new_class) {
         std::vector<ProtocolParser::Node*> children = ast->get_children();
         std::vector<ProtocolParser::Node*>::iterator it;
 
@@ -64,7 +67,7 @@ public:
 
     }
 
-    void add_field(ProtocolParser::Node* ast, PARSE_T& new_class) {
+    void add_field(ProtocolParser::Node* ast, BaseClass& new_class) {
         std::vector<ProtocolParser::Node*> children = ast->get_children();
 
         std::vector<ProtocolParser::Node*>::iterator it;
