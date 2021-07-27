@@ -88,9 +88,9 @@ protected:
                 ss << BaseClass::TAB << BaseClass::TAB << "Builder& " << "set_" << field.get_name() << "(uint8_t* data) { " << std::endl;
             }
 
-            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << field.get_name() << " = new uint8_t[" << length_var << "]" << std::endl;
-            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "memcpy(" << field.get_name() << ", data, " << length_var << std::endl;
-            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return *this" <<  std::endl;
+            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << field.get_name() << " = new uint8_t[" << length_var << "];" << std::endl;
+            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "memcpy(" << field.get_name() << ", data, " << length_var << ");" << std::endl;
+            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return *this;" <<  std::endl;
 
             ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl << std::endl;
         }
