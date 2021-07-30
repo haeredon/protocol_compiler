@@ -40,6 +40,7 @@ public:
 
             if(class_attr->get_value() == "NAME") {
                 add_name(class_attr, *new_class);
+                buildClass->set_to_build_name(new_class->get_name());
             } else if(class_attr->get_value() == "ATTRIBUTES") {
                 add_attributes(class_attr, *buildClass);
                 add_attributes(class_attr, *new_class);

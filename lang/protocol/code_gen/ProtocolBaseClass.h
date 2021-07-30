@@ -57,7 +57,9 @@ protected:
     }
 
     std::string get_constructor() {
-        std::stringstream ss;
+        std::stringstream class_ss;
+        std::stringstream builder_first_ss;
+        std::stringstream builder_second_ss;
 
         typename std::vector<Field>::iterator it;
 
@@ -65,9 +67,12 @@ protected:
         std::regex num_regex ("^([0-9]*$).*");
 
         std::size_t num_consumed = 0;
-        ss << BaseClass::TAB << "// TODO: REMEMBER TO DO BOUNDS CHECKING" << std::endl;
-        ss << BaseClass::TAB << get_name() << "(const uint8_t data[]) {" << std::endl;
-        ss << BaseClass::TAB << BaseClass::TAB << "std::size_t num_consumed = 0;" << std::endl << std::endl;
+        class_ss << BaseClass::TAB << "// TODO: REMEMBER TO DO BOUNDS CHECKING" << std::endl;
+        class_ss << BaseClass::TAB << "init(const uint8_t data[]) {" << std::endl;
+        class_ss << BaseClass::TAB << BaseClass::TAB << "std::size_t num_consumed = 0;" << std::endl << std::endl;
+
+        builder_first_ss << BaseClass::TAB << get_name() << "(Builder& builder) {" << std::endl;
+        builder_first_ss << BaseClass::TAB << BaseClass::TAB << "uint8_t* data = new uint8_t[" << std::endl;
 
 
         for(it = fields.begin() ; it != fields.end() ; ++it) {
@@ -77,6 +82,8 @@ protected:
 
             std::string length_str;
             std::string num_add_str;
+
+            std::string builder_length = field.get_name() + "_length";
 
             if(depends_on_var) {
                 length_str = "BitUtility::bytes_to_bits(" + field.get_second() + ".get_data())";
@@ -91,26 +98,44 @@ protected:
                 std::string contain_data_str = field.get_name() + "_contain_data";
                 std::string contain_mask_str = field.get_name() + "_contain_mask";
 
-                ss << BaseClass::TAB << BaseClass::TAB << "uint_arc " << contain_data_str << " = 0;" << std::endl;
-                ss << BaseClass::TAB << BaseClass::TAB << "uint_arc " << contain_mask_str << " = " << std::hex << field.get_second() << ";" << std::endl;
-                ss << BaseClass::TAB << BaseClass::TAB << "memcpy(&" << contain_data_str << ", data, sizeof(uint_arc));" << std::endl;
+                class_ss << BaseClass::TAB << BaseClass::TAB << "uint_arc " << contain_data_str << " = 0;" << std::endl;
+                class_ss << BaseClass::TAB << BaseClass::TAB << "uint_arc " << contain_mask_str << " = " << std::hex << field.get_second() << ";" << std::endl;
+                class_ss << BaseClass::TAB << BaseClass::TAB << "memcpy(&" << contain_data_str << ", data, sizeof(uint_arc));" << std::endl;
 
-                ss << BaseClass::TAB << BaseClass::TAB << "if(BitUtility::binary_sub_match(" << contain_data_str << "," << contain_mask_str << ")) {" << std::endl;
-                ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << field.get_name() << " = " << "Bitmap" << "(" << "data + num_consumed" << ", " << length_str << ");" << std::endl;
-                ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "num_consumed += " << num_add_str << ";" << std::endl;
-                ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl << std::endl;
+                class_ss << BaseClass::TAB << BaseClass::TAB << "if(BitUtility::binary_sub_match(" << contain_data_str << "," << contain_mask_str << ")) {" << std::endl;
+                class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << field.get_name() << " = " << "Bitmap" << "(" << "data + num_consumed" << ", " << length_str << ");" << std::endl;
+                class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "num_consumed += " << num_add_str << ";" << std::endl;
+                class_ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl << std::endl;
             } else {
                 // Dependency field
-                ss << BaseClass::TAB << BaseClass::TAB << field.get_name() << " = " << "Bitmap" << "(" << "data + num_consumed" << ", " << length_str << ");" << std::endl;
-                ss << BaseClass::TAB << BaseClass::TAB << "num_consumed += " << num_add_str << ";" <<  std::endl << std::endl;
+                class_ss << BaseClass::TAB << BaseClass::TAB << field.get_name() << " = " << "Bitmap" << "(" << "data + num_consumed" << ", " << length_str << ");" << std::endl;
+                class_ss << BaseClass::TAB << BaseClass::TAB << "num_consumed += " << num_add_str << ";" << std::endl << std::endl;
             }
+
+            if(it == fields.begin()) {
+                builder_first_ss << "builder." << builder_length;
+            } else {
+                builder_first_ss << " + builder." << builder_length;
+            }
+
+            builder_second_ss << BaseClass::TAB << BaseClass::TAB << "memcpy(data , builder." << field.get_name() << ", builder." << builder_length << ");" << std::endl;
         }
 
-        ss << BaseClass::TAB << BaseClass::TAB << "size = num_consumed;" << std::endl;
+        builder_first_ss << "];";
 
-        ss << BaseClass::TAB << "}";
+        builder_second_ss << BaseClass::TAB << BaseClass::TAB << "init(data);" << std::endl;
+        builder_second_ss << BaseClass::TAB << BaseClass::TAB << "delete data;" << std::endl;
 
-        return ss.str();
+        builder_second_ss << BaseClass::TAB << "}";
+
+        class_ss << BaseClass::TAB << BaseClass::TAB << "size = num_consumed;" << std::endl;
+        class_ss << BaseClass::TAB << "}" << std::endl << std::endl;
+
+        class_ss << BaseClass::TAB << get_name() << "(const uint8_t data[]) {" << std::endl;
+        class_ss << BaseClass::TAB << BaseClass::TAB << "init(data);" << std::endl;
+        class_ss << BaseClass::TAB << "}" << std::endl << std::endl;
+
+        return class_ss.str() + builder_first_ss.str() + builder_second_ss.str();
     }
 
     std::string get_getters() {
@@ -165,6 +190,12 @@ protected:
         ss << BaseClass::TAB << "Protocols " << "get_protocol_type() { " << std::endl;
         ss << BaseClass::TAB << BaseClass::TAB << "return Protocols::" << name_upper << ";" << std::endl;
         ss << BaseClass::TAB << "}" << std::endl << std::endl;
+
+        ss << BaseClass::TAB << "Builder " << "get_builder() { " << std::endl;
+        ss << BaseClass::TAB << BaseClass::TAB << "return Builder();" << std::endl;
+        ss << BaseClass::TAB << "}" << std::endl << std::endl;
+
+
 
         return ss.str();
     }

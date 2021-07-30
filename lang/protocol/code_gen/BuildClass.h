@@ -14,9 +14,15 @@ class BuildClass : public BuildBaseClass {
 
 public:
 
-    BuildClass() : BuildBaseClass("Builder") {
+    BuildClass(std::string to_build_name) : BuildBaseClass("Builder", to_build_name) {
 
     }
+
+    BuildClass() : BuildBaseClass("Builder", "Dummy") {
+
+    }
+
+
 
     std::string to_string() {
         std::stringstream ss;
@@ -36,6 +42,8 @@ public:
         ss << BaseClass::TAB << BaseClass::TAB  <<  this->get_constructor() << std::endl << std::endl;
 
         ss << BaseClass::TAB << BaseClass::TAB  << this->get_destructor() << std::endl << std::endl;
+
+        ss << this->get_getters() << std::endl << std::endl;
 
         ss << this->get_setters() << std::endl << std::endl;
 

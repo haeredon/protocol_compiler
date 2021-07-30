@@ -11,6 +11,8 @@ class BuildBaseClass : public BaseClass {
 
 protected:
 
+    std::string to_build_name;
+
     std::string get_inheritance() {
         return "";
     }
@@ -48,7 +50,13 @@ protected:
     }
 
     std::string get_getters() {
-        return "";
+        std::stringstream ss;
+
+        ss << BaseClass::TAB << BaseClass::TAB << to_build_name << "* " << "build() { " << std::endl;
+        ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return new " << to_build_name << "(*this);" << std::endl;
+        ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl << std::endl;
+
+        return ss.str();
     }
 
     std::string get_destructor() {
@@ -98,7 +106,13 @@ protected:
         return ss.str();
     }
 
-    BuildBaseClass(std::string name) : BaseClass(name) {}
+public:
+
+    void set_to_build_name(std::string name) {
+        to_build_name = name;
+    }
+
+    BuildBaseClass(std::string to_build_name, std::string name) : to_build_name(to_build_name), BaseClass(name) {}
 
 };
 
