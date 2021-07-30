@@ -14,11 +14,8 @@ class BuildClass : public BuildBaseClass {
 
 public:
 
-    BuildClass(std::string to_build_name) : BuildBaseClass("Builder", to_build_name) {
 
-    }
-
-    BuildClass() : BuildBaseClass("Builder", "Dummy") {
+    BuildClass(std::string name) : BuildBaseClass("Dummy", name) {
 
     }
 
@@ -31,7 +28,9 @@ public:
             return ss.str();
         }
 
-        ss << BaseClass::TAB << "class " << this->get_name() << " { " << std::endl << std::endl;
+        ss << BaseClass::TAB << "class " << get_name() << " { " << std::endl << std::endl;
+
+        ss << BaseClass::TAB << BaseClass::TAB << "friend " << to_build_name << ";" << std::endl << std::endl;
 
         ss << BaseClass::TAB << BaseClass::TAB << "private: " << std::endl << std::endl;
 

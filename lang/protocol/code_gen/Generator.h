@@ -30,7 +30,7 @@ public:
     }
 
     RET_T* gen_class(ProtocolParser::Node* ast) {
-        BuildClass* buildClass = new BuildClass();
+        BuildClass* buildClass = new BuildClass("Builder");
         PARSE_T* new_class = new PARSE_T(buildClass);
 
         std::vector<ProtocolParser::Node*>::iterator it;

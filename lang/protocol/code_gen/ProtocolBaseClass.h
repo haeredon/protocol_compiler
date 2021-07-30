@@ -68,7 +68,7 @@ protected:
 
         std::size_t num_consumed = 0;
         class_ss << BaseClass::TAB << "// TODO: REMEMBER TO DO BOUNDS CHECKING" << std::endl;
-        class_ss << BaseClass::TAB << "init(const uint8_t data[]) {" << std::endl;
+        class_ss << BaseClass::TAB << "void init(const uint8_t data[]) {" << std::endl;
         class_ss << BaseClass::TAB << BaseClass::TAB << "std::size_t num_consumed = 0;" << std::endl << std::endl;
 
         builder_first_ss << BaseClass::TAB << get_name() << "(Builder& builder) {" << std::endl;
