@@ -21,7 +21,7 @@ protected:
         typename std::vector<Field>::iterator it;
 
         for(it = fields.begin() ; it != fields.end() ; ++it) {
-            ss << BaseClass::TAB << "Bitmap "<< it->get_name() << ";" << std::endl << std::endl;
+            ss << BaseClass::TAB << "Vector<uint8_t> "<< it->get_name() << ";" << std::endl << std::endl;
 
             std::unordered_map<std::string, std::tuple<std::size_t, std::size_t>>& bitmap = it->get_bitmap();
             std::unordered_map<std::string, std::size_t>& enumeration = it->get_enumeration();
@@ -86,10 +86,10 @@ protected:
             std::string builder_length = field.get_name() + "_length";
 
             if(depends_on_var) {
-                length_str = "BitUtility::bytes_to_bits(" + field.get_second() + ".get_data())";
-                num_add_str = field.get_second() + ".get_data()";
+                length_str =  field.get_second() + ".size())";
+                num_add_str = field.get_second() + ".size()";
             } else {
-                length_str = std::to_string(stoi(field.get_second()) * 8);
+                length_str = std::to_string(stoi(field.get_second()));
                 num_add_str = field.get_second();
             }
 
@@ -108,7 +108,7 @@ protected:
                 class_ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl << std::endl;
             } else {
                 // Dependency field
-                class_ss << BaseClass::TAB << BaseClass::TAB << field.get_name() << " = " << "Bitmap" << "(" << "data + num_consumed" << ", " << length_str << ");" << std::endl;
+                class_ss << BaseClass::TAB << BaseClass::TAB << field.get_name() << " = " << "std::vector<uint8_t>" << "(" << "data + num_consumed, data + num_consumed + " << length_str << ");" << std::endl;
                 class_ss << BaseClass::TAB << BaseClass::TAB << "num_consumed += " << num_add_str << ";" << std::endl << std::endl;
             }
 

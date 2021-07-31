@@ -32,7 +32,8 @@ public:
         ss << "#ifndef PROTOCOL" << "_" << this->get_name() << "_H" << std::endl;
         ss << "#define PROTOCOL" << "_" << this->get_name() << "_H" << std::endl << std::endl;
 
-        ss << "#include \"Bitmap.h\"" << std::endl;
+        ss << "#include <vector>" << std::endl << std::endl;
+
         ss << "#include \"BitUtility.h\"" << std::endl;
         ss << "#include \"Protocols.h\"" << std::endl;
         ss << "#include \"Protocol.h\"" << std::endl << std::endl;
