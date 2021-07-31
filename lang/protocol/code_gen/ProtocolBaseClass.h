@@ -21,7 +21,7 @@ protected:
         typename std::vector<Field>::iterator it;
 
         for(it = fields.begin() ; it != fields.end() ; ++it) {
-            ss << BaseClass::TAB << "Vector<uint8_t> "<< it->get_name() << ";" << std::endl << std::endl;
+            ss << BaseClass::TAB << "std::vector<uint8_t> "<< it->get_name() << ";" << std::endl << std::endl;
 
             std::unordered_map<std::string, std::tuple<std::size_t, std::size_t>>& bitmap = it->get_bitmap();
             std::unordered_map<std::string, std::size_t>& enumeration = it->get_enumeration();
