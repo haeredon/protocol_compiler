@@ -161,21 +161,24 @@ protected:
                 std::string method_name = val_it->is_inner() ? "get_inner_protocol" : "get_" + val_it->get_name() + "_enum";
 
                 ss << BaseClass::TAB << return_type << " " << method_name << "() { " << std::endl;
+                ss << BaseClass::TAB << BaseClass::TAB << "std::size_t numeric_" << val_it->get_name() << " = 0;" << std::endl;
+                ss << BaseClass::TAB << BaseClass::TAB << "memcpy(&numeric_" << val_it->get_name() << ", " << val_it->get_name() << ".data(), " << val_it->get_name() << ".size());" << std::endl;
+
 
                 for(auto it = enumeration.begin() ; it != enumeration.end() ; ++it) {
-                    ss << BaseClass::TAB << BaseClass::TAB << "if(static_cast<uint_arc>(" << val_it->get_name() << "_enum" << "::" << it->first << ") == " << val_it->get_name() << ".get_data()) {" << std::endl;
+                    ss << BaseClass::TAB << BaseClass::TAB << "if(static_cast<std::size_t>(" << val_it->get_name() << "_enum" << "::" << it->first << ") == numeric_" << val_it->get_name() << ") {" << std::endl;
                     ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return " << return_type << "::" << it->first << ";" << std::endl;
                     ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl;
                 }
                 ss << BaseClass::TAB << BaseClass::TAB << "return Protocols::UNKNOWN;" << std::endl;
                 ss << BaseClass::TAB << "}" << std::endl << std::endl;
 
-                ss << BaseClass::TAB << "uint_arc " << "get_" << val_it->get_name() << "() { " << std::endl;
-                ss << BaseClass::TAB << BaseClass::TAB << "return " << val_it->get_name() << ".get_data();" << std::endl;
+                ss << BaseClass::TAB << "const std::vector<uint8_t>& " << "get_" << val_it->get_name() << "() { " << std::endl;
+                ss << BaseClass::TAB << BaseClass::TAB << "return " << val_it->get_name() << ";" << std::endl;
                 ss << BaseClass::TAB << "}" << std::endl << std::endl;
             } else {
-                ss << BaseClass::TAB << "uint_arc " << "get_" << val_it->get_name() << "() { " << std::endl;
-                ss << BaseClass::TAB << BaseClass::TAB << "return " << val_it->get_name() << ".get_data();" << std::endl;
+                ss << BaseClass::TAB << "const std::vector<uint8_t>& " << "get_" << val_it->get_name() << "() { " << std::endl;
+                ss << BaseClass::TAB << BaseClass::TAB << "return " << val_it->get_name() << ";" << std::endl;
                 ss << BaseClass::TAB << "}" << std::endl << std::endl;
             }
         }
