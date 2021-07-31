@@ -86,7 +86,7 @@ protected:
             std::string builder_length = field.get_name() + "_length";
 
             if(depends_on_var) {
-                length_str =  field.get_second() + ".size())";
+                length_str =  field.get_second() + ".size()";
                 num_add_str = field.get_second() + ".size()";
             } else {
                 length_str = std::to_string(stoi(field.get_second()));
