@@ -140,6 +140,11 @@ protected:
 
     std::string get_getters() {
         std::stringstream ss;
+        std::stringstream to_data_ss;
+
+        to_data_ss << BaseClass::TAB <<  "std::vector<uint8_t> to_data() {" << std::endl;
+        to_data_ss << BaseClass::TAB << BaseClass::TAB << "std::vector<uint8_t> data;" << std::endl;
+        to_data_ss << BaseClass::TAB << BaseClass::TAB << "data.reserve(size);" << std::endl << std::endl;
 
         typename std::vector<Field>::iterator val_it;
 
@@ -147,6 +152,9 @@ protected:
         for(val_it = fields.begin() ; val_it != fields.end() ; ++val_it) {
             std::unordered_map<std::string, std::tuple<std::size_t, std::size_t>>& bitmap = val_it->get_bitmap();
             std::unordered_map<std::string, std::size_t>& enumeration = val_it->get_enumeration();
+
+            to_data_ss << BaseClass::TAB << BaseClass::TAB << "data.insert(data.end(), " << val_it->get_name() << ".begin(), " << val_it->get_name() << ".end());" << std::endl;
+
 
             if(!bitmap.empty()) {
                 for(auto it = bitmap.begin() ; it != bitmap.end() ; ++it) {
@@ -198,9 +206,10 @@ protected:
         ss << BaseClass::TAB << BaseClass::TAB << "return Builder();" << std::endl;
         ss << BaseClass::TAB << "}" << std::endl << std::endl;
 
+        to_data_ss << BaseClass::TAB << BaseClass::TAB << "return data;" << std::endl;
+        to_data_ss << BaseClass::TAB << "}" << std::endl << std::endl;
 
-
-        return ss.str();
+        return ss.str() + to_data_ss.str();
     }
 
     std::string get_setters() {
