@@ -86,7 +86,7 @@ protected:
             std::string builder_length = field.get_name() + "_length";
 
             if(depends_on_var) {
-                length_str =  field.get_second() + ".size()";
+                length_str = "Util::flip_endian(Util::to_numeric<uint8_t>(" + field.get_second() + ".data()));";
                 num_add_str = field.get_second() + ".size()";
             } else {
                 length_str = std::to_string(stoi(field.get_second()));
