@@ -77,7 +77,8 @@ protected:
     }
 
     std::string get_setters() {
-        std::stringstream ss;
+        std::stringstream uint8_ss;
+        std::stringstream vector_ss;
 
         typename std::vector<Field>::iterator it;
 
@@ -89,21 +90,27 @@ protected:
             std::string length_var = field.get_name() + "_length";
             bool depends_on_var = !std::regex_search (field.get_second(), match, num_regex);
 
+            vector_ss << BaseClass::TAB << BaseClass::TAB << "Builder& " << "set_" << field.get_name() << "(std::vector<uint8_t> data) { " << std::endl;
+
             if(depends_on_var) {
-                ss << BaseClass::TAB << BaseClass::TAB << "Builder& " << "set_" << field.get_name() << "(uint8_t* data, std::size_t length) { " << std::endl;
-                ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << length_var << " = length;" << std::endl;
+                uint8_ss << BaseClass::TAB << BaseClass::TAB << "Builder& " << "set_" << field.get_name() << "(uint8_t* data, std::size_t length) { " << std::endl;
+                uint8_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << length_var << " = length;" << std::endl;
+                vector_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return set_" << field.get_name() << "(data.data(), data.size());" << std::endl;
             } else {
-                ss << BaseClass::TAB << BaseClass::TAB << "Builder& " << "set_" << field.get_name() << "(uint8_t* data) { " << std::endl;
+                uint8_ss << BaseClass::TAB << BaseClass::TAB << "Builder& " << "set_" << field.get_name() << "(uint8_t* data) { " << std::endl;
+                vector_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return set_" << field.get_name() << "(data.data());" << std::endl;
             }
 
-            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << field.get_name() << " = new uint8_t[" << length_var << "];" << std::endl;
-            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "memcpy(" << field.get_name() << ", data, " << length_var << ");" << std::endl;
-            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return *this;" <<  std::endl;
+            uint8_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << field.get_name() << " = new uint8_t[" << length_var << "];" << std::endl;
+            uint8_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "memcpy(" << field.get_name() << ", data, " << length_var << ");" << std::endl;
+            uint8_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return *this;" << std::endl;
 
-            ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl << std::endl;
+
+            vector_ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl << std::endl;
+            uint8_ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl << std::endl;
         }
 
-        return ss.str();
+        return uint8_ss.str() + vector_ss.str();
     }
 
 public:
