@@ -202,8 +202,12 @@ protected:
         ss << BaseClass::TAB << BaseClass::TAB << "return Protocols::" << name_upper << ";" << std::endl;
         ss << BaseClass::TAB << "}" << std::endl << std::endl;
 
-        ss << BaseClass::TAB << "Builder " << "get_builder() { " << std::endl;
+        ss << BaseClass::TAB << "static Builder " << "get_builder() { " << std::endl;
         ss << BaseClass::TAB << BaseClass::TAB << "return Builder();" << std::endl;
+        ss << BaseClass::TAB << "}" << std::endl << std::endl;
+
+        ss << BaseClass::TAB << "std::string " << "to_string() { " << std::endl;
+        ss << BaseClass::TAB << BaseClass::TAB << "return Util::to_hex(to_data().data(), size);" << std::endl;
         ss << BaseClass::TAB << "}" << std::endl << std::endl;
 
         to_data_ss << BaseClass::TAB << BaseClass::TAB << "return data;" << std::endl;

@@ -33,6 +33,7 @@ public:
         ss << "#define PROTOCOL" << "_" << this->get_name() << "_H" << std::endl << std::endl;
 
         ss << "#include <vector>" << std::endl;
+        ss << "#include <string>" << std::endl;
         ss << "#include <cstring>" << std::endl << std::endl;
 
         ss << "#include \"Util.h\"" << std::endl;
