@@ -69,7 +69,8 @@ protected:
         std::size_t num_consumed = 0;
         class_ss << BaseClass::TAB << "// TODO: REMEMBER TO DO BOUNDS CHECKING" << std::endl;
         class_ss << BaseClass::TAB << "void init(const uint8_t data[]) {" << std::endl;
-        class_ss << BaseClass::TAB << BaseClass::TAB << "std::size_t num_consumed = 0;" << std::endl << std::endl;
+        class_ss << BaseClass::TAB << BaseClass::TAB << "std::size_t num_consumed = 0;" << std::endl;
+        class_ss << BaseClass::TAB << BaseClass::TAB << "std::size_t num_read = 0;" << std::endl << std::endl;
 
         builder_first_ss << BaseClass::TAB << get_name() << "(Builder& builder) {" << std::endl;
         builder_first_ss << BaseClass::TAB << BaseClass::TAB << "std::size_t num_consumed = 0;" << std::endl << std::endl;
@@ -88,10 +89,8 @@ protected:
 
             if(depends_on_var) {
                 length_str = "Util::flip_endian(Util::to_numeric<uint8_t>(" + field.get_second() + ".data()))";
-                num_add_str = field.get_second() + ".size()";
             } else {
                 length_str = std::to_string(stoi(field.get_second()));
-                num_add_str = field.get_second();
             }
 
             if(field.is_conditional()) {
@@ -109,8 +108,9 @@ protected:
                 class_ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl << std::endl;
             } else {
                 // Dependency field
-                class_ss << BaseClass::TAB << BaseClass::TAB << field.get_name() << " = " << "std::vector<uint8_t>" << "(" << "data + num_consumed, data + num_consumed + " << length_str << ");" << std::endl;
-                class_ss << BaseClass::TAB << BaseClass::TAB << "num_consumed += " << num_add_str << ";" << std::endl << std::endl;
+                class_ss << BaseClass::TAB << BaseClass::TAB << "num_read = " << length_str << ";" << std::endl;
+                class_ss << BaseClass::TAB << BaseClass::TAB << field.get_name() << " = " << "std::vector<uint8_t>" << "(" << "data + num_consumed, data + num_consumed + num_read);" << std::endl;
+                class_ss << BaseClass::TAB << BaseClass::TAB << "num_consumed += num_read;" << std::endl << std::endl;
             }
 
             if(it == fields.begin()) {
