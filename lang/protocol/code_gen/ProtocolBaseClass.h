@@ -72,6 +72,7 @@ protected:
         class_ss << BaseClass::TAB << BaseClass::TAB << "std::size_t num_consumed = 0;" << std::endl << std::endl;
 
         builder_first_ss << BaseClass::TAB << get_name() << "(Builder& builder) {" << std::endl;
+        builder_first_ss << BaseClass::TAB << BaseClass::TAB << "std::size_t num_consumed = 0;" << std::endl << std::endl;
         builder_first_ss << BaseClass::TAB << BaseClass::TAB << "uint8_t* data = new uint8_t[" << std::endl;
 
 
@@ -118,10 +119,11 @@ protected:
                 builder_first_ss << " + builder." << builder_length;
             }
 
-            builder_second_ss << BaseClass::TAB << BaseClass::TAB << "memcpy(data , builder." << field.get_name() << ", builder." << builder_length << ");" << std::endl;
+            builder_second_ss << BaseClass::TAB << BaseClass::TAB << "memcpy(data + num_consumed, builder." << field.get_name() << ", builder." << builder_length << ");" << std::endl;
+            builder_second_ss << BaseClass::TAB << BaseClass::TAB << "num_consumed += builder." << builder_length << ";" << std::endl << std::endl;
         }
 
-        builder_first_ss << "];";
+        builder_first_ss << "];" << std::endl << std::endl;
 
         builder_second_ss << BaseClass::TAB << BaseClass::TAB << "init(data);" << std::endl;
         builder_second_ss << BaseClass::TAB << BaseClass::TAB << "delete data;" << std::endl;
