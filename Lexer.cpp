@@ -1,8 +1,10 @@
 #include "Lexer.h"
+#include "ParseException.h"
 
 #include<iostream>
 #include<regex>
 #include<algorithm>
+
 
 namespace ProtocolParser {
 
@@ -19,6 +21,8 @@ namespace ProtocolParser {
 
     void Lexer::parse(std::string text) {
         std::string token_str = text;
+        std::size_t position = 0;
+
         while(token_str.size() != 0) {
             std::smatch matcher;
             int num_char_tokenized = 0;
@@ -29,15 +33,16 @@ namespace ProtocolParser {
 
                 // a match was found and it start at index 0 in the text
                 if(matcher.size() != 0 && matcher.position(0) == 0) {
-                    tokens.push_back(LexerToken(it->second, token_str.substr(0, matcher.length(0))));
+                    tokens.push_back(LexerToken(it->second, token_str.substr(0, matcher.length(0)), position));
                     num_char_tokenized = matcher.length(0);
+                    position += num_char_tokenized;
                     match_found = true;
                     break;
                 }
             }
 
             if(!match_found) {
-                throw "Lexer error!";
+                throw ParseException<LexerToken>(LexerToken("UNKNOWN", "", position), "String is not a valid token");
             }
 
             token_str = token_str.substr(num_char_tokenized);

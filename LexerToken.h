@@ -14,9 +14,15 @@ namespace ProtocolParser {
 
     	private:
 
+        std::size_t position;
+
     	public:
 
-    	    explicit LexerToken(std::string type, std::string value);
+    	    explicit LexerToken(std::string type, std::string value, std::size_t position);
+
+    	    std::size_t get_position() const {
+    	        return position;
+    	    }
 
     };
 

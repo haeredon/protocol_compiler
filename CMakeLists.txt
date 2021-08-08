@@ -24,4 +24,4 @@ add_executable(parser
         main.cpp
         Production.h
         Token.cpp
-        Node.h lang/protocol/code_gen/BuildClass.h lang/protocol/code_gen/ProtocolBaseClass.h)
+        Node.h lang/protocol/code_gen/BuildClass.h lang/protocol/code_gen/ProtocolBaseClass.h ParseException.h)

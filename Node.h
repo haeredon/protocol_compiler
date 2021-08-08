@@ -17,13 +17,13 @@ namespace ProtocolParser {
 
         Node *parent;
 
-        std::vector<Node*> children;
+        std::vector<Node *> children;
 
         std::string val; // TEMP FOR TESTS
 
     public:
 
-        Node(const Node& other) {
+        Node(const Node &other) {
             parent = other.parent;
             children = other.children;
             val = other.val;
@@ -34,16 +34,22 @@ namespace ProtocolParser {
 
         };
 
-        void add_child(Node* child) {
+        void add_child(Node *child) {
             children.push_back(child);
         }
 
-        std::vector<Node*>& get_children() {
+        std::vector<Node *> &get_children() {
             return children;
         }
 
-        std::string& get_value() {
+        std::string &get_value() {
             return val;
+        }
+
+        ~Node() {
+            for(auto child : children) {
+                delete child;
+            }
         }
 
 

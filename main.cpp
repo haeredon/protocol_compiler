@@ -7,6 +7,7 @@
 #include "lang/protocol/code_gen/Generator.h"
 #include "lang/protocol/GrammarDefs.h"
 #include "lang/protocol/LexerDefs.h"
+#include "ParseException.h"
 
 #include<string>
 #include<vector>
@@ -65,19 +66,22 @@
 
         using namespace ProtocolParser;
 
-/**************************************** LEXER ********************************************************/
-
         Lexer lexer(LexerDefs::REG_TOKEN, ' ');
-
-        lexer.parse(in);
-
-        std::vector<LexerToken> tokens = lexer.get_tokens();
-        tokens.push_back(LexerToken("END", "END")); // should be a better way of doing this
-
-/******************************************* GRAMMER STUFF *****************************************************/
-
         Grammar grammar(GrammarDefs::PRODUCTIONS);
-        Node parse_tree = grammar.parse(tokens);
+        Node parse_tree(nullptr, "");
+
+        try {
+            lexer.parse(in);
+            std::vector<LexerToken> tokens = lexer.get_tokens();
+            tokens.push_back(LexerToken("END", "END", in.size())); // should be a better way of doing this
+
+            parse_tree = grammar.parse(tokens);
+        } catch (ParseException<LexerToken> e) {
+            std::cout << e.get_info() << ". At position: " << e.get_lexer_token().get_position() << std::endl;
+            exit(EXIT_FAILURE);
+        }
+
+
 
 /******************************************* CODE GENERATION *****************************************************/
 

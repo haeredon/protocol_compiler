@@ -5,6 +5,7 @@
 #include "Production.h"
 #include "LexerToken.h"
 #include "Node.h"
+#include "ParseException.h"
 
 #include<map>
 #include<string>
@@ -236,8 +237,7 @@ namespace ProtocolParser {
                     stack.pop_front();
                     stack.front().add_value(new Node(nullptr, value));
                 } else if (grammar_token.is_term()) {
-                    std::cout << "ERRRORR_1!!" << std::endl;
-                    throw "ERRRORR_1!!";
+                    throw ParseException<LexerToken>(*token_it, "Terminal did not match grammar");
                 } else {
                     bool entry_exists = parser_matrix[grammar_token].contains(tag);
 
@@ -265,8 +265,7 @@ namespace ProtocolParser {
 
                         stack.push_front(action);
                     } else {
-                        std::cout << "ERRRORR_2!!" << std::endl;
-                        throw "ERRRORR_2!!";
+                        throw ParseException<LexerToken>(*token_it, "Non-terminal did not match grammar");
                     }
                 }
 
