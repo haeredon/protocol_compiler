@@ -20,6 +20,7 @@ namespace ProtocolParser {
     }
 
     void Lexer::parse(std::string text) {
+        tokens.clear();
         std::string token_str = text;
         std::size_t position = 0;
 
