@@ -35,6 +35,7 @@ namespace ProtocolParser {
         };
 
         void add_child(Node *child) {
+            child->parent = this;
             children.push_back(child);
         }
 
