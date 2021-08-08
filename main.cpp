@@ -68,7 +68,7 @@
 
         Lexer lexer(LexerDefs::REG_TOKEN, ' ');
         Grammar grammar(GrammarDefs::PRODUCTIONS);
-        Node parse_tree(nullptr, "");
+        Node* parse_tree;
 
         try {
             lexer.parse(in);

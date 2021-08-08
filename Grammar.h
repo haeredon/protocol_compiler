@@ -213,7 +213,7 @@ namespace ProtocolParser {
             create_parsing_table();
         }
 
-        NODE_T parse(const std::vector<LexerToken> &tokens) {
+        NODE_T* parse(const std::vector<LexerToken> &tokens) {
             std::vector<LexerToken>::const_iterator token_it = tokens.begin();
             auto x = ParserAction<Node*>(start_sym);
             std::string last_val;
@@ -272,7 +272,7 @@ namespace ProtocolParser {
                 x = stack.front();
             }
 
-            return *(stack.front().get_values().front());
+            return stack.front().get_values().front();
         }
 
         std::string to_string() {

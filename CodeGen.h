@@ -14,7 +14,7 @@ namespace ProtocolParser {
 
     public:
 
-        virtual std::vector<RET_T> generate(Node& ast) = 0;
+        virtual std::vector<RET_T> generate(Node* ast) = 0;
 
     };
 

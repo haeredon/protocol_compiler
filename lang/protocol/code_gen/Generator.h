@@ -18,11 +18,11 @@ class Generator : public ProtocolParser::CodeGen<RET_T*> {
 
 public:
 
-    std::vector<RET_T*> generate(ProtocolParser::Node& ast) {
+    std::vector<RET_T*> generate(ProtocolParser::Node* ast) {
         std::vector<RET_T*> classes;
         std::vector<ProtocolParser::Node*>::iterator it;
 
-        for(it = ast.get_children().begin() ; it != ast.get_children().end() ; ++it) {
+        for(it = ast->get_children().begin() ; it != ast->get_children().end() ; ++it) {
             classes.push_back(gen_class(*it));
         }
 
