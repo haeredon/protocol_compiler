@@ -195,6 +195,8 @@ namespace ProtocolParser {
          }
 
 
+
+
     public:
 
         Grammar(std::vector<PRODUCTION_T> &productions) : productions(productions) {
@@ -219,6 +221,7 @@ namespace ProtocolParser {
             std::string last_val;
 
             std::deque<ParserAction<Node*>> stack;
+            std::vector<Node*> nodes;
 
             stack.push_front(ParserAction<Node*>(Grammar::END));
             stack.push_front(x);
@@ -235,7 +238,9 @@ namespace ProtocolParser {
                 } else if (grammar_token.is_term_match(lexer_token)) {
                     ++token_it;
                     stack.pop_front();
-                    stack.front().add_value(new Node(nullptr, value));
+                    Node* term_node = new Node(nullptr, value);
+                    stack.front().add_value(term_node);
+                    nodes.push_back(term_node);
                 } else if (grammar_token.is_term()) {
                     throw ParseException<LexerToken>(*token_it, "Terminal did not match grammar");
                 } else {
@@ -272,6 +277,11 @@ namespace ProtocolParser {
                 x = stack.front();
             }
 
+            for(Node* node : nodes) {
+                if(node->is_dangling()) {
+                    delete node;
+                }
+            }
             return stack.front().get_values().front();
         }
 

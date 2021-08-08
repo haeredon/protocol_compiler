@@ -46,6 +46,10 @@ namespace ProtocolParser {
             return val;
         }
 
+        bool is_dangling() {
+            return children.size() == 0 && parent == nullptr;
+        }
+
         ~Node() {
             for(auto child : children) {
                 delete child;
