@@ -37,7 +37,6 @@ public:
         ss << "#include <cstring>" << std::endl << std::endl;
 
         ss << "#include \"Util.h\"" << std::endl;
-        ss << "#include \"BitUtility.h\"" << std::endl;
         ss << "#include \"Protocols.h\"" << std::endl;
         ss << "#include \"Protocol.h\"" << std::endl << std::endl;
 
