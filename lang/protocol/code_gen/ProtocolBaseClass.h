@@ -209,7 +209,7 @@ protected:
         ss << BaseClass::TAB << "}" << std::endl << std::endl;
 
         ss << BaseClass::TAB << "std::string " << "to_string() { " << std::endl;
-        ss << BaseClass::TAB << BaseClass::TAB << "return Util::binary_to_hex(to_data().data(), size);" << std::endl;
+        ss << BaseClass::TAB << BaseClass::TAB << "return Util::binary_to_hex_pretty_print(to_data().data(), size);" << std::endl;
         ss << BaseClass::TAB << "}" << std::endl << std::endl;
 
         to_data_ss << BaseClass::TAB << BaseClass::TAB << "return data;" << std::endl;
