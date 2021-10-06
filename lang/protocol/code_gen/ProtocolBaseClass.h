@@ -76,6 +76,7 @@ protected:
         builder_first_ss << BaseClass::TAB << BaseClass::TAB << "std::size_t num_consumed = 0;" << std::endl << std::endl;
         builder_first_ss << BaseClass::TAB << BaseClass::TAB << "uint8_t* data = new uint8_t[" << std::endl;
 
+        bool has_prev_conditional = false;
 
         for(it = fields.begin() ; it != fields.end() ; ++it) {
             Field& field = *it;
@@ -88,24 +89,41 @@ protected:
             std::string builder_length = field.get_name() + "_length";
 
             if(depends_on_var) {
-                length_str = "Util::flip_endian(Util::to_numeric<uint8_t>(" + field.get_second() + ".data()))";
+                length_str = "Util::flip_endian(Util::to_numeric<uint8_t>(" + field.get_second() + ".data()))"; // TODO: not only uint8_t!!!!
             } else {
                 length_str = std::to_string(stoi(field.get_second()));
             }
 
             if(field.is_conditional()) {
                 // Conditional field
-                std::string contain_data_str = field.get_name() + "_contain_data";
-                std::string contain_mask_str = field.get_name() + "_contain_mask";
+                std::vector<std::string>& args = field.get_conditional_args();
 
-                class_ss << BaseClass::TAB << BaseClass::TAB << "uint_arc " << contain_data_str << " = 0;" << std::endl;
-                class_ss << BaseClass::TAB << BaseClass::TAB << "uint_arc " << contain_mask_str << " = " << std::hex << field.get_second() << ";" << std::endl;
-                class_ss << BaseClass::TAB << BaseClass::TAB << "memcpy(&" << contain_data_str << ", data, sizeof(uint_arc));" << std::endl;
+                if(field.get_conditional_name() == "range_equals") {
+                    class_ss << BaseClass::TAB << BaseClass::TAB << (has_prev_conditional ? "" : "uint_arc ") << "num = " << args[2] << ";" << std::endl;
+                    class_ss << BaseClass::TAB << BaseClass::TAB << (has_prev_conditional ? "" : "uint8_t* ") << "num_ptr = (uint8_t*) &num;" << std::endl;
+                    class_ss << BaseClass::TAB << BaseClass::TAB << (has_prev_conditional ? "" : "bool ") << "equals = true;" << std::endl;
+                    class_ss << BaseClass::TAB << BaseClass::TAB << "for(std::size_t i = " << args[0] << " ; i <= " << args[1] << " ; ++i) {" << std::endl;
+                    class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "if(data[i + num_consumed] != *(num_ptr - 1 + i)) {" << std::endl;
+                    class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "equals = false;" << std::endl;
+                    class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "break;" << std::endl;
+                    class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "}" << std::endl;
+                    class_ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl;
+                } else if(field.get_conditional_name() == "equals") {
 
-                class_ss << BaseClass::TAB << BaseClass::TAB << "if(BitUtility::binary_sub_match(" << contain_data_str << "," << contain_mask_str << ")) {" << std::endl;
-                class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << field.get_name() << " = " << "Bitmap" << "(" << "data + num_consumed" << ", " << length_str << ");" << std::endl;
-                class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "num_consumed += " << num_add_str << ";" << std::endl;
+                } else if(field.get_conditional_name() == "has") {
+
+                } else {
+                    throw "Conditional function not found";
+                }
+
+                class_ss << std::endl;
+                class_ss << BaseClass::TAB << BaseClass::TAB << "if(equals) {" << std::endl;
+                class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB  << "num_read = " << length_str << ";" << std::endl;
+                class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB  << field.get_name() << " = " << "std::vector<uint8_t>" << "(" << "data + num_consumed, data + num_consumed + num_read);" << std::endl;
+                class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "num_consumed += num_read;" << std::endl;
                 class_ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl << std::endl;
+
+                has_prev_conditional = true;
             } else {
                 // Dependency field
                 class_ss << BaseClass::TAB << BaseClass::TAB << "num_read = " << length_str << ";" << std::endl;

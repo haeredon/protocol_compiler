@@ -1,0 +1,5 @@
+protocol: (Ethernet2)
+field: (des_mac, 6)
+field: (src_mac, 6)
+field: (eth_802_1q_outer, 4, range_equals(0, 3, 8838))
+field: (eth_802_1q_inner, 4, range_equals(0, 3, 8100))

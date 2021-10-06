@@ -53,6 +53,14 @@ public:
         return bitmap;
     }
 
+    std::string& get_conditional_name() {
+        return conditional_name;
+    }
+
+    std::vector<std::string>& get_conditional_args() {
+        return conditional_args;
+    }
+
     void set_conditional(std::string name, std::vector<std::string> args) {
         conditional_name = name;
         conditional_args = args;

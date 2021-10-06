@@ -589,7 +589,8 @@ stmt -> epsilon
 conditional -> ',' cond_fun '(' arg_list ')'
 conditional -> epsilon
 
-cond_fun -> match
+cond_fun -> range_equals
+cond_fun -> equals
 
 arg_list -> arg arg_list_1
 arg_list -> epsilon

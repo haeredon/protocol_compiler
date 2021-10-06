@@ -20,33 +20,51 @@ protected:
     std::string get_privates() {
         std::stringstream ss;
 
-        std::smatch match;
-        std::regex num_regex ("^([0-9]*$).*");
+        ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "struct field {" << std::endl;
+        ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "uint8_t *data;" << std::endl;
+        ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "std::size_t length;" << std::endl;
+        ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "bool optional;" << std::endl;
+        ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "bool initialized;" << std::endl;
+        ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "" << std::endl;
+        ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "field(std::size_t length, bool optional, bool initialized) : length(length), optional(optional)," << std::endl;
+        ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "initialized(initialized) {}" << std::endl;
+        ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "};" << std::endl;
+        ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "" << std::endl << std::endl;
 
         typename std::vector<Field>::iterator it;
 
         for(it = fields.begin() ; it != fields.end() ; ++it) {
             Field& field = *it;
-
-            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "uint8_t* "<< field.get_name() << ";" << std::endl;
-
-            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "std::size_t "<< field.get_name() << "_length";
-
-            bool depends_on_var = !std::regex_search (field.get_second(), match, num_regex);
-
-            if(!depends_on_var) {
-                ss << " = " << field.get_second();
-            }
-
-            ss << ";" << std::endl << std::endl;
+            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "field "<< field.get_name() << ";" << std::endl;
         }
 
         return ss.str();
     }
 
     std::string get_constructor() {
-        return "";
+        std::stringstream ss;
 
+        typename std::vector<Field>::iterator it;
+        std::smatch match;
+        std::regex num_regex ("^([0-9]*$).*");
+
+        ss << get_name() << "() :" << std::endl;
+
+        for(it = fields.begin() ; it != fields.end() ; ++it) {
+            Field& field = *it;
+
+            bool depends_on_var = !std::regex_search (field.get_second(), match, num_regex);
+//            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << field.get_name() << "(" << (depends_on_var ? 0 : field.get_second()) << "," << (field.is_optional ? "true" : "false") << ", false)" << std::endl;
+
+ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << field.get_name() << "(" << (depends_on_var ? 0 : field.get_second()) << "," << (true ? "true" : "false") << ", false)" << std::endl;
+            if(it != --fields.end()) {
+                ss << ",";
+            }
+        }
+
+        ss << BaseClass::TAB << BaseClass::TAB << "{}" << std::endl;
+
+        return ss.str();
     }
 
     std::string get_getters() {
@@ -87,7 +105,7 @@ protected:
 
         for(it = fields.begin() ; it != fields.end() ; ++it) {
             Field& field = *it;
-            std::string length_var = field.get_name() + "_length";
+            std::string length_var = field.get_name() + ".length";
             bool depends_on_var = !std::regex_search (field.get_second(), match, num_regex);
 
             vector_ss << BaseClass::TAB << BaseClass::TAB << "Builder& " << "set_" << field.get_name() << "(std::vector<uint8_t> data) { " << std::endl;
@@ -101,8 +119,8 @@ protected:
                 vector_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return set_" << field.get_name() << "(data.data());" << std::endl;
             }
 
-            uint8_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << field.get_name() << " = new uint8_t[" << length_var << "];" << std::endl;
-            uint8_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "memcpy(" << field.get_name() << ", data, " << length_var << ");" << std::endl;
+            uint8_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << field.get_name() << ".data = new uint8_t[" << length_var << "];" << std::endl;
+            uint8_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "memcpy(" << field.get_name() << ".data, data, " << length_var << ");" << std::endl;
             uint8_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return *this;" << std::endl;
 
 
