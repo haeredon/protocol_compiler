@@ -158,7 +158,7 @@ protected:
                 builder_first_ss << " + builder." << builder_length;
             }
 
-            builder_second_ss << BaseClass::TAB << BaseClass::TAB << "memcpy(data + num_consumed, builder." << field.get_name() << ", builder." << builder_length << ");" << std::endl;
+            builder_second_ss << BaseClass::TAB << BaseClass::TAB << "memcpy(data + num_consumed, builder." << field.get_name() << ".data, builder." << builder_length << ");" << std::endl;
             builder_second_ss << BaseClass::TAB << BaseClass::TAB << "num_consumed += builder." << builder_length << ";" << std::endl << std::endl;
         }
 
