@@ -591,6 +591,8 @@ conditional -> epsilon
 
 cond_fun -> range_equals
 cond_fun -> equals
+cond_fun -> has
+cond_fun -> has_not
 
 arg_list -> arg arg_list_1
 arg_list -> epsilon

@@ -24,7 +24,7 @@ namespace ProtocolParser {
             std::pair<std::regex, std::string>(std::regex("enum:"), Tokens::ENUM),
             std::pair<std::regex, std::string>(std::regex("bitmap:"), Tokens::BITMAP),
             std::pair<std::regex, std::string>(std::regex("inner:"), Tokens::INNER),
-            std::pair<std::regex, std::string>(std::regex("range_equals|equals|has"), Tokens::CONDITIONAL),
+            std::pair<std::regex, std::string>(std::regex("range_equals|equals|has_not"), Tokens::CONDITIONAL),
             std::pair<std::regex, std::string>(std::regex("\\("), Tokens::LEFT_PAR),
             std::pair<std::regex, std::string>(std::regex("\\)"), Tokens::RIGHT_PAR),
             std::pair<std::regex, std::string>(std::regex("-"), Tokens::DASH),

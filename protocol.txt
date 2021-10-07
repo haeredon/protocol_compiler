@@ -1,5 +1,7 @@
 protocol: (Ethernet2)
 field: (des_mac, 6)
-field: (src_mac, 6)
-field: (eth_802_1q_outer, 4, range_equals(0, 3, 8838))
-field: (eth_802_1q_inner, 4, range_equals(0, 3, 8100))
+field: (src_mac, des_mac)
+field: (eth_802_1q_outer, 4, range_equals(0, 3, 666))
+field: (eth_802_1q_inner, 4, range_equals(0, 3, 555))
+field: (eth_type, 2, has_not(eth_802_1q_inner)) enum: (ARP, 1544), (IPV4, 1899) inner:
+field: (oui, des_mac, equals(dsap, ssap, AA))

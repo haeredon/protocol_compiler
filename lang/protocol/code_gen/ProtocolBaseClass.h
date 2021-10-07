@@ -99,25 +99,46 @@ protected:
                 std::vector<std::string>& args = field.get_conditional_args();
 
                 if(field.get_conditional_name() == "range_equals") {
-                    class_ss << BaseClass::TAB << BaseClass::TAB << (has_prev_conditional ? "" : "uint_arc ") << "num = " << args[2] << ";" << std::endl;
-                    class_ss << BaseClass::TAB << BaseClass::TAB << (has_prev_conditional ? "" : "uint8_t* ") << "num_ptr = (uint8_t*) &num;" << std::endl;
-                    class_ss << BaseClass::TAB << BaseClass::TAB << (has_prev_conditional ? "" : "bool ") << "equals = true;" << std::endl;
-                    class_ss << BaseClass::TAB << BaseClass::TAB << "for(std::size_t i = " << args[0] << " ; i <= " << args[1] << " ; ++i) {" << std::endl;
-                    class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "if(data[i + num_consumed] != *(num_ptr - 1 + i)) {" << std::endl;
-                    class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "equals = false;" << std::endl;
-                    class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "break;" << std::endl;
-                    class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "}" << std::endl;
-                    class_ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl;
+                    class_ss << BaseClass::TAB << BaseClass::TAB << "if(Util::range_equals(" << args[2] << ", data, " << args[0] << ", " << args[1] << ")) {" << args[2] << ";" << std::endl;
                 } else if(field.get_conditional_name() == "equals") {
 
-                } else if(field.get_conditional_name() == "has") {
+                    class_ss << BaseClass::TAB << BaseClass::TAB << "if(" << std::endl;
 
+                    for(auto it = args.begin() ; it != args.end() ; ++it) {
+                        std::string arg = *it;
+
+                        if(arg == args.back()) {
+                            break;
+                        }
+
+                        class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "Util::range_equals(" << args.back() << ", " << arg << ", 0," << length_str << ")";
+
+                        if(*(it + 1) != args.back()) {
+                            class_ss << "&&" << std::endl;
+                        }
+                    }
+
+                    if(args.size() == 1) {
+                        class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "Util::range_equals(" << args.back() << ", data, 0," << length_str << ")";
+                    }
+
+                    class_ss << ") {" << std::endl;
+                } else if(field.get_conditional_name() == "has_not") {
+                    class_ss << BaseClass::TAB << BaseClass::TAB << "if(" << std::endl;
+
+                    for(std::string& arg : args) {
+                        class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << arg << ".size() == 0";
+
+                        if(arg != args.back()) {
+                            class_ss << "&&" << std::endl;
+                        }
+                    }
+
+                    class_ss << ") {" << std::endl;
                 } else {
                     throw "Conditional function not found";
                 }
 
-                class_ss << std::endl;
-                class_ss << BaseClass::TAB << BaseClass::TAB << "if(equals) {" << std::endl;
                 class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB  << "num_read = " << length_str << ";" << std::endl;
                 class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB  << field.get_name() << " = " << "std::vector<uint8_t>" << "(" << "data + num_consumed, data + num_consumed + num_read);" << std::endl;
                 class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "num_consumed += num_read;" << std::endl;

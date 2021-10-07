@@ -54,9 +54,8 @@ protected:
             Field& field = *it;
 
             bool depends_on_var = !std::regex_search (field.get_second(), match, num_regex);
-//            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << field.get_name() << "(" << (depends_on_var ? 0 : field.get_second()) << "," << (field.is_optional ? "true" : "false") << ", false)" << std::endl;
+            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << field.get_name() << "(" << (depends_on_var ? "0" : field.get_second()) << "," << (field.is_conditional() ? "true" : "false") << ", false)" << std::endl;
 
-ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << field.get_name() << "(" << (depends_on_var ? 0 : field.get_second()) << "," << (true ? "true" : "false") << ", false)" << std::endl;
             if(it != --fields.end()) {
                 ss << ",";
             }
