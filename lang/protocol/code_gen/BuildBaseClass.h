@@ -85,7 +85,9 @@ protected:
 
         for(it = fields.begin() ; it != fields.end() ; ++it) {
             Field& field = *it;
-            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "delete " << field.get_name() << ";" << std::endl;
+            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "if(" << field.get_name() << ".initialized) {" << std::endl;
+            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "delete " << field.get_name() << ".data;" << std::endl;
+            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "}" << std::endl << std::endl;
         }
 
         ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl;
@@ -120,6 +122,7 @@ protected:
 
             uint8_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << field.get_name() << ".data = new uint8_t[" << length_var << "];" << std::endl;
             uint8_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "memcpy(" << field.get_name() << ".data, data, " << length_var << ");" << std::endl;
+            uint8_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << field.get_name() << ".initialized = true;" << std::endl;
             uint8_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return *this;" << std::endl;
 
 
