@@ -77,7 +77,9 @@ public:
         std::string length;
         std::unordered_map<std::string, std::size_t> enumeration;
         std::unordered_map<std::string, std::tuple<std::size_t, std::size_t>> bitmap;
-        bool inner = false;
+
+        bool is_inner = false;
+        std::size_t inner_priority = 0;
 
         std::string conditional_name;
         std::vector<std::string> cond_args;
@@ -121,13 +123,15 @@ public:
                     enumeration[name] = value;
                 }
             } else if(attr->get_value() == "INNER") {
-                inner = true;
+                is_inner = true;
+                inner_priority = std::stol(attr->get_children().front()->get_children().front()->get_value());
             }
         }
 
         Field field(name, length, enumeration, bitmap);
         field.set_conditional(conditional_name, cond_args);
-        field.set_inner(inner);
+        field.get_inner().is_inner = is_inner;
+        field.get_inner().priority = inner_priority;
         new_class.add_field(std::move(field));
     }
 

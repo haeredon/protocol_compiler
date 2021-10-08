@@ -7,6 +7,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <cstdint>
 
 class Field {
 
@@ -22,18 +23,25 @@ protected:
     std::unordered_map<std::string, std::size_t> enumeration;
     std::unordered_map<std::string, std::tuple<std::size_t, std::size_t>> bitmap;
 
-    bool inner;
+    struct inner_t {
+        bool is_inner;
+        std::size_t priority;
+
+        inner_t(bool is_inner, std::size_t priority) : is_inner(is_inner), priority(priority) {}
+        inner_t() : is_inner(false), priority(SIZE_MAX) {}
+    } inner;
+
 
 public:
 
-    Field(std::string name, std::string second) : name(name), second(second), inner(false) {
+    Field(std::string name, std::string second) : name(name), second(second) {
 
     }
 
     Field(std::string name, std::string second, std::unordered_map<std::string, std::size_t> enumeration,
           std::unordered_map<std::string, std::tuple<std::size_t, std::size_t>> bitmap) : name(name), second(second),
                                                                                           enumeration(enumeration),
-                                                                                          bitmap(bitmap), inner(false) {
+                                                                                          bitmap(bitmap) {
 
     }
 
@@ -66,11 +74,7 @@ public:
         conditional_args = args;
     }
 
-    void set_inner(bool inner) {
-        this->inner = inner;
-    }
-
-    bool is_inner() {
+    inner_t& get_inner() {
         return inner;
     }
 

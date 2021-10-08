@@ -387,12 +387,25 @@ namespace ProtocolParser {
 
             // inner --> inner:
             Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::INNER_TOKEN,
-            std::vector<GrammarToken> { Tokens::INNER_TOKEN_T },
+            std::vector<GrammarToken> { Tokens::INNER_TOKEN_T, Tokens::LEFT_PAR_TOKEN, Tokens::EXPR_TOKEN, Tokens::RIGHT_PAR_TOKEN },
             [](auto stack) {},
             std::vector<void (*)(std::deque<ParserAction<Node*>>&)> {
+                 [](auto stack) {},
+                 [](auto stack) {},
                  [](auto stack) {
-                     stack[1].add_value(new Node(nullptr, "INNER"));
-                 }
+                     ParserAction<Node*>& syn = stack.front();
+
+                     stack[1].add_inherits(syn.get_inherits());
+                     stack[1].add_inherit(syn.get_values().front());
+
+                     Node* top = new Node(nullptr, "INNER");
+                     Node* priority = new Node(nullptr, "PRIORITY");
+                     top->add_child(priority);
+                     priority->add_child(syn.get_values().front());
+
+                     stack[3].add_value(top);
+                 },
+                 [](auto stack) {}
             }),
 
             // inner --> epsilon
@@ -606,7 +619,7 @@ bitmap -> epsilon
 enum -> 'enum:' id_val_tuple inner
 enum -> epsilon
 
-inner -> 'inner:'
+inner -> 'inner: '(' expr ')'
 inner -> epsilon
 
 id_val_tuple -> '(' ID ',' expr ')' id_val_tuple_1

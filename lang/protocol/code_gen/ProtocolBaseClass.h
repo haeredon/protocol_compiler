@@ -6,6 +6,7 @@
 #define PROTOCOL_COMPILER_PROTOCOLBASECLASS_H
 
 #include "BaseClass.h"
+#include <stdint.h>
 
 class ProtocolBaseClass : public BaseClass {
 
@@ -189,13 +190,22 @@ protected:
 
         typename std::vector<Field>::iterator val_it;
 
+        std::string lowest_inner_priority_name = "";
+        std::size_t lowest_inner_priority = SIZE_MAX;
+        for(val_it = fields.begin() ; val_it != fields.end() ; ++val_it) {
+            std::size_t inner_priority = val_it->get_inner().priority;
+            if(val_it->get_inner().is_inner && inner_priority < lowest_inner_priority) {
+                lowest_inner_priority_name = val_it->get_name();
+                lowest_inner_priority = inner_priority;
+            }
+        }
+
         // Value fields
         for(val_it = fields.begin() ; val_it != fields.end() ; ++val_it) {
             std::unordered_map<std::string, std::tuple<std::size_t, std::size_t>>& bitmap = val_it->get_bitmap();
             std::unordered_map<std::string, std::size_t>& enumeration = val_it->get_enumeration();
 
             to_data_ss << BaseClass::TAB << BaseClass::TAB << "data.insert(data.end(), " << val_it->get_name() << ".begin(), " << val_it->get_name() << ".end());" << std::endl;
-
 
             if(!bitmap.empty()) {
                 for(auto it = bitmap.begin() ; it != bitmap.end() ; ++it) {
@@ -206,8 +216,9 @@ protected:
             }
 
             if(!enumeration.empty()) {
-                std::string return_type = val_it->is_inner() ? "Protocols" : val_it->get_name() + "_enum";
-                std::string method_name = val_it->is_inner() ? "get_inner_protocol" : "get_" + val_it->get_name() + "_enum";
+                bool is_inner = val_it->get_inner().is_inner && val_it->get_name() == lowest_inner_priority_name;
+                std::string return_type = is_inner ? "Protocols" : val_it->get_name() + "_enum";
+                std::string method_name = is_inner ? "get_inner_protocol" : "get_" + val_it->get_name() + "_enum";
 
                 ss << BaseClass::TAB << return_type << " " << method_name << "() { " << std::endl;
                 ss << BaseClass::TAB << BaseClass::TAB << "std::size_t numeric_" << val_it->get_name() << " = 0;" << std::endl;
