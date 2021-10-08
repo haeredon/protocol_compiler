@@ -210,7 +210,7 @@ protected:
             if(!bitmap.empty()) {
                 for(auto it = bitmap.begin() ; it != bitmap.end() ; ++it) {
                     ss << BaseClass::TAB << "uint_arc " << "get_" << val_it->get_name() << "_" << it->first << "() { " << std::endl;
-                    ss << BaseClass::TAB << BaseClass::TAB << "return " << val_it->get_name() << ".get_mask(" << val_it->get_name() << "_" << it->first << ");" << std::endl;
+                    ss << BaseClass::TAB << BaseClass::TAB << "return Util::to_numeric<uint_arc>(" << val_it->get_name() << ".data) & " << val_it->get_name() << "_" << it->first << ";" << std::endl;
                     ss << BaseClass::TAB << "}" << std::endl << std::endl;
                 }
             }
