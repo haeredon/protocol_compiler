@@ -137,9 +137,9 @@ protected:
 
                     class_ss << ") {" << std::endl;
                 } else if(field.get_conditional_name() == "lte") {
-                    class_ss << BaseClass::TAB << BaseClass::TAB << "if(Util::to_numeric<uint_arc>(data) <= " << args[0] << ") {" << std::endl;
+                    class_ss << BaseClass::TAB << BaseClass::TAB << "if(Util::to_numeric<std::size_t>(data) <= " << args[0] << ") {" << std::endl;
                 } else if(field.get_conditional_name() == "gt") {
-                    class_ss << BaseClass::TAB << BaseClass::TAB << "if(Util::to_numeric<uint_arc>(data) > " << args[0] << ") {" << std::endl;
+                    class_ss << BaseClass::TAB << BaseClass::TAB << "if(Util::to_numeric<std::size_t>(data) > " << args[0] << ") {" << std::endl;
                 } else {
                     throw "Conditional function not found";
                 }
