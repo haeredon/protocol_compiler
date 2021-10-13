@@ -19,6 +19,8 @@ protected:
 
     std::vector<Field> fields;
 
+    std::vector<std::string> next_protocol_args;
+
     std::string name;
 
     static inline const std::string TAB = "\t";
@@ -34,6 +36,15 @@ protected:
     virtual std::string get_getters() = 0;
 
     virtual std::string get_setters() = 0;
+
+    Field& get_field_by_name(const std::string& name) {
+        for(auto it = fields.begin() ; it != fields.end() ; ++it) {
+            if(it->get_name() == name) {
+                return *it;
+            }
+        }
+        throw "no field with given name";
+    }
 
 public:
 
@@ -51,6 +62,10 @@ public:
 
     void add_field(Field&& field) {
         fields.push_back(field);
+    }
+
+    void set_next_protocol(std::vector<std::string> args) {
+        next_protocol_args = args;
     }
 
 

@@ -41,7 +41,7 @@ public:
             if(class_attr->get_value() == "NAME") {
                 add_name(class_attr, *new_class);
                 buildClass->set_to_build_name(new_class->get_name());
-            } else if(class_attr->get_value() == "ATTRIBUTES") {
+            } else if(class_attr->get_value() == "FIELDS" || class_attr->get_value() == "PROPERTIES") {
                 add_attributes(class_attr, *buildClass);
                 add_attributes(class_attr, *new_class);
             }
@@ -61,12 +61,39 @@ public:
         for(it = ast->get_children().begin() ; it != ast->get_children().end() ; ++it) {
             ProtocolParser::Node* attr = *it;
 
-            if(attr->get_value() == "ATTR") {
+            if(attr->get_value() == "FIELD") {
                 add_field(attr, new_class);
+            } else if(attr->get_value() == "PROPERTY") {
+                add_property(attr, new_class);
             }
         }
 
     }
+
+    void add_property(ProtocolParser::Node* ast, BaseClass& new_class) {
+        std::vector<ProtocolParser::Node*>::iterator it;
+
+        std::string name;
+        std::vector<std::string> args;
+
+        for(it = ast->get_children().begin() ; it != ast->get_children().end() ; ++it) {
+            ProtocolParser::Node* attr = *it;
+
+            if(attr->get_value() == "NAME") {
+                name = attr->get_children().front()->get_value();
+            } else if(attr->get_value() == "ARGS") {
+                std::vector<ProtocolParser::Node*>::iterator t_it;
+
+                for(t_it = attr->get_children().begin() ; t_it != attr->get_children().end() ; ++t_it) {
+                    std::string& arg = (*t_it)->get_value();
+                    args.push_back(arg);
+                }
+            }
+        }
+
+        new_class.set_next_protocol(std::move(args));
+    }
+
 
     void add_field(ProtocolParser::Node* ast, BaseClass& new_class) {
         std::vector<ProtocolParser::Node*> children = ast->get_children();

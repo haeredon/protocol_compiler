@@ -6,7 +6,9 @@
 #define PROTOCOL_COMPILER_PROTOCOLBASECLASS_H
 
 #include "BaseClass.h"
+
 #include <stdint.h>
+#include <algorithm>
 
 class ProtocolBaseClass : public BaseClass {
 
@@ -194,16 +196,6 @@ protected:
 
         typename std::vector<Field>::iterator val_it;
 
-        std::string lowest_inner_priority_name = "";
-        std::size_t lowest_inner_priority = SIZE_MAX;
-        for(val_it = fields.begin() ; val_it != fields.end() ; ++val_it) {
-            std::size_t inner_priority = val_it->get_inner().priority;
-            if(val_it->get_inner().is_inner && inner_priority < lowest_inner_priority) {
-                lowest_inner_priority_name = val_it->get_name();
-                lowest_inner_priority = inner_priority;
-            }
-        }
-
         // Value fields
         for(val_it = fields.begin() ; val_it != fields.end() ; ++val_it) {
             std::unordered_map<std::string, std::tuple<std::size_t, std::size_t>>& bitmap = val_it->get_bitmap();
@@ -220,9 +212,8 @@ protected:
             }
 
             if(!enumeration.empty()) {
-                bool is_inner = val_it->get_inner().is_inner && val_it->get_name() == lowest_inner_priority_name;
-                std::string return_type = is_inner ? "Protocols" : val_it->get_name() + "_enum";
-                std::string method_name = is_inner ? "get_inner_protocol" : "get_" + val_it->get_name() + "_enum";
+                std::string return_type = val_it->get_name() + "_enum";
+                std::string method_name = "get_" + val_it->get_name() + "_enum";
 
                 ss << BaseClass::TAB << return_type << " " << method_name << "() { " << std::endl;
                 ss << BaseClass::TAB << BaseClass::TAB << "std::size_t numeric_" << val_it->get_name() << " = 0;" << std::endl;
@@ -254,23 +245,75 @@ protected:
         std::string name_upper = name;
         std::transform(name.begin(), name.end(), name_upper.begin(), ::toupper);
 
+        // get_protocol_type
         ss << BaseClass::TAB << "Protocols " << "get_protocol_type() { " << std::endl;
         ss << BaseClass::TAB << BaseClass::TAB << "return Protocols::" << name_upper << ";" << std::endl;
         ss << BaseClass::TAB << "}" << std::endl << std::endl;
 
+        // get_builder
         ss << BaseClass::TAB << "static Builder " << "get_builder() { " << std::endl;
         ss << BaseClass::TAB << BaseClass::TAB << "return Builder();" << std::endl;
         ss << BaseClass::TAB << "}" << std::endl << std::endl;
 
+        // to_string
         ss << BaseClass::TAB << "std::string " << "to_string() { " << std::endl;
         ss << BaseClass::TAB << BaseClass::TAB << "return Util::binary_to_hex_pretty_print(to_data().data(), size);" << std::endl;
         ss << BaseClass::TAB << "}" << std::endl << std::endl;
+
+        // get_inner_protocol
+        if(!next_protocol_args.empty()) {
+            std::string return_type = "Protocols";
+            ss << BaseClass::TAB << return_type << " get_inner_protocol() { " << std::endl;
+            ss << BaseClass::TAB << BaseClass::TAB << "std::size_t numeric_" << " = 0;" << std::endl;
+
+            for(auto it = next_protocol_args.begin() ; it != next_protocol_args.end() ; ++it) {
+                std::string& arg = *it;
+
+                auto fields_it = std::find_if(fields.begin(), fields.end(), [&arg](Field& field) { return field.get_name() == arg; });
+
+                if(fields_it != fields.end()) {
+                    ss << BaseClass::TAB << BaseClass::TAB << "if(!" << arg << ".empty()) {" << std::endl;
+                    ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "memcpy(&numeric, " << arg << ".data(), " << arg << ".size());" << std::endl;
+
+                    for(auto enum_it = fields_it->get_enumeration().begin() ; enum_it != fields_it->get_enumeration().end() ; ++enum_it) {
+                        ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "if(static_cast<std::size_t>(" << arg << "_enum" << "::" << enum_it->first << ") == " << arg << ") {" << std::endl;
+                        ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return " << return_type << "::" << enum_it->first << ";" << std::endl;
+                        ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "}" << std::endl;
+                    }
+
+                    ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl;
+                } else {
+                    ss << BaseClass::TAB << BaseClass::TAB << "else {" << std::endl;
+                    ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return Protocols::" << arg << ";" << std::endl;
+                    ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl;
+                }
+            }
+            ss << BaseClass::TAB << BaseClass::TAB << "return Protocols::UNKNOWN;" << std::endl;
+            ss << BaseClass::TAB << "}" << std::endl << std::endl;
+        }
+
+
 
         to_data_ss << BaseClass::TAB << BaseClass::TAB << "return data;" << std::endl;
         to_data_ss << BaseClass::TAB << "}" << std::endl << std::endl;
 
         return ss.str() + to_data_ss.str();
     }
+
+//    Protocols get_inner_protocol() {
+//        if(eth_type.size() != 0) {
+//            std::size_t numeric_eth_type = 0;
+//            memcpy(&numeric_eth_type, eth_type.data(), eth_type.size());
+//            if(static_cast<std::size_t>(eth_type_enum::IPV4) == numeric_eth_type) {
+//                return Protocols::IPV4;
+//            }
+//            if(static_cast<std::size_t>(eth_type_enum::ARP) == numeric_eth_type) {
+//                return Protocols::ARP;
+//            }
+//        } else {
+//            return Protocols::LLC;
+//        }
+//    }
 
     std::string get_setters() {
         return "";

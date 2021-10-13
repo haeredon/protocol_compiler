@@ -21,6 +21,7 @@ namespace ProtocolParser {
     const std::vector<std::pair<std::regex, std::string>> LexerDefs::REG_TOKEN = {
             std::pair<std::regex, std::string>(std::regex("field:"), Tokens::FIELD),
             std::pair<std::regex, std::string>(std::regex("protocol:"), Tokens::PROTOCOL),
+            std::pair<std::regex, std::string>(std::regex("next_protocol:"), Tokens::NEXT_PROTOCOL),
             std::pair<std::regex, std::string>(std::regex("enum:"), Tokens::ENUM),
             std::pair<std::regex, std::string>(std::regex("bitmap:"), Tokens::BITMAP),
             std::pair<std::regex, std::string>(std::regex("inner:"), Tokens::INNER),

@@ -16,6 +16,7 @@ namespace ProtocolParser {
         // lexer tokens
         static const std::string FIELD;
         static const std::string PROTOCOL;
+        static const std::string NEXT_PROTOCOL;
         static const std::string ENUM;
         static const std::string BITMAP;
         static const std::string INNER;
@@ -57,6 +58,7 @@ namespace ProtocolParser {
         static const GrammarToken MUL_TOKEN;
         static const GrammarToken DASH_TOKEN;
         static const GrammarToken PROTOCOL_TOKEN;
+        static const GrammarToken NEXT_PROTOCOL_TOKEN;
         static const GrammarToken FIELD_TOKEN;
         static const GrammarToken COMMA_TOKEN;
         static const GrammarToken BITMAP_TOKEN_T;
@@ -69,6 +71,7 @@ namespace ProtocolParser {
 
 const std::string Tokens::FIELD = "FIELD";
 const std::string Tokens::PROTOCOL = "PROTOCOL";
+const std::string Tokens::NEXT_PROTOCOL = "NEXT_PROTOCOL";
 const std::string Tokens::ENUM = "ENUM";
 const std::string Tokens::BITMAP = "BITMAP";
 const std::string Tokens::INNER = "INNER";
@@ -110,6 +113,7 @@ const GrammarToken Tokens::RIGHT_PAR_TOKEN("TERM", Tokens::RIGHT_PAR, true);
 const GrammarToken Tokens::MUL_TOKEN("TERM", Tokens::MUL, true);
 const GrammarToken Tokens::DASH_TOKEN("TERM", Tokens::DASH, true);
 const GrammarToken Tokens::PROTOCOL_TOKEN("TERM", Tokens::PROTOCOL, true);
+const GrammarToken Tokens::NEXT_PROTOCOL_TOKEN("TERM", Tokens::NEXT_PROTOCOL, true);
 const GrammarToken Tokens::FIELD_TOKEN("TERM", Tokens::FIELD, true);
 const GrammarToken Tokens::COMMA_TOKEN("TERM", Tokens::COMMA, true);
 const GrammarToken Tokens::BITMAP_TOKEN_T("TERM", Tokens::BITMAP, true);
