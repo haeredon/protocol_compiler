@@ -278,7 +278,7 @@ protected:
                     ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "memcpy(&numeric, " << arg << ".data(), " << arg << ".size());" << std::endl;
 
                     for(auto enum_it = fields_it->get_enumeration().begin() ; enum_it != fields_it->get_enumeration().end() ; ++enum_it) {
-                        ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "if(static_cast<std::size_t>(" << arg << "_enum" << "::" << enum_it->first << ") == " << arg << ") {" << std::endl;
+                        ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "if(static_cast<std::size_t>(" << arg << "_enum" << "::" << enum_it->first << ") == numeric) {" << std::endl;
                         ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return " << return_type << "::" << enum_it->first << ";" << std::endl;
                         ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "}" << std::endl;
                     }
