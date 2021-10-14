@@ -48,6 +48,8 @@ protected:
                     ss << e_it->first << " = 0x" << std::hex << e_it->second;
                 }
 
+                ss << ", UNKNOWN ";
+
                 ss << "};";
             }
 
@@ -225,7 +227,7 @@ protected:
                     ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "return " << return_type << "::" << it->first << ";" << std::endl;
                     ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl;
                 }
-                ss << BaseClass::TAB << BaseClass::TAB << "return Protocols::UNKNOWN;" << std::endl;
+                ss << BaseClass::TAB << BaseClass::TAB << "return " << return_type << "::UNKNOWN;" << std::endl;
                 ss << BaseClass::TAB << "}" << std::endl << std::endl;
 
                 ss << BaseClass::TAB << "const std::vector<uint8_t>& " << "get_" << val_it->get_name() << "() { " << std::endl;
@@ -264,7 +266,7 @@ protected:
         if(!next_protocol_args.empty()) {
             std::string return_type = "Protocols";
             ss << BaseClass::TAB << return_type << " get_inner_protocol() { " << std::endl;
-            ss << BaseClass::TAB << BaseClass::TAB << "std::size_t numeric_" << " = 0;" << std::endl;
+            ss << BaseClass::TAB << BaseClass::TAB << "std::size_t numeric" << " = 0;" << std::endl;
 
             for(auto it = next_protocol_args.begin() ; it != next_protocol_args.end() ; ++it) {
                 std::string& arg = *it;
@@ -288,7 +290,7 @@ protected:
                     ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl;
                 }
             }
-            ss << BaseClass::TAB << BaseClass::TAB << "return Protocols::UNKNOWN;" << std::endl;
+            ss << BaseClass::TAB << BaseClass::TAB << "return " << return_type << "::UNKNOWN;" << std::endl;
             ss << BaseClass::TAB << "}" << std::endl << std::endl;
         }
 
@@ -299,21 +301,6 @@ protected:
 
         return ss.str() + to_data_ss.str();
     }
-
-//    Protocols get_inner_protocol() {
-//        if(eth_type.size() != 0) {
-//            std::size_t numeric_eth_type = 0;
-//            memcpy(&numeric_eth_type, eth_type.data(), eth_type.size());
-//            if(static_cast<std::size_t>(eth_type_enum::IPV4) == numeric_eth_type) {
-//                return Protocols::IPV4;
-//            }
-//            if(static_cast<std::size_t>(eth_type_enum::ARP) == numeric_eth_type) {
-//                return Protocols::ARP;
-//            }
-//        } else {
-//            return Protocols::LLC;
-//        }
-//    }
 
     std::string get_setters() {
         return "";
