@@ -94,7 +94,7 @@ protected:
             std::string builder_length = field.get_name() + ".length";
 
             if(depends_on_var) {
-                length_str = "Util::flip_endian(Util::to_numeric<uint8_t>(" + field.get_second() + ".data()))"; // TODO: not only uint8_t!!!!
+                length_str = "Util::flip_endian(Util::to_numeric<uint_arc>(" + field.get_second() + ".data(), " + field.get_second() + ".size()))"; // TODO: not only uint8_t!!!!
             } else {
                 length_str = std::to_string(stoi(field.get_second()));
             }
@@ -141,9 +141,9 @@ protected:
 
                     class_ss << ") {" << std::endl;
                 } else if(field.get_conditional_name() == "lte") {
-                    class_ss << BaseClass::TAB << BaseClass::TAB << "if(Util::to_numeric<std::size_t>(data) <= " << args[0] << ") {" << std::endl;
+                    class_ss << BaseClass::TAB << BaseClass::TAB << "if(Util::to_numeric<uint_arc>(data, " << length_str << ") <= " << args[0] << ") {" << std::endl;
                 } else if(field.get_conditional_name() == "gt") {
-                    class_ss << BaseClass::TAB << BaseClass::TAB << "if(Util::to_numeric<std::size_t>(data) > " << args[0] << ") {" << std::endl;
+                    class_ss << BaseClass::TAB << BaseClass::TAB << "if(Util::to_numeric<uint_arc>(data, " << length_str << ") > " << args[0] << ") {" << std::endl;
                 } else {
                     throw "Conditional function not found";
                 }
@@ -208,7 +208,7 @@ protected:
             if(!bitmap.empty()) {
                 for(auto it = bitmap.begin() ; it != bitmap.end() ; ++it) {
                     ss << BaseClass::TAB << "uint_arc " << "get_" << val_it->get_name() << "_" << it->first << "() { " << std::endl;
-                    ss << BaseClass::TAB << BaseClass::TAB << "return Util::to_numeric<uint_arc>(" << val_it->get_name() << ".data) & " << val_it->get_name() << "_" << it->first << ";" << std::endl;
+                    ss << BaseClass::TAB << BaseClass::TAB << "return Util::to_numeric<uint_arc>(" << val_it->get_name() << ".data, " << val_it->get_name() << ".size()) & " << val_it->get_name() << "_" << it->first << ";" << std::endl;
                     ss << BaseClass::TAB << "}" << std::endl << std::endl;
                 }
             }
