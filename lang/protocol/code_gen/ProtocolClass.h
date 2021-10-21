@@ -38,6 +38,7 @@ public:
 
         ss << "#include \"Util.h\"" << std::endl;
         ss << "#include \"Protocols.h\"" << std::endl;
+        ss << "#include \"Config.h.h\"" << std::endl;
         ss << "#include \"Protocol.h\"" << std::endl << std::endl;
 
         ss << "namespace Tunneler {" << std::endl << std::endl;
