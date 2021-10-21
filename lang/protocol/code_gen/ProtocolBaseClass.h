@@ -116,7 +116,7 @@ protected:
                             break;
                         }
 
-                        class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "Util::range_equals(" << args.back() << ", " << arg << ", 0," << length_str << ")";
+                        class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "Util::range_equals(" << args.back() << ", " << arg << ".data(), 0," << length_str << ")";
 
                         if(*(it + 1) != args.back()) {
                             class_ss << "&&" << std::endl;
@@ -208,7 +208,7 @@ protected:
             if(!bitmap.empty()) {
                 for(auto it = bitmap.begin() ; it != bitmap.end() ; ++it) {
                     ss << BaseClass::TAB << "uint_arc " << "get_" << val_it->get_name() << "_" << it->first << "() { " << std::endl;
-                    ss << BaseClass::TAB << BaseClass::TAB << "return Util::to_numeric<uint_arc>(" << val_it->get_name() << ".data, " << val_it->get_name() << ".size()) & " << val_it->get_name() << "_" << it->first << ";" << std::endl;
+                    ss << BaseClass::TAB << BaseClass::TAB << "return Util::to_numeric<uint_arc>(" << val_it->get_name() << ".data(), " << val_it->get_name() << ".size()) & " << val_it->get_name() << "_" << it->first << ";" << std::endl;
                     ss << BaseClass::TAB << "}" << std::endl << std::endl;
                 }
             }
