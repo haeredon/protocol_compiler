@@ -94,7 +94,7 @@ protected:
             std::string builder_length = field.get_name() + ".length";
 
             if(depends_on_var) {
-                length_str = "Util::to_numeric<uint_arc>(" + field.get_second() + ".data(), " + field.get_second() + ".size())"; // TODO: not only uint8_t!!!!
+                length_str = "Util::flip_endian(Util::to_numeric<uint_arc>(" + field.get_second() + ".data(), " + field.get_second() + ".size()))"; // TODO: not only uint8_t!!!!
             } else {
                 length_str = std::to_string(stoi(field.get_second()));
             }
