@@ -28,12 +28,12 @@ namespace ProtocolParser {
             std::pair<std::regex, std::string>(std::regex("range_equals|equals|has_not|lte|gt"), Tokens::CONDITIONAL),
             std::pair<std::regex, std::string>(std::regex("\\("), Tokens::LEFT_PAR),
             std::pair<std::regex, std::string>(std::regex("\\)"), Tokens::RIGHT_PAR),
-            std::pair<std::regex, std::string>(std::regex("-"), Tokens::DASH),
+            std::pair<std::regex, std::string>(std::regex("#"), Tokens::DASH),
             std::pair<std::regex, std::string>(std::regex("[a-zA-Z_]+[a-zA-Z_0-9]*"), Tokens::ID),
             std::pair<std::regex, std::string>(std::regex(","), Tokens::COMMA),
             std::pair<std::regex, std::string>(std::regex("\\+"), Tokens::PLUS),
             std::pair<std::regex, std::string>(std::regex("\\d+"), Tokens::INT),
-            std::pair<std::regex, std::string>(std::regex("\\*"), Tokens::MUL)
+            std::pair<std::regex, std::string>(std::regex("-"), Tokens::MINUS)
     };
 
 }

@@ -5,9 +5,12 @@
 #ifndef PARSER_FIELD_H
 #define PARSER_FIELD_H
 
+#include "Node.h"
+
 #include <string>
 #include <unordered_map>
 #include <cstdint>
+
 
 class Field {
 
@@ -18,7 +21,8 @@ protected:
     std::string conditional_name;
     std::vector<std::string> conditional_args;
 
-    std::string second;
+    ProtocolParser::Node* length_exp;
+    std::string length_dependency;
 
     std::unordered_map<std::string, std::size_t> enumeration;
     std::unordered_map<std::string, std::tuple<std::size_t, std::size_t>> bitmap;
@@ -34,12 +38,12 @@ protected:
 
 public:
 
-    Field(std::string name, std::string second) : name(name), second(second) {
+    Field(std::string name, ProtocolParser::Node* length_exp) : name(name), length_exp(length_exp) {
 
     }
 
-    Field(std::string name, std::string second, std::unordered_map<std::string, std::size_t> enumeration,
-          std::unordered_map<std::string, std::tuple<std::size_t, std::size_t>> bitmap) : name(name), second(second),
+    Field(std::string name, ProtocolParser::Node* length_exp, std::unordered_map<std::string, std::size_t> enumeration,
+          std::unordered_map<std::string, std::tuple<std::size_t, std::size_t>> bitmap) : name(name), length_exp(length_exp),
                                                                                           enumeration(enumeration),
                                                                                           bitmap(bitmap) {
 
@@ -49,8 +53,12 @@ public:
         return name;
     }
 
-    std::string &get_second() {
-        return second;
+    ProtocolParser::Node* get_length_exp() {
+        return length_exp;
+    }
+
+    std::string &get_length_dependency() {
+        return length_dependency;
     }
 
     std::unordered_map<std::string, std::size_t> &get_enumeration() {

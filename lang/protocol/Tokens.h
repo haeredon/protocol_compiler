@@ -26,7 +26,7 @@ namespace ProtocolParser {
         static const std::string DASH;
         static const std::string COMMA;
         static const std::string PLUS;
-        static const std::string MUL;
+        static const std::string MINUS;
         static const std::string ID;
         static const std::string INT;
 
@@ -55,7 +55,7 @@ namespace ProtocolParser {
         static const GrammarToken PLUS_TOKEN;
         static const GrammarToken LEFT_PAR_TOKEN;
         static const GrammarToken RIGHT_PAR_TOKEN;
-        static const GrammarToken MUL_TOKEN;
+        static const GrammarToken MINUS_TOKEN;
         static const GrammarToken DASH_TOKEN;
         static const GrammarToken PROTOCOL_TOKEN;
         static const GrammarToken NEXT_PROTOCOL_TOKEN;
@@ -81,7 +81,7 @@ const std::string Tokens::RIGHT_PAR = "RIGHT_PAR";
 const std::string Tokens::DASH = "DASH";
 const std::string Tokens::COMMA = "COMMA";
 const std::string Tokens::PLUS = "PLUS";
-const std::string Tokens::MUL = "MUL";
+const std::string Tokens::MINUS = "MINUS";
 const std::string Tokens::ID = "ID";
 const std::string Tokens::INT = "INT";
 
@@ -110,7 +110,7 @@ const GrammarToken Tokens::INT_TOKEN("TERM", Tokens::INT, true, std::regex("\\d+
 const GrammarToken Tokens::PLUS_TOKEN("TERM", Tokens::PLUS, true);
 const GrammarToken Tokens::LEFT_PAR_TOKEN("TERM", Tokens::LEFT_PAR, true);
 const GrammarToken Tokens::RIGHT_PAR_TOKEN("TERM", Tokens::RIGHT_PAR, true);
-const GrammarToken Tokens::MUL_TOKEN("TERM", Tokens::MUL, true);
+const GrammarToken Tokens::MINUS_TOKEN("TERM", Tokens::MINUS, true);
 const GrammarToken Tokens::DASH_TOKEN("TERM", Tokens::DASH, true);
 const GrammarToken Tokens::PROTOCOL_TOKEN("TERM", Tokens::PROTOCOL, true);
 const GrammarToken Tokens::NEXT_PROTOCOL_TOKEN("TERM", Tokens::NEXT_PROTOCOL, true);

@@ -68,9 +68,6 @@ protected:
 
         typename std::vector<Field>::iterator it;
 
-        std::smatch match;
-        std::regex num_regex ("^([0-9]*$).*");
-
         std::size_t num_consumed = 0;
         class_ss << BaseClass::TAB << "// TODO: REMEMBER TO DO BOUNDS CHECKING" << std::endl;
         class_ss << BaseClass::TAB << "void init(const uint8_t data[]) {" << std::endl;
@@ -81,23 +78,14 @@ protected:
         builder_first_ss << BaseClass::TAB << BaseClass::TAB << "std::size_t num_consumed = 0;" << std::endl << std::endl;
         builder_first_ss << BaseClass::TAB << BaseClass::TAB << "uint8_t* data = new uint8_t[" << std::endl;
 
-        bool has_prev_conditional = false;
-
         for(it = fields.begin() ; it != fields.end() ; ++it) {
             Field& field = *it;
-
-            bool depends_on_var = !std::regex_search (field.get_second(), match, num_regex);
 
             std::string length_str;
             std::string num_add_str;
 
             std::string builder_length = field.get_name() + ".length";
-
-            if(depends_on_var) {
-                length_str = "Util::flip_endian(Util::to_numeric<uint_arc>(" + field.get_second() + ".data(), " + field.get_second() + ".size()), " + field.get_second() + ".size()" + ")";
-            } else {
-                length_str = std::to_string(stoi(field.get_second()));
-            }
+            length_str = parse_length_expr(field.get_length_exp());
 
             if(field.is_conditional()) {
                 // Conditional field
@@ -152,8 +140,6 @@ protected:
                 class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB  << field.get_name() << " = " << "std::vector<uint8_t>" << "(" << "data + num_consumed, data + num_consumed + num_read);" << std::endl;
                 class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "num_consumed += num_read;" << std::endl;
                 class_ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl << std::endl;
-
-                has_prev_conditional = true;
             } else {
                 // Dependency field
                 class_ss << BaseClass::TAB << BaseClass::TAB << "num_read = " << length_str << ";" << std::endl;

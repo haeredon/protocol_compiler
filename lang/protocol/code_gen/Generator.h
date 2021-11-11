@@ -20,6 +20,8 @@ public:
 
     std::vector<RET_T*> generate(ProtocolParser::Node* ast) {
         std::vector<RET_T*> classes;
+
+//        ast->get_children().front()->get_children()[1]->get_children().front()->get_children()[1]->get_children().front()
         std::vector<ProtocolParser::Node*>::iterator it;
 
         for(it = ast->get_children().begin() ; it != ast->get_children().end() ; ++it) {
@@ -101,7 +103,8 @@ public:
         std::vector<ProtocolParser::Node*>::iterator it;
 
         std::string name;
-        std::string length;
+        ProtocolParser::Node* length_expr;
+        std::string length_dependency;
         std::unordered_map<std::string, std::size_t> enumeration;
         std::unordered_map<std::string, std::tuple<std::size_t, std::size_t>> bitmap;
 
@@ -117,7 +120,7 @@ public:
             if(attr->get_value() == "NAME") {
                 name = attr->get_children().front()->get_value();
             } else if(attr->get_value() == "LENGTH") {
-                length = attr->get_children().front()->get_value();
+                length_expr = attr->get_children().front();
             } else if(attr->get_value() == "CONDITIONAL") {
                 std::vector<ProtocolParser::Node*> children = attr->get_children();
 
@@ -155,12 +158,15 @@ public:
             }
         }
 
-        Field field(name, length, enumeration, bitmap);
+        Field field(name, length_expr, enumeration, bitmap);
         field.set_conditional(conditional_name, cond_args);
         field.get_inner().is_inner = is_inner;
         field.get_inner().priority = inner_priority;
         new_class.add_field(std::move(field));
     }
+
+
+
 
 
 

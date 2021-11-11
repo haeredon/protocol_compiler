@@ -46,15 +46,16 @@ protected:
 
         typename std::vector<Field>::iterator it;
         std::smatch match;
-        std::regex num_regex ("^([0-9]*$).*");
+        std::regex num_regex ("^([0-9+-/\\*]*$).*");
 
         ss << get_name() << "() :" << std::endl;
 
         for(it = fields.begin() ; it != fields.end() ; ++it) {
             Field& field = *it;
 
-            bool depends_on_var = !std::regex_search (field.get_second(), match, num_regex);
-            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << field.get_name() << "(" << (depends_on_var ? "0" : field.get_second()) << "," << (field.is_conditional() ? "true" : "false") << ", false)" << std::endl;
+            std::string length_expr = parse_length_expr(field.get_length_exp());
+            bool depends_on_var = !std::regex_search (length_expr, match, num_regex);
+            ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << field.get_name() << "(" << (depends_on_var ? "0" : parse_length_expr(field.get_length_exp())) << "," << (field.is_conditional() ? "true" : "false") << ", false)" << std::endl;
 
             if(it != --fields.end()) {
                 ss << ",";
@@ -102,12 +103,14 @@ protected:
         typename std::vector<Field>::iterator it;
 
         std::smatch match;
-        std::regex num_regex ("^([0-9]*$).*");
+        std::regex num_regex ("^([0-9+-/\\*]*$).*");
 
         for(it = fields.begin() ; it != fields.end() ; ++it) {
             Field& field = *it;
             std::string length_var = field.get_name() + ".length";
-            bool depends_on_var = !std::regex_search (field.get_second(), match, num_regex);
+
+            std::string length_expr = parse_length_expr(field.get_length_exp());
+            bool depends_on_var = !std::regex_search (length_expr, match, num_regex);
 
             vector_ss << BaseClass::TAB << BaseClass::TAB << "Builder& " << "set_" << field.get_name() << "(std::vector<uint8_t> data) { " << std::endl;
 
