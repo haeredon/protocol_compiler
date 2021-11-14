@@ -153,8 +153,10 @@ protected:
                 builder_first_ss << " + builder." << builder_length;
             }
 
-            builder_second_ss << BaseClass::TAB << BaseClass::TAB << "memcpy(data + num_consumed, builder." << field.get_name() << ".data, builder." << builder_length << ");" << std::endl;
-            builder_second_ss << BaseClass::TAB << BaseClass::TAB << "num_consumed += builder." << builder_length << ";" << std::endl << std::endl;
+            builder_second_ss << BaseClass::TAB << BaseClass::TAB << "if(builder." << field.get_name() << ".initialized) {" << std::endl;
+            builder_second_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "memcpy(data + num_consumed, builder." << field.get_name() << ".data, builder." << builder_length << ");" << std::endl;
+            builder_second_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "num_consumed += builder." << builder_length << ";" << std::endl;
+            builder_second_ss << BaseClass::TAB << BaseClass::TAB << "}" << std::endl << std::endl;
         }
 
         builder_first_ss << "];" << std::endl << std::endl;
