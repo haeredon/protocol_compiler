@@ -97,6 +97,8 @@ protected:
 
                     class_ss << BaseClass::TAB << BaseClass::TAB << "if(" << std::endl;
 
+                    std::string arg_length_expr;
+
                     for(auto it = args.begin() ; it != args.end() ; ++it) {
                         std::string arg = *it;
 
@@ -104,7 +106,8 @@ protected:
                             break;
                         }
 
-                        class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "Util::range_equals(" << args.back() << ", " << arg << ".data(), 0," << length_str << ")";
+                        arg_length_expr = parse_length_expr(get_field_by_name(arg).get_length_exp());
+                        class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "Util::range_equals(" << args.back() << ", " << arg << ".data(), 0," << arg_length_expr << ")";
 
                         if(*(it + 1) != args.back()) {
                             class_ss << "&&" << std::endl;
@@ -112,7 +115,7 @@ protected:
                     }
 
                     if(args.size() == 1) {
-                        class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "Util::range_equals(" << args.back() << ", data, 0," << length_str << ")";
+                        class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << "Util::range_equals(" << args.back() << ", data, 0," << arg_length_expr << ")";
                     }
 
                     class_ss << ") {" << std::endl;
