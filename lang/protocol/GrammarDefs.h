@@ -104,9 +104,9 @@ namespace ProtocolParser {
                 [](auto stack) {}
             }),
 
-            // protocol --> 'protocol:' '(' ID ')' stmt       : S.val = epsilon
+            // protocol --> 'protocol:' '(' ID ')' stmt_1       : S.val = epsilon
             Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::PRO_TOKEN,
-            std::vector<GrammarToken> { Tokens::PROTOCOL_TOKEN, Tokens::LEFT_PAR_TOKEN, Tokens::ID_TOKEN, Tokens::RIGHT_PAR_TOKEN, Tokens::STMT_TOKEN },
+            std::vector<GrammarToken> { Tokens::PROTOCOL_TOKEN, Tokens::LEFT_PAR_TOKEN, Tokens::ID_TOKEN, Tokens::RIGHT_PAR_TOKEN, Tokens::STMT_1_TOKEN },
             [](auto stack) {},
             std::vector<void (*)(std::deque<ParserAction<Node*>>&)> {
                 [](auto stack) {},
@@ -133,7 +133,8 @@ namespace ProtocolParser {
 
                             std::vector<Node*>::iterator it;
                             for(it = ++values.begin() ; it != values.end() ; ++it) {
-                                if((*it)->get_value() == "FIELD") {
+                                Node* node = (*it);
+                                if(node->get_value() == "FIELD" || node->get_value() == "FIELD_GROUP") {
                                     fields->add_child(*it);
                                 } else {
                                     properties->add_child(*it);
@@ -145,74 +146,69 @@ namespace ProtocolParser {
                         }
             }),
 
-            // stmt --> 'field:' '(' ID ',' expr conditional ')' bitmap enum stmt  : S.val = epsilon
-            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::STMT_TOKEN,
-            std::vector<GrammarToken> { Tokens::FIELD_TOKEN, Tokens::Tokens::LEFT_PAR_TOKEN, Tokens::Tokens::ID_TOKEN, Tokens::Tokens::COMMA_TOKEN, Tokens::Tokens::EXPR_TOKEN, Tokens::COND_TOKEN, Tokens::Tokens::RIGHT_PAR_TOKEN, Tokens::Tokens::BITMAP_TOKEN, Tokens::Tokens::ENUM_TOKEN, Tokens::STMT_TOKEN },
-            [](auto stack) {
-                ParserAction<Node*>& act = stack.front();
-
-                stack[18].add_inherits(act.get_inherits());
-            },
+            // stmt_2 -> 'field:' '(' ID ',' expr conditional ')' bitmap enum
+            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::STMT_2_TOKEN,
+            std::vector<GrammarToken> { Tokens::FIELD_TOKEN, Tokens::Tokens::LEFT_PAR_TOKEN, Tokens::Tokens::ID_TOKEN, Tokens::Tokens::COMMA_TOKEN, Tokens::Tokens::EXPR_TOKEN, Tokens::COND_TOKEN, Tokens::Tokens::RIGHT_PAR_TOKEN, Tokens::Tokens::BITMAP_TOKEN, Tokens::Tokens::ENUM_TOKEN },
+            [](auto stack) {},
             std::vector<void (*)(std::deque<ParserAction<Node*>>&)> {
                 [](auto stack) {},
-                        [](auto stack) {},
-                        [](auto stack) {
-                            ParserAction<Node*>& syn = stack.front();
+                [](auto stack) {},
+                [](auto stack) {
+                    // ID
+                    ParserAction<Node*>& syn = stack.front();
 
-                            stack[12].add_value(syn.get_values().front());
-                        },
-                        [](auto stack) {},
-                        [](auto stack) {
-                            ParserAction<Node*>& syn = stack.front();
+                    stack[12].add_value(syn.get_values().front());
+                },
+                [](auto stack) {},
+                [](auto stack) {
+                    // expr
+                    ParserAction<Node*>& syn = stack.front();
 
-                            stack[8].add_value(syn.get_values().front());
-                        },
-                        [](auto stack) {
-                            ParserAction<Node*>& syn = stack.front();
+                    stack[8].add_value(syn.get_values().front());
+                },
+                [](auto stack) {
+                    // conditional
+                    ParserAction<Node*>& syn = stack.front();
 
-                            stack[6].add_values(syn.get_values());
-                        },
-                        [](auto stack) {},
-                        [](auto stack) {
-                            ParserAction<Node*>& syn = stack.front();
-                            std::vector<Node*> values = syn.get_values();
+                    stack[6].add_values(syn.get_values());
+                },
+                [](auto stack) {},
+                [](auto stack) {
+                    // Bitmap
+                    ParserAction<Node*>& syn = stack.front();
+                    std::vector<Node*> values = syn.get_values();
 
-                            if(!values.empty()) {
-                                stack[2].add_value(syn.get_values().front());
-                            }
-                        },
-                        [](auto stack) {
-                            ParserAction<Node*>& syn = stack.front();
-                            std::vector<Node*> inherits = syn.get_inherits();
-                            std::vector<Node*> values = syn.get_values();
+                    if(!values.empty()) {
+                        stack[2].add_value(syn.get_values().front());
+                    }
+                },
+                [](auto stack) {
+                    // enum
+                    ParserAction<Node*>& syn = stack.front();
+                    std::vector<Node*> inherits = syn.get_inherits();
+                    std::vector<Node*> values = syn.get_values();
 
-                            Node* attr = new Node(nullptr, "FIELD");
+                    Node* attr = new Node(nullptr, "FIELD");
 
-                            Node* name = new Node(nullptr, "NAME");
-                            Node* length = new Node(nullptr, "LENGTH");
+                    Node* name = new Node(nullptr, "NAME");
+                    Node* length = new Node(nullptr, "LENGTH");
 
-                            name->add_child(values[0]);
-                            length->add_child(values[1]);
-                            attr->add_child(name);
-                            attr->add_child(length);
+                    name->add_child(values[0]);
+                    length->add_child(values[1]);
+                    attr->add_child(name);
+                    attr->add_child(length);
 
-                            for(std::size_t i = 2 ; i < values.size() ; ++i) {
-                                attr->add_child(values[i]);
-                            }
+                    for(std::size_t i = 2 ; i < values.size() ; ++i) {
+                        attr->add_child(values[i]);
+                    }
 
-                            stack[1].add_inherits(inherits);
-                            stack[1].add_inherit(attr);
-                        },
-                        [](auto stack) {
-                            ParserAction<Node*>& syn = stack.front();
-
-                            stack[1].add_values(syn.get_values());
-                        }
+                    stack[1].add_value(attr);
+                }
             }),
 
-            // stmt -> 'next_protocol:' '(' arg_list ')' stmt
-            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::STMT_TOKEN,
-             std::vector<GrammarToken> { Tokens::NEXT_PROTOCOL_TOKEN, Tokens::LEFT_PAR_TOKEN, Tokens::ARG_LIST_TOKEN, Tokens::RIGHT_PAR_TOKEN, Tokens::STMT_TOKEN },
+            // stmt_1 -> 'next_protocol:' '(' arg_list ')'
+            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::STMT_1_TOKEN,
+             std::vector<GrammarToken> { Tokens::NEXT_PROTOCOL_TOKEN, Tokens::LEFT_PAR_TOKEN, Tokens::ARG_LIST_TOKEN, Tokens::RIGHT_PAR_TOKEN },
              [](auto stack) {
                 ParserAction<Node*>& act = stack.front();
 
@@ -233,21 +229,118 @@ namespace ProtocolParser {
                     top->add_child(name);
                     top->add_child(values[0]);
 
-                    stack[3].add_inherits(inherits);
-                    stack[3].add_inherit(top);
+                    stack[3].add_values(inherits);
+                    stack[3].add_value(top);
+                },
+                [](auto stack) {}
+            }),
+
+            // stmt_1 -> 'field_group:' '(' conditional ')' field_group 'end:' stmt_1
+            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::STMT_1_TOKEN,
+             std::vector<GrammarToken> { Tokens::FIELD_GROUP_TOKEN_T, Tokens::LEFT_PAR_TOKEN, Tokens::COND_TOKEN, Tokens::RIGHT_PAR_TOKEN, Tokens::FIELD_GROUP_TOKEN, Tokens::END_TOKEN, Tokens::STMT_1_TOKEN },
+             [](auto stack) {
+                ParserAction<Node*>& act = stack.front();
+
+                stack[13].add_inherits(act.get_inherits());
+             },
+             std::vector<void (*)(std::deque<ParserAction<Node*>>&)> {
+                [](auto stack) {},
+                [](auto stack) {},
+                [](auto stack) {
+                    // conditional
+                    ParserAction<Node*>& syn = stack.front();
+                    std::vector<Node*> values = syn.get_values();
+
+                    Node* top = new Node(nullptr, "FIELD_GROUP");
+                    top->add_child(values.front());
+
+                    stack[4].add_value(top);
                 },
                 [](auto stack) {},
                 [](auto stack) {
+                    // field_group
                     ParserAction<Node*>& syn = stack.front();
+                    std::vector<Node*> values = syn.get_values();
 
+                    Node* top = new Node(nullptr, "FIELDS");
+
+                    for(std::size_t i = 1 ; i < values.size() ; ++i) {
+                        top->add_child(values[i]);
+                    }
+
+                    values.front()->add_child(top);
+
+                    stack[3].add_inherit(values.front());
+                },
+                [](auto stack) {},
+                [](auto stack) {
+                    // stmt_1
+                    ParserAction<Node*>& syn = stack.front();
                     stack[1].add_values(syn.get_values());
                 }
             }),
 
-            // stmt --> epsilon                                 : S.val = epsilon
-            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::STMT_TOKEN,
+            // stmt_1 -> stmt_2 stmt_1
+            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::STMT_1_TOKEN,
+             std::vector<GrammarToken> { Tokens::STMT_2_TOKEN, Tokens::STMT_1_TOKEN },
+             [](auto stack) {
+                ParserAction<Node*>& act = stack.front();
+                stack[3].add_inherits(act.get_inherits());
+            },
+            std::vector<void (*)(std::deque<ParserAction<Node*>>&)> {
+                [](auto stack) {
+                    ParserAction<Node*>& syn = stack.front();
+                    std::vector<Node*> values = syn.get_values();
+
+                    stack[1].add_inherits(values);
+                },
+                [](auto stack) {
+                    ParserAction<Node*>& syn = stack.front();
+                    stack[1].add_values(syn.get_values());
+                }
+            }),
+
+            // stmt_1 --> epsilon
+            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::STMT_1_TOKEN,
             std::vector<GrammarToken> { Tokens::Tokens::EPS_TOKEN },
             [](auto stack) {
+                ParserAction<Node*>& act = stack.front();
+
+                stack[1].add_inherits(act.get_inherits());
+            },
+            std::vector<void (*)(std::deque<ParserAction<Node*>>&)> {
+                [](auto stack) {
+                    ParserAction<Node*>& syn = stack.front();
+                    std::vector<Node*> inherits = syn.get_inherits();
+                    stack[1].add_values(inherits);
+                }
+            }),
+
+            // field_group -> stmt_2 field_group
+            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::FIELD_GROUP_TOKEN,
+             std::vector<GrammarToken> { Tokens::STMT_2_TOKEN, Tokens::FIELD_GROUP_TOKEN },
+             [](auto stack) {
+                ParserAction<Node*>& act = stack.front();
+
+                stack[3].add_inherits(act.get_inherits());
+            },
+            std::vector<void (*)(std::deque<ParserAction<Node*>>&)> {
+                [](auto stack) {
+                    ParserAction<Node*>& syn = stack.front();
+                    std::vector<Node*> values = syn.get_values();
+
+                    stack[1].add_inherits(values);
+                },
+                [](auto stack) {
+                    ParserAction<Node*>& syn = stack.front();
+                    stack[1].add_values(syn.get_values());
+                }
+            }),
+
+            // field_group -> epsilon
+            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::FIELD_GROUP_TOKEN,
+             std::vector<GrammarToken> { Tokens::Tokens::EPS_TOKEN },
+             [](auto stack) {
                 ParserAction<Node*>& act = stack.front();
 
                 stack[1].add_inherits(act.get_inherits());
@@ -757,15 +850,67 @@ namespace ProtocolParser {
                 }
             }),
 
-            //var --> ID
+            // var --> ID dot_expr
             Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::VAR_TOKEN,
-             std::vector<GrammarToken> { Tokens::ID_TOKEN },
+             std::vector<GrammarToken> { Tokens::ID_TOKEN, Tokens::DOT_EXPR_TOKEN },
              [](auto stack) {},
              std::vector<void (*)(std::deque<ParserAction<Node*>>&)> {
                 [](auto stack) {
                     ParserAction<Node*>& syn = stack.front();
-
+                    stack[1].add_inherits(syn.get_values());
+                },
+                [](auto stack) {
+                    ParserAction<Node*>& syn = stack.front();
                     stack[1].add_values(syn.get_values());
+                }
+            }),
+
+            // dot_expr --> . ID
+            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::DOT_EXPR_TOKEN,
+            std::vector<GrammarToken> { Tokens::DOT_TOKEN, Tokens::ID_TOKEN, Tokens::DOT_EXPR_TOKEN },
+                [](auto stack) {
+                    ParserAction<Node*>& act = stack.front();
+
+                    stack[4].add_inherits(act.get_inherits());
+                },
+            std::vector<void (*)(std::deque<ParserAction<Node*>>&)> {
+                [](auto stack) {
+                    ParserAction<Node*>& syn = stack.front();
+                    stack[2].add_values(syn.get_values());
+                },
+                [](auto stack) {
+                    ParserAction<Node*>& syn = stack.front();
+                    std::vector<Node*> inherits = syn.get_inherits();
+                    std::vector<Node*> values = syn.get_values();
+
+                    Node* dot = new Node(nullptr, "DOT");
+                    dot->add_child(values.back());
+
+                    if(!inherits.empty()) {
+                        inherits.front()->add_child(dot);
+                        stack[1].add_inherit(inherits.front());
+                    } else {
+                        stack[1].add_inherit(dot);
+                    }
+                },
+                [](auto stack) {
+                    ParserAction<Node*>& syn = stack.front();
+                    stack[1].add_values(syn.get_values());
+                }
+            }),
+
+            // dot_expr --> epsilon
+            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::DOT_EXPR_TOKEN,
+             std::vector<GrammarToken> { Tokens::EPS_TOKEN },
+             [](auto stack) {
+                ParserAction<Node*>& act = stack.front();
+                stack[1].add_inherits(act.get_inherits());
+             },
+            std::vector<void (*)(std::deque<ParserAction<Node*>>&)> {
+                [](auto stack) {
+                    ParserAction<Node*>& syn = stack.front();
+                    std::vector<Node*> inherits = syn.get_inherits();
+                    stack[1].add_values(inherits);
                 }
             })
 
@@ -782,14 +927,20 @@ S -> definition
 definition -> protocol termination definition
 definition -> epsilon
 
-protocol -> 'protocol:' '(' expr ')' stmt
+protocol -> 'protocol:' '(' expr ')' stmt_1
 
 termination -> '-' termination
 termination -> epsilon
 
-stmt -> 'field:' '(' ID ',' expr conditional ')' bitmap enum stmt
-stmt -> 'next_protocol:' '(' arg_list ')' stmt
-stmt -> epsilon
+stmt_1 -> 'next_protocol:' '(' arg_list ')'
+stmt_1 -> 'field_group:' '(' conditional ')' field_group 'end:' stmt_1
+stmt_1 -> stmt_2 stmt_1
+stmt_1 -> epsilon
+
+field_group -> stmt_2 field_group
+field_group -> epsilon
+
+stmt_2 -> 'field:' '(' ID ',' expr conditional ')' bitmap enum
 
 conditional -> ',' cond_fun '(' arg_list ')'
 conditional -> epsilon
@@ -798,6 +949,7 @@ cond_fun -> range_equals
 cond_fun -> equals
 cond_fun -> has
 cond_fun -> has_not
+cond_fun -> prefix
 
 arg_list -> arg arg_list_1
 arg_list -> epsilon
@@ -829,8 +981,11 @@ expr_1 --> epsilon
 op --> +
 op --> *
 
-var --> ID
+var --> ID dot_expr
 var --> INT
 var --> HEX
+
+dot_expr --> . ID dot_expr
+dot_expr --> epsilon
 
 */

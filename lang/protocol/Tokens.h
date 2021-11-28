@@ -17,18 +17,21 @@ namespace ProtocolParser {
         static const std::string FIELD;
         static const std::string PROTOCOL;
         static const std::string NEXT_PROTOCOL;
+        static const std::string FIELD_GROUP;
         static const std::string ENUM;
         static const std::string BITMAP;
         static const std::string INNER;
         static const std::string CONDITIONAL;
         static const std::string LEFT_PAR;
         static const std::string RIGHT_PAR;
+        static const std::string DOT;
         static const std::string DASH;
         static const std::string COMMA;
         static const std::string PLUS;
         static const std::string MINUS;
         static const std::string ID;
         static const std::string INT;
+        static const std::string END;
 
         // grammar tokens
         static const GrammarToken START_TOKEN;
@@ -40,7 +43,9 @@ namespace ProtocolParser {
         static const GrammarToken VAR_TOKEN;
         static const GrammarToken EXPR_1_TOKEN;
         static const GrammarToken OP_TOKEN;
-        static const GrammarToken STMT_TOKEN;
+        static const GrammarToken STMT_1_TOKEN;
+        static const GrammarToken STMT_2_TOKEN;
+        static const GrammarToken FIELD_GROUP_TOKEN;
         static const GrammarToken BITMAP_TOKEN;
         static const GrammarToken INNER_TOKEN;
         static const GrammarToken ENUM_TOKEN;
@@ -65,6 +70,10 @@ namespace ProtocolParser {
         static const GrammarToken INNER_TOKEN_T;
         static const GrammarToken ENUM_TOKEN_T;
         static const GrammarToken COND_TOKEN_T;
+        static const GrammarToken FIELD_GROUP_TOKEN_T;
+        static const GrammarToken END_TOKEN;
+        static const GrammarToken DOT_TOKEN;
+        static const GrammarToken DOT_EXPR_TOKEN;
 
 
     };
@@ -72,18 +81,21 @@ namespace ProtocolParser {
 const std::string Tokens::FIELD = "FIELD";
 const std::string Tokens::PROTOCOL = "PROTOCOL";
 const std::string Tokens::NEXT_PROTOCOL = "NEXT_PROTOCOL";
+const std::string Tokens::FIELD_GROUP = "FIELD_GROUP";
 const std::string Tokens::ENUM = "ENUM";
 const std::string Tokens::BITMAP = "BITMAP";
 const std::string Tokens::INNER = "INNER";
 const std::string Tokens::CONDITIONAL = "CONDITIONAL";
 const std::string Tokens::LEFT_PAR = "LEFT_PAR";
 const std::string Tokens::RIGHT_PAR = "RIGHT_PAR";
+const std::string Tokens::DOT = "DOT";
 const std::string Tokens::DASH = "DASH";
 const std::string Tokens::COMMA = "COMMA";
 const std::string Tokens::PLUS = "PLUS";
 const std::string Tokens::MINUS = "MINUS";
 const std::string Tokens::ID = "ID";
 const std::string Tokens::INT = "INT";
+const std::string Tokens::END = "END";
 
 const GrammarToken Tokens::START_TOKEN = Grammar<Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>>::START;
 const GrammarToken Tokens::EPS_TOKEN = Grammar<Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>>::EPSILON;
@@ -94,7 +106,8 @@ const GrammarToken Tokens::EXPR_TOKEN("NON_TERM", "EXPR", false);
 const GrammarToken Tokens::VAR_TOKEN("NON_TERM", "VAR", false);
 const GrammarToken Tokens::EXPR_1_TOKEN("NON_TERM", "EXPR_1", false);
 const GrammarToken Tokens::OP_TOKEN("NON_TERM", "OP", false);
-const GrammarToken Tokens::STMT_TOKEN("NON_TERM", "STMT", false);
+const GrammarToken Tokens::STMT_1_TOKEN("NON_TERM", "STMT_1", false);
+const GrammarToken Tokens::STMT_2_TOKEN("NON_TERM", "STMT_2", false);
 const GrammarToken Tokens::BITMAP_TOKEN("NON_TERM", "BITMAP", false);
 const GrammarToken Tokens::INNER_TOKEN("NON_TERM", "INNER", false);
 const GrammarToken Tokens::ENUM_TOKEN("NON_TERM", "ENUM", false);
@@ -104,6 +117,8 @@ const GrammarToken Tokens::COND_TOKEN("NON_TERM", "COND_TOKEN", false);
 const GrammarToken Tokens::COND_FUN_TOKEN("NON_TERM", "COND_FUN_TOKEN", false);
 const GrammarToken Tokens::ARG_LIST_TOKEN("NON_TERM", "ARG_LIST_TOKEN", false);
 const GrammarToken Tokens::ARG_LIST_1_TOKEN("NON_TERM", "ARG_LIST_1_TOKEN", false);
+const GrammarToken Tokens::DOT_EXPR_TOKEN("NON_TERM", "DOT_EXPR_TOKEN", false);
+const GrammarToken Tokens::FIELD_GROUP_TOKEN("TERM", "FIELD_GROUP_TOKEN", false);
 
 const GrammarToken Tokens::ID_TOKEN("TERM", Tokens::ID, true, std::regex("[a-zA-Z_]+[a-zA-Z_0-9]*"));
 const GrammarToken Tokens::INT_TOKEN("TERM", Tokens::INT, true, std::regex("\\d+"));
@@ -120,6 +135,9 @@ const GrammarToken Tokens::BITMAP_TOKEN_T("TERM", Tokens::BITMAP, true);
 const GrammarToken Tokens::INNER_TOKEN_T("TERM", Tokens::INNER, true);
 const GrammarToken Tokens::ENUM_TOKEN_T("TERM", Tokens::ENUM, true);
 const GrammarToken Tokens::COND_TOKEN_T("TERM", Tokens::CONDITIONAL, true);
+const GrammarToken Tokens::END_TOKEN("TERM", Tokens::END, true);
+const GrammarToken Tokens::FIELD_GROUP_TOKEN_T("TERM", Tokens::FIELD_GROUP, true);
+const GrammarToken Tokens::DOT_TOKEN("TERM", Tokens::DOT, true);
 
 }
 
