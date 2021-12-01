@@ -7,6 +7,7 @@
 
 #include "Field.h"
 #include "Node.h"
+#include "FieldGroup.h"
 
 #include <string>
 #include <unordered_map>
@@ -19,6 +20,8 @@ class BaseClass {
 protected:
 
     std::vector<Field> fields;
+
+    std::vector<FieldGroup> field_groups;
 
     std::vector<std::string> next_protocol_args;
 
@@ -98,6 +101,10 @@ public:
 
     void add_field(Field&& field) {
         fields.push_back(field);
+    }
+
+    void add_field(FieldGroup&& field) {
+        field_groups.push_back(field);
     }
 
     void set_next_protocol(std::vector<std::string> args) {

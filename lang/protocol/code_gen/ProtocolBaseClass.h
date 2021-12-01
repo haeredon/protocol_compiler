@@ -89,11 +89,11 @@ protected:
 
             if(field.is_conditional()) {
                 // Conditional field
-                std::vector<std::string>& args = field.get_conditional_args();
+                const std::vector<std::string>& args = field.get_conditional().get_args();
 
-                if(field.get_conditional_name() == "range_equals") {
+                if(field.get_conditional().get_name() == "range_equals") {
                     class_ss << BaseClass::TAB << BaseClass::TAB << "if(Util::range_equals(" << args[2] << ", data, " << args[0] << ", " << args[1] << ")) {" << args[2] << ";" << std::endl;
-                } else if(field.get_conditional_name() == "equals") {
+                } else if(field.get_conditional().get_name() == "equals") {
 
                     class_ss << BaseClass::TAB << BaseClass::TAB << "if(" << std::endl;
 
@@ -119,10 +119,10 @@ protected:
                     }
 
                     class_ss << ") {" << std::endl;
-                } else if(field.get_conditional_name() == "has_not") {
+                } else if(field.get_conditional().get_name() == "has_not") {
                     class_ss << BaseClass::TAB << BaseClass::TAB << "if(" << std::endl;
 
-                    for(std::string& arg : args) {
+                    for(const std::string& arg : args) {
                         class_ss << BaseClass::TAB << BaseClass::TAB << BaseClass::TAB << arg << ".size() == 0";
 
                         if(arg != args.back()) {
@@ -131,9 +131,9 @@ protected:
                     }
 
                     class_ss << ") {" << std::endl;
-                } else if(field.get_conditional_name() == "lte") {
+                } else if(field.get_conditional().get_name() == "lte") {
                     class_ss << BaseClass::TAB << BaseClass::TAB << "if(Util::to_numeric<uint_arc>(data, " << length_str << ") <= " << args[0] << ") {" << std::endl;
-                } else if(field.get_conditional_name() == "gt") {
+                } else if(field.get_conditional().get_name() == "gt") {
                     class_ss << BaseClass::TAB << BaseClass::TAB << "if(Util::to_numeric<uint_arc>(data, " << length_str << ") > " << args[0] << ") {" << std::endl;
                 } else {
                     throw "Conditional function not found";

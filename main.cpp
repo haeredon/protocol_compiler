@@ -75,7 +75,7 @@
             std::vector<LexerToken> tokens = lexer.get_tokens();
             tokens.push_back(LexerToken("END", "END", in.size())); // should be a better way of doing this
 
-            std::cout << grammar.to_string();
+//            std::cout << grammar.to_string();
             parse_tree = grammar.parse(tokens);
         } catch (ParseException<LexerToken> e) {
             std::cout << e.get_info() << ". At position: " << e.get_lexer_token().get_position() << std::endl;

@@ -6,6 +6,7 @@
 #define PARSER_FIELD_H
 
 #include "Node.h"
+#include "Conditional.h"
 
 #include <string>
 #include <unordered_map>
@@ -18,8 +19,7 @@ protected:
 
     std::string name;
 
-    std::string conditional_name;
-    std::vector<std::string> conditional_args;
+    Conditional conditional;
 
     ProtocolParser::Node* length_exp;
     std::string length_dependency;
@@ -69,17 +69,12 @@ public:
         return bitmap;
     }
 
-    std::string& get_conditional_name() {
-        return conditional_name;
+    Conditional& get_conditional() {
+        return conditional;
     }
 
-    std::vector<std::string>& get_conditional_args() {
-        return conditional_args;
-    }
-
-    void set_conditional(std::string name, std::vector<std::string> args) {
-        conditional_name = name;
-        conditional_args = args;
+    void set_conditional(const Conditional& conditional) {
+        this->conditional = conditional;
     }
 
     inner_t& get_inner() {
@@ -87,7 +82,7 @@ public:
     }
 
     bool is_conditional() {
-        return conditional_name.length() != 0;
+        return conditional.get_name().length() != 0;
     }
 
 

@@ -9,6 +9,8 @@
 #include "BaseClass.h"
 #include "Field.h"
 #include "BuildClass.h"
+#include "Conditional.h"
+#include "FieldGroup.h"
 
 #include <vector>
 #include <iostream>
@@ -67,6 +69,8 @@ public:
                 add_field(attr, new_class);
             } else if(attr->get_value() == "PROPERTY") {
                 add_property(attr, new_class);
+            } else if(attr->get_value() == "FIELD_GROUP") {
+                add_field_group(attr, new_class);
             }
         }
 
@@ -96,8 +100,48 @@ public:
         new_class.set_next_protocol(std::move(args));
     }
 
+    void add_field_group(ProtocolParser::Node* ast, BaseClass& new_class) {
+        std::vector<ProtocolParser::Node*>::iterator it;
 
-    void add_field(ProtocolParser::Node* ast, BaseClass& new_class) {
+        Conditional conditional;
+        std::vector<Field> fields;
+
+        for(it = ast->get_children().begin() ; it != ast->get_children().end() ; ++it) {
+            ProtocolParser::Node* attr = *it;
+
+            if(attr->get_value() == "CONDITIONAL") {
+                conditional = get_conditional(attr);
+            } else if(attr->get_value() == "FIELDS") {
+                std::vector<ProtocolParser::Node*>::iterator t_it;
+
+                for(t_it = attr->get_children().begin() ; t_it != attr->get_children().end() ; ++t_it) {
+                    fields.push_back(get_field(*t_it));
+                }
+            }
+        }
+
+        new_class.add_field(FieldGroup(conditional, fields));
+    }
+
+    Conditional get_conditional(ProtocolParser::Node* ast) {
+        std::string conditional_name;
+        std::vector<std::string> cond_args;
+
+        std::vector<ProtocolParser::Node*> children = ast->get_children();
+
+        conditional_name = children.front()->get_children().front()->get_value();
+
+        std::vector<ProtocolParser::Node*>::iterator c_it;
+        std::vector<ProtocolParser::Node*> args = children.back()->get_children();
+
+        for(c_it = args.begin() ; c_it != args.end() ; ++c_it) {
+            cond_args.push_back((*c_it)->get_value());
+        }
+
+        return Conditional(conditional_name, cond_args);
+    }
+
+    Field get_field(ProtocolParser::Node* ast) {
         std::vector<ProtocolParser::Node*> children = ast->get_children();
 
         std::vector<ProtocolParser::Node*>::iterator it;
@@ -111,8 +155,7 @@ public:
         bool is_inner = false;
         std::size_t inner_priority = 0;
 
-        std::string conditional_name;
-        std::vector<std::string> cond_args;
+        Conditional conditional;
 
         for(it = ast->get_children().begin() ; it != ast->get_children().end() ; ++it) {
             ProtocolParser::Node* attr = *it;
@@ -122,16 +165,7 @@ public:
             } else if(attr->get_value() == "LENGTH") {
                 length_expr = attr->get_children().front();
             } else if(attr->get_value() == "CONDITIONAL") {
-                std::vector<ProtocolParser::Node*> children = attr->get_children();
-
-                conditional_name = children.front()->get_children().front()->get_value();
-
-                std::vector<ProtocolParser::Node*>::iterator c_it;
-                std::vector<ProtocolParser::Node*> args = children.back()->get_children();
-
-                for(c_it = args.begin() ; c_it != args.end() ; ++c_it) {
-                    cond_args.push_back((*c_it)->get_value());
-                }
+                conditional = get_conditional(attr);
             } else if(attr->get_value() == "MAP") {
                 std::vector<ProtocolParser::Node*>::iterator t_it;
 
@@ -159,10 +193,16 @@ public:
         }
 
         Field field(name, length_expr, enumeration, bitmap);
-        field.set_conditional(conditional_name, cond_args);
+        field.set_conditional(conditional);
         field.get_inner().is_inner = is_inner;
         field.get_inner().priority = inner_priority;
-        new_class.add_field(std::move(field));
+        return field;
+    }
+
+
+
+    void add_field(ProtocolParser::Node* ast, BaseClass& new_class) {
+        new_class.add_field(get_field(ast));
     }
 
 
