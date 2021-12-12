@@ -7,7 +7,16 @@ field: (flags, 2) bitmap: (data_offset, 4), (reserved, 3), (ns, 1), (cwr, 1), (e
 field: (window_size, 2)
 field: (checksum, 2)
 field: (urgent_pointer, 2)
-field_group: (,equals(num_read.kage, data_offset))
+field_group: (,equals(num_read, flags.data_offset  + 3))
     field: (kage, 4, prefix(0))
     field: (mand, 4, prefix(1))
 end:
+##############################
+protocol: (Ethernet)
+field: (des_mac, 6)
+field: (src_mac, 6)
+field: (eth_802_1q_outer, 4, range_equals(0, 3, 34984))
+field: (eth_802_1q_inner, 4, range_equals(0, 3, 33024))
+field: (eth_type, 2, gt(56325)) enum: (ARP, 1544), (IPV4, 8)
+field: (length, 2, has_not(eth_type))
+next_protocol: (eth_type, LLC)

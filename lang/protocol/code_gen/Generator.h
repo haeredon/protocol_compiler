@@ -7,208 +7,217 @@
 
 #include "CodeGen.h"
 #include "BaseClass.h"
-#include "Field.h"
+//#include "Field.h"
 #include "BuildClass.h"
 #include "Conditional.h"
-#include "FieldGroup.h"
+#include "parse_primitives/Class.h"
+#include "parse_primitives/FieldGroup.h"
+#include "parse_primitives/Field.h"
+#include "parse_primitives/Bitmap.h"
+#include "parse_primitives/Expression.h"
+#include "parse_primitives/Enumeration.h"
+#include "parse_primitives/Property.h"
+#include "parse_primitives/Primitive.h"
+#include "parse_primitives/Function.h"
+#include "parse_primitives/DotExpression.h"
+
 
 #include <vector>
 #include <iostream>
+#include <algorithm>
 
-template<class RET_T, class PARSE_T>
-class Generator : public ProtocolParser::CodeGen<RET_T*> {
+template<class RET_T>
+class Generator : public ProtocolParser::CodeGen<RET_T> {
+
+private:
+
+    Class parsed_class;
 
 public:
 
-    std::vector<RET_T*> generate(ProtocolParser::Node* ast) {
-        std::vector<RET_T*> classes;
-
-//        ast->get_children().front()->get_children()[1]->get_children().front()->get_children()[1]->get_children().front()
-        std::vector<ProtocolParser::Node*>::iterator it;
-
-        for(it = ast->get_children().begin() ; it != ast->get_children().end() ; ++it) {
-            classes.push_back(gen_class(*it));
-        }
-
-        return classes;
+    std::vector<Class> generate(ProtocolParser::Node* ast) {
+        parse_class(ast);
+        return std::vector<Class>({ parsed_class });
     }
 
-    RET_T* gen_class(ProtocolParser::Node* ast) {
-        BuildClass* buildClass = new BuildClass("Builder");
-        PARSE_T* new_class = new PARSE_T(buildClass);
+    Class parse_class(ProtocolParser::Node* ast) {
 
-        std::vector<ProtocolParser::Node*>::iterator it;
+        for(ProtocolParser::Node* node : ast->get_children()) {
+            std::string attr_name = node->get_value();
 
-        for(it = ast->get_children().begin() ; it != ast->get_children().end() ; ++it) {
-            ProtocolParser::Node* class_attr = *it;
-
-            if(class_attr->get_value() == "NAME") {
-                add_name(class_attr, *new_class);
-                buildClass->set_to_build_name(new_class->get_name());
-            } else if(class_attr->get_value() == "FIELDS" || class_attr->get_value() == "PROPERTIES") {
-                add_attributes(class_attr, *buildClass);
-                add_attributes(class_attr, *new_class);
+            if(attr_name == "NAME") {
+                std::string name = ast->get_children().front()->get_value();
+                parsed_class.set_name(name);
+            } else if(attr_name == "FIELDS") {
+                parse_fields(ast);
+            } else if(attr_name == "PROPERTIES") {
+                parse_properties(ast);
             }
         }
 
-        return new_class;
+        return parsed_class;
     }
 
-    void add_name(ProtocolParser::Node* ast, PARSE_T& new_class) {
-        new_class.add_name(ast->get_children().front()->get_value());
-    }
+    void parse_fields(ProtocolParser::Node* ast) {
 
-    void add_attributes(ProtocolParser::Node* ast, BaseClass& new_class) {
-        std::vector<ProtocolParser::Node*> children = ast->get_children();
-        std::vector<ProtocolParser::Node*>::iterator it;
+        for(ProtocolParser::Node* node : ast->get_children()) {
+            std::string attr_name = node->get_value();
 
-        for(it = ast->get_children().begin() ; it != ast->get_children().end() ; ++it) {
-            ProtocolParser::Node* attr = *it;
-
-            if(attr->get_value() == "FIELD") {
-                add_field(attr, new_class);
-            } else if(attr->get_value() == "PROPERTY") {
-                add_property(attr, new_class);
-            } else if(attr->get_value() == "FIELD_GROUP") {
-                add_field_group(attr, new_class);
+            if(attr_name == "FIELD") {
+                parsed_class.add_field(parse_field(node));
+            } else if(attr_name == "FIELD_GROUP") {
+                parsed_class.add_field_group(parse_field_group(node));
             }
         }
 
     }
 
-    void add_property(ProtocolParser::Node* ast, BaseClass& new_class) {
-        std::vector<ProtocolParser::Node*>::iterator it;
+    void parse_properties(ProtocolParser::Node* ast) {
 
-        std::string name;
-        std::vector<std::string> args;
+        for(ProtocolParser::Node* node : ast->get_children()) {
+            std::string attr_name = node->get_value();
 
-        for(it = ast->get_children().begin() ; it != ast->get_children().end() ; ++it) {
-            ProtocolParser::Node* attr = *it;
+            if(attr_name == "PROPERTY") {
+                parsed_class.add_property(parse_property(node));
+            }
+        }
+    }
 
-            if(attr->get_value() == "NAME") {
-                name = attr->get_children().front()->get_value();
-            } else if(attr->get_value() == "ARGS") {
-                std::vector<ProtocolParser::Node*>::iterator t_it;
+    Field parse_field(ProtocolParser::Node* ast) {
+        Field field;
 
-                for(t_it = attr->get_children().begin() ; t_it != attr->get_children().end() ; ++t_it) {
-                    std::string& arg = (*t_it)->get_value();
-                    args.push_back(arg);
-                }
+        for(ProtocolParser::Node* node : ast->get_children()) {
+            std::string attr_name = node->get_value();
+
+            if(attr_name == "NAME") {
+                std::string name = node->get_children().front()->get_value();
+                field.set_name(name);
+            } else if(attr_name == "LENGTH") {
+                Expression length_expr = parse_expression(node->get_children().front());
+                field.set_length(length_expr);
+            } else if(attr_name == "CONDITIONAL") {
+                Expression is_included_expr = parse_expression(node->get_children().front());
+                field.set_is_included(is_included_expr);
+            } else if(attr_name == "MAP") {
+                field.set_bitmap(parse_bitmap(node));
+            } else if(attr_name == "ENUM") {
+                field.set_enumeration(parse_enumeration(node));
             }
         }
 
-        new_class.set_next_protocol(std::move(args));
-    }
-
-    void add_field_group(ProtocolParser::Node* ast, BaseClass& new_class) {
-        std::vector<ProtocolParser::Node*>::iterator it;
-
-        Conditional conditional;
-        std::vector<Field> fields;
-
-        for(it = ast->get_children().begin() ; it != ast->get_children().end() ; ++it) {
-            ProtocolParser::Node* attr = *it;
-
-            if(attr->get_value() == "CONDITIONAL") {
-                conditional = get_conditional(attr);
-            } else if(attr->get_value() == "FIELDS") {
-                std::vector<ProtocolParser::Node*>::iterator t_it;
-
-                for(t_it = attr->get_children().begin() ; t_it != attr->get_children().end() ; ++t_it) {
-                    fields.push_back(get_field(*t_it));
-                }
-            }
-        }
-
-        new_class.add_field(FieldGroup(conditional, fields));
-    }
-
-    Conditional get_conditional(ProtocolParser::Node* ast) {
-        std::string conditional_name;
-        std::vector<std::string> cond_args;
-
-        std::vector<ProtocolParser::Node*> children = ast->get_children();
-
-        conditional_name = children.front()->get_children().front()->get_value();
-
-        std::vector<ProtocolParser::Node*>::iterator c_it;
-        std::vector<ProtocolParser::Node*> args = children.back()->get_children();
-
-        for(c_it = args.begin() ; c_it != args.end() ; ++c_it) {
-            cond_args.push_back((*c_it)->get_value());
-        }
-
-        return Conditional(conditional_name, cond_args);
-    }
-
-    Field get_field(ProtocolParser::Node* ast) {
-        std::vector<ProtocolParser::Node*> children = ast->get_children();
-
-        std::vector<ProtocolParser::Node*>::iterator it;
-
-        std::string name;
-        ProtocolParser::Node* length_expr;
-        std::string length_dependency;
-        std::unordered_map<std::string, std::size_t> enumeration;
-        std::unordered_map<std::string, std::tuple<std::size_t, std::size_t>> bitmap;
-
-        bool is_inner = false;
-        std::size_t inner_priority = 0;
-
-        Conditional conditional;
-
-        for(it = ast->get_children().begin() ; it != ast->get_children().end() ; ++it) {
-            ProtocolParser::Node* attr = *it;
-
-            if(attr->get_value() == "NAME") {
-                name = attr->get_children().front()->get_value();
-            } else if(attr->get_value() == "LENGTH") {
-                length_expr = attr->get_children().front();
-            } else if(attr->get_value() == "CONDITIONAL") {
-                conditional = get_conditional(attr);
-            } else if(attr->get_value() == "MAP") {
-                std::vector<ProtocolParser::Node*>::iterator t_it;
-
-                std::size_t num_taken = 0;
-                for(t_it = attr->get_children().begin() ; t_it != attr->get_children().end() ; ++t_it) {
-                    std::string name = (*t_it)->get_children().front()->get_children().front()->get_value();
-                    std::size_t value = stoi((*t_it)->get_children().back()->get_children().front()->get_value());
-
-                    bitmap[name] = std::tuple(num_taken, num_taken + value - 1);
-                    num_taken += value;
-                }
-            } else if(attr->get_value() == "ENUM") {
-                std::vector<ProtocolParser::Node*>::iterator t_it;
-
-                for(t_it = attr->get_children().begin() ; t_it != attr->get_children().end() ; ++t_it) {
-                    std::string name = (*t_it)->get_children().front()->get_children().front()->get_value();
-                    std::size_t value = stoi((*t_it)->get_children().back()->get_children().front()->get_value());
-
-                    enumeration[name] = value;
-                }
-            } else if(attr->get_value() == "INNER") {
-                is_inner = true;
-                inner_priority = std::stol(attr->get_children().front()->get_children().front()->get_value());
-            }
-        }
-
-        Field field(name, length_expr, enumeration, bitmap);
-        field.set_conditional(conditional);
-        field.get_inner().is_inner = is_inner;
-        field.get_inner().priority = inner_priority;
         return field;
     }
 
+    FieldGroup parse_field_group(ProtocolParser::Node* ast) {
+        FieldGroup field_group;
 
+        ProtocolParser::Node* cond_expr = ast->get_children().front();
+        field_group.set_is_continue(parse_expression(cond_expr));
 
-    void add_field(ProtocolParser::Node* ast, BaseClass& new_class) {
-        new_class.add_field(get_field(ast));
+        std::vector<ProtocolParser::Node*> fields = ast->get_children().back()->get_children();
+        for(ProtocolParser::Node* node : fields) {
+            field_group.add_field(parse_field(ast));
+        }
+
+        return field_group;
     }
 
+    Property parse_property(ProtocolParser::Node* ast) {
+        Property property;
 
+        std::string name = ast->get_children().front()->get_children().front()->get_value();
+        property.set_name(name);
 
+        std::vector<ProtocolParser::Node*>& args = ast->get_children().back()->get_children();
+        for(ProtocolParser::Node* node : args) {
+            property.add_arg(node->get_value());
+        }
 
+        return property;
+    }
 
+    Bitmap parse_bitmap(ProtocolParser::Node* ast) {
+        Bitmap bitmap;
+        std::size_t num_taken = 0;
+
+        for(ProtocolParser::Node* node : ast->get_children()) {
+            std::string name = node->get_children().front()->get_children().front()->get_value();
+            std::size_t value = stoi(node->get_children().back()->get_children().front()->get_value()); // TODO: can be an expression in the future
+
+            bitmap.append_mapping(name, std::tuple(num_taken, num_taken + value - 1));
+
+            num_taken += value;
+        }
+
+        return bitmap;
+    };
+
+    Enumeration parse_enumeration(ProtocolParser::Node* ast) {
+        Enumeration enumeration;
+
+        for(ProtocolParser::Node* node : ast->get_children()) {
+            std::string name = node->get_children().front()->get_children().front()->get_value();
+            std::size_t value = stoi(node->get_children().back()->get_children().front()->get_value());
+
+            enumeration.add_val(name, value);
+        }
+
+        return enumeration;
+    };
+
+    Expression parse_expression(ProtocolParser::Node* ast) {
+        std::string value = ast->get_value();
+
+        std::vector<ProtocolParser::Node*>& children = ast->get_children();
+        Expression expression;
+
+        if(ast->get_children().size() == 2) {
+            expression.set_left_expr(parse_expression(children.front()));
+            expression.set_right_expr(parse_expression(children.back()));
+        }
+
+        if(parsed_class.has_field(value)) {
+            Field field = parsed_class.get_field(value);
+
+            if(children.size() == 1 && children.front()->get_value() == "DOT") {
+                expression.set_expr_element(parse_dot_expression(ast));
+            } else {
+                expression.set_expr_element(field);
+            }
+        } else if(value == "FUN") {
+            expression.set_expr_element(parse_function(ast));
+        } else {
+            expression.set_expr_element(Primitive(value));
+        }
+
+        return expression;
+    }
+
+    Function parse_function(ProtocolParser::Node* ast) {
+        std::vector<ProtocolParser::Node*>& children = ast->get_children();
+
+        Function function;
+
+        for(ProtocolParser::Node* node : children.back()->get_children()) {
+            function.add_arg(parse_expression(node));
+        }
+
+        return function;
+    }
+
+    DotExpression parse_dot_expression(ProtocolParser::Node* ast) {
+        std::vector<ProtocolParser::Node*>& children = ast->get_children();
+
+        DotExpression dot_expression;
+        dot_expression.set_top(&parsed_class.get_field(ast->get_value()));
+
+        while (!ast->get_children().empty()) {
+            ast = ast->get_children().front()->get_children().front();
+            dot_expression.add_chain_element(ast->get_value());
+        }
+
+        return dot_expression;
+    }
 
 };
 

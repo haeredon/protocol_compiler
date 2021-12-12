@@ -43,6 +43,10 @@ namespace ProtocolParser {
             return children;
         }
 
+        Node* get_parent() {
+            return parent;
+        }
+
         std::string &get_value() {
             return val;
         }
