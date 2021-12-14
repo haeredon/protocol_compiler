@@ -23,8 +23,7 @@ void Class::add_property(Property property) {
 }
 
 bool Class::has_field(const std::string& field_name) {
-//    return std::any_of(fields.cbegin(), fields.cend(), [field_name](Field& field){ return field.get_name() == field_name; });
-    return true;
+    return std::any_of(fields.begin(), fields.end(), [field_name](Field& field){ return field.get_name() == field_name; });
 }
 
 Field& Class::get_field(const std::string& field_name) {

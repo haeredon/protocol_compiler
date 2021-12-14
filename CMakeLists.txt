@@ -23,4 +23,31 @@ add_executable(parser
         main.cpp
         Production.h
         Token.cpp
-        Node.h lang/protocol/code_gen/BuildClass.h lang/protocol/code_gen/ProtocolBaseClass.h ParseException.h lang/protocol/code_gen/Conditional.h lang/protocol/code_gen/parse_primitives/Bitmap.cpp lang/protocol/code_gen/parse_primitives/Bitmap.h lang/protocol/code_gen/parse_primitives/Field.cpp lang/protocol/code_gen/parse_primitives/Field.h lang/protocol/code_gen/parse_primitives/FieldGroup.cpp lang/protocol/code_gen/parse_primitives/FieldGroup.h lang/protocol/code_gen/parse_primitives/Expression.cpp lang/protocol/code_gen/parse_primitives/Expression.h lang/protocol/code_gen/parse_primitives/Enumeration.cpp lang/protocol/code_gen/parse_primitives/Enumeration.h lang/protocol/code_gen/parse_primitives/Class.cpp lang/protocol/code_gen/parse_primitives/Class.h lang/protocol/code_gen/parse_primitives/Property.cpp lang/protocol/code_gen/parse_primitives/Property.h lang/protocol/code_gen/parse_primitives/ExprElement.cpp lang/protocol/code_gen/parse_primitives/ExprElement.h lang/protocol/code_gen/parse_primitives/Primitive.cpp lang/protocol/code_gen/parse_primitives/Primitive.h lang/protocol/code_gen/parse_primitives/Function.cpp lang/protocol/code_gen/parse_primitives/Function.h lang/protocol/code_gen/parse_primitives/DotExpression.cpp lang/protocol/code_gen/parse_primitives/DotExpression.h)
+        Node.h
+        lang/protocol/code_gen/BuildClass.h
+        lang/protocol/code_gen/ProtocolBaseClass.h
+        ParseException.h
+        lang/protocol/code_gen/Conditional.h
+        lang/protocol/code_gen/parse_primitives/Bitmap.cpp
+        lang/protocol/code_gen/parse_primitives/Bitmap.h
+        lang/protocol/code_gen/parse_primitives/Field.cpp
+        lang/protocol/code_gen/parse_primitives/Field.h
+        lang/protocol/code_gen/parse_primitives/FieldGroup.cpp
+        lang/protocol/code_gen/parse_primitives/FieldGroup.h
+        lang/protocol/code_gen/parse_primitives/Expression.cpp
+        lang/protocol/code_gen/parse_primitives/Expression.h
+        lang/protocol/code_gen/parse_primitives/Enumeration.cpp
+        lang/protocol/code_gen/parse_primitives/Enumeration.h
+        lang/protocol/code_gen/parse_primitives/Class.cpp
+        lang/protocol/code_gen/parse_primitives/Class.h
+        lang/protocol/code_gen/parse_primitives/Property.cpp
+        lang/protocol/code_gen/parse_primitives/Property.h
+        lang/protocol/code_gen/parse_primitives/ExprElement.cpp
+        lang/protocol/code_gen/parse_primitives/ExprElement.h
+        lang/protocol/code_gen/parse_primitives/Primitive.cpp
+        lang/protocol/code_gen/parse_primitives/Primitive.h
+        lang/protocol/code_gen/parse_primitives/Function.cpp
+        lang/protocol/code_gen/parse_primitives/Function.h
+        lang/protocol/code_gen/parse_primitives/DotExpression.cpp
+        lang/protocol/code_gen/parse_primitives/DotExpression.h
+        lang/protocol/code_gen/parse_primitives/Operator.cpp lang/protocol/code_gen/parse_primitives/Operator.h)

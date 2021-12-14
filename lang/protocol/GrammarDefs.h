@@ -782,7 +782,7 @@ namespace ProtocolParser {
                 [](auto stack) {
                     ParserAction<Node*>& syn = stack.front();
 
-                    stack[1].add_values(syn.get_values());
+                    stack[1].add_value(new Node(nullptr, Tokens::PLUS));
                 }
             }),
 

@@ -1,4 +1,3 @@
-#include "Lexer.h"
 #include "Production.h"
 #include "Grammar.h"
 #include "ParserAction.h"
@@ -8,6 +7,7 @@
 #include "lang/protocol/GrammarDefs.h"
 #include "lang/protocol/LexerDefs.h"
 #include "ParseException.h"
+#include "Lexer.h"
 
 #include<string>
 #include<vector>
@@ -65,6 +65,7 @@
 
 
         using namespace ProtocolParser;
+
 
         Lexer lexer(LexerDefs::REG_TOKEN, ' ');
         Grammar grammar(GrammarDefs::PRODUCTIONS);

@@ -28,7 +28,7 @@ namespace ProtocolParser {
             std::pair<std::regex, std::string>(std::regex("bitmap:"), Tokens::BITMAP),
             std::pair<std::regex, std::string>(std::regex("inner:"), Tokens::INNER),
             std::pair<std::regex, std::string>(std::regex("&&"), Tokens::AND),
-            std::pair<std::regex, std::string>(std::regex("||"), Tokens::OR),
+            std::pair<std::regex, std::string>(std::regex("\\|\\|"), Tokens::OR),
             std::pair<std::regex, std::string>(std::regex(">"), Tokens::LESS_THAN),
             std::pair<std::regex, std::string>(std::regex("<"), Tokens::GREATER_THAN),
             std::pair<std::regex, std::string>(std::regex("\"[^\"]+\""), Tokens::STRING),
@@ -43,6 +43,8 @@ namespace ProtocolParser {
             std::pair<std::regex, std::string>(std::regex("\\d+"), Tokens::INT),
             std::pair<std::regex, std::string>(std::regex("-"), Tokens::MINUS)
     };
+
+
 
 }
 

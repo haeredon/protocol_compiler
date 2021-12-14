@@ -6,6 +6,8 @@
 #define PARSER_TOKENS_H
 
 #include "../../GrammarToken.h"
+#include "../../Production.h"
+#include "../../Grammar.h"
 
 #include <unordered_map>
 

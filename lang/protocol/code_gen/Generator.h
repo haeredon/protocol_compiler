@@ -20,7 +20,8 @@
 #include "parse_primitives/Primitive.h"
 #include "parse_primitives/Function.h"
 #include "parse_primitives/DotExpression.h"
-
+#include "parse_primitives/Operator.h"
+#include "../Tokens.h"
 
 #include <vector>
 #include <iostream>
@@ -36,8 +37,13 @@ private:
 public:
 
     std::vector<Class> generate(ProtocolParser::Node* ast) {
-        parse_class(ast);
-        return std::vector<Class>({ parsed_class });
+        std::vector<Class> classes;
+
+        for(ProtocolParser::Node* node : ast->get_children()) {
+            classes.push_back(parse_class(node));
+        }
+
+        return classes;
     }
 
     Class parse_class(ProtocolParser::Node* ast) {
@@ -46,12 +52,12 @@ public:
             std::string attr_name = node->get_value();
 
             if(attr_name == "NAME") {
-                std::string name = ast->get_children().front()->get_value();
+                std::string name = node->get_children().front()->get_value();
                 parsed_class.set_name(name);
             } else if(attr_name == "FIELDS") {
-                parse_fields(ast);
+                parse_fields(node);
             } else if(attr_name == "PROPERTIES") {
-                parse_properties(ast);
+                parse_properties(node);
             }
         }
 
@@ -176,7 +182,11 @@ public:
             expression.set_right_expr(parse_expression(children.back()));
         }
 
-        if(parsed_class.has_field(value)) {
+        if(ProtocolParser::Tokens::op_precedence.contains(value)) {
+            expression.set_expr_element(Operator(value));
+        } else if(value == "FUN") {
+            expression.set_expr_element(parse_function(ast));
+        } else if(parsed_class.has_field(value)) {
             Field field = parsed_class.get_field(value);
 
             if(children.size() == 1 && children.front()->get_value() == "DOT") {
@@ -184,8 +194,6 @@ public:
             } else {
                 expression.set_expr_element(field);
             }
-        } else if(value == "FUN") {
-            expression.set_expr_element(parse_function(ast));
         } else {
             expression.set_expr_element(Primitive(value));
         }
