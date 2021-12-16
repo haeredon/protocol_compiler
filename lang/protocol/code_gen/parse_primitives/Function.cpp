@@ -4,6 +4,6 @@
 
 #include "Function.h"
 
-void Function::add_arg(Expression expression) {
+void Function::add_arg(Expression* expression) {
     args.push_back(expression);
 }

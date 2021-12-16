@@ -16,9 +16,9 @@ class Field : public ExprElement {
 
     std::string name;
 
-    Expression length;
+    Expression* length;
 
-    Expression is_included;
+    Expression* is_included;
 
     Enumeration enumeration;
 
@@ -27,17 +27,15 @@ class Field : public ExprElement {
 public:
     void set_name(std::string name);
 
-    void set_length(Expression expression);
+    void set_length(Expression* expression);
 
-    void set_is_included(Expression expression);
+    void set_is_included(Expression* expression);
 
     void set_bitmap(Bitmap bitmap);
 
     void set_enumeration(Enumeration enumeration);
 
-    void test() {};
-
-    const std::string& get_name();
+    const std::string& get_name() const;
 };
 
 

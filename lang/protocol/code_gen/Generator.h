@@ -9,7 +9,6 @@
 #include "BaseClass.h"
 //#include "Field.h"
 #include "BuildClass.h"
-#include "Conditional.h"
 #include "parse_primitives/Class.h"
 #include "parse_primitives/FieldGroup.h"
 #include "parse_primitives/Field.h"
@@ -22,6 +21,7 @@
 #include "parse_primitives/DotExpression.h"
 #include "parse_primitives/Operator.h"
 #include "../Tokens.h"
+#include "ProtocolClass.h"
 
 #include <vector>
 #include <iostream>
@@ -36,11 +36,12 @@ private:
 
 public:
 
-    std::vector<Class> generate(ProtocolParser::Node* ast) {
-        std::vector<Class> classes;
+    std::vector<std::string> generate(ProtocolParser::Node* ast) {
+        std::vector<std::string> classes;
 
         for(ProtocolParser::Node* node : ast->get_children()) {
-            classes.push_back(parse_class(node));
+            ProtocolClass protocol_class;
+            classes.push_back(protocol_class.class_to_string(parse_class(node)));
         }
 
         return classes;
@@ -99,10 +100,10 @@ public:
                 std::string name = node->get_children().front()->get_value();
                 field.set_name(name);
             } else if(attr_name == "LENGTH") {
-                Expression length_expr = parse_expression(node->get_children().front());
+                Expression* length_expr = parse_expression(node->get_children().front());
                 field.set_length(length_expr);
             } else if(attr_name == "CONDITIONAL") {
-                Expression is_included_expr = parse_expression(node->get_children().front());
+                Expression* is_included_expr = parse_expression(node->get_children().front());
                 field.set_is_included(is_included_expr);
             } else if(attr_name == "MAP") {
                 field.set_bitmap(parse_bitmap(node));
@@ -171,31 +172,31 @@ public:
         return enumeration;
     };
 
-    Expression parse_expression(ProtocolParser::Node* ast) {
+    Expression* parse_expression(ProtocolParser::Node* ast) {
         std::string value = ast->get_value();
 
         std::vector<ProtocolParser::Node*>& children = ast->get_children();
-        Expression expression;
+        Expression* expression = new Expression();
 
         if(ast->get_children().size() == 2) {
-            expression.set_left_expr(parse_expression(children.front()));
-            expression.set_right_expr(parse_expression(children.back()));
+            expression->set_left_expr(parse_expression(children.front()));
+            expression->set_right_expr(parse_expression(children.back()));
         }
 
         if(ProtocolParser::Tokens::op_precedence.contains(value)) {
-            expression.set_expr_element(Operator(value));
+            expression->set_expr_element(Operator(value));
         } else if(value == "FUN") {
-            expression.set_expr_element(parse_function(ast));
+            expression->set_expr_element(parse_function(ast));
         } else if(parsed_class.has_field(value)) {
             Field field = parsed_class.get_field(value);
 
             if(children.size() == 1 && children.front()->get_value() == "DOT") {
-                expression.set_expr_element(parse_dot_expression(ast));
+                expression->set_expr_element(parse_dot_expression(ast));
             } else {
-                expression.set_expr_element(field);
+                expression->set_expr_element(field);
             }
         } else {
-            expression.set_expr_element(Primitive(value));
+            expression->set_expr_element(Primitive(value));
         }
 
         return expression;

@@ -27,7 +27,6 @@ add_executable(parser
         lang/protocol/code_gen/BuildClass.h
         lang/protocol/code_gen/ProtocolBaseClass.h
         ParseException.h
-        lang/protocol/code_gen/Conditional.h
         lang/protocol/code_gen/parse_primitives/Bitmap.cpp
         lang/protocol/code_gen/parse_primitives/Bitmap.h
         lang/protocol/code_gen/parse_primitives/Field.cpp
@@ -50,4 +49,4 @@ add_executable(parser
         lang/protocol/code_gen/parse_primitives/Function.h
         lang/protocol/code_gen/parse_primitives/DotExpression.cpp
         lang/protocol/code_gen/parse_primitives/DotExpression.h
-        lang/protocol/code_gen/parse_primitives/Operator.cpp lang/protocol/code_gen/parse_primitives/Operator.h)
+        lang/protocol/code_gen/parse_primitives/Operator.cpp lang/protocol/code_gen/parse_primitives/Operator.h lang/protocol/code_gen/ProtocolClass.cpp)

@@ -3,3 +3,7 @@
 //
 
 #include "ExprElement.h"
+
+std::string ExprElement::to_string(std::function<std::string(ExprElement)> handler) {
+    return "NOT IMPLEMENTED";
+}

@@ -14,10 +14,10 @@ class Function : public ExprElement {
 
     std::string name;
 
-    std::vector<Expression> args;
+    std::vector<Expression*> args;
 
 public:
-    void add_arg(Expression expression);
+    void add_arg(Expression* expression);
 };
 
 

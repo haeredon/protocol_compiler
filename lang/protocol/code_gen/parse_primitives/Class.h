@@ -31,6 +31,14 @@ public:
     bool has_field(const std::string& field_name) ;
 
     Field& get_field(const std::string& field_name);
+
+    const std::vector<Field> &get_fields() const;
+
+    const std::vector<FieldGroup> &get_field_groups() const;
+
+    const std::vector<Property> &get_properties() const;
+
+    const std::string &get_name() const;
 };
 
 

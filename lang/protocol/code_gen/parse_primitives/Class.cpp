@@ -35,3 +35,19 @@ Field& Class::get_field(const std::string& field_name) {
 
     throw std::exception();
 }
+
+const std::vector<Field> &Class::get_fields() const {
+    return fields;
+}
+
+const std::vector<FieldGroup> &Class::get_field_groups() const {
+    return field_groups;
+}
+
+const std::vector<Property> &Class::get_properties() const {
+    return properties;
+}
+
+const std::string &Class::get_name() const {
+    return name;
+}

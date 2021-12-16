@@ -6,12 +6,13 @@
 #define PROTOCOL_COMPILER_EXPRELEMENT_H
 
 
+#include <string>
+#include <functional>
+
 class ExprElement {
 
-    virtual void test() {};
-
-
-
+public:
+    std::string to_string(std::function<std::string(ExprElement)> handler);
 };
 
 

@@ -4,7 +4,7 @@
 
 #include "FieldGroup.h"
 
-void FieldGroup::set_is_continue(Expression is_continue) {
+void FieldGroup::set_is_continue(Expression* is_continue) {
     this->is_continue = is_continue;
 }
 
