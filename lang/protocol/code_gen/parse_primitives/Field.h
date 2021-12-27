@@ -8,11 +8,11 @@
 #include "Expression.h"
 #include "Bitmap.h"
 #include "Enumeration.h"
-#include "ExprElement.h"
 
 #include <string>
+#include <iostream>
 
-class Field : public ExprElement {
+class Field {
 
     std::string name;
 
@@ -24,7 +24,11 @@ class Field : public ExprElement {
 
     Bitmap bitmap;
 
+    std::function<std::string(const Field&)> to_string_handler;
+
 public:
+    Field();
+
     void set_name(std::string name);
 
     void set_length(Expression* expression);
@@ -36,6 +40,13 @@ public:
     void set_enumeration(Enumeration enumeration);
 
     const std::string& get_name() const;
+
+    const Expression* get_length() const;
+
+    Expression *get_is_included() const;
+
+    std::string to_string();
+
 };
 
 

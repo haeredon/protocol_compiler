@@ -6,7 +6,6 @@
 #define PARSER_CODE_GEN_PARSECLASS_H
 
 #include "parse_primitives/Class.h"
-
 #include<sstream>
 
 class ProtocolClass {
@@ -25,12 +24,16 @@ private:
     std::stringstream public_method_stream;
     std::stringstream to_data_method_stream;
 
+    void prepare_fields(Class &p_class);
+
+    static std::string field_to_string_handler(const Field& field);
+
 public:
 
+    // TODO: check when copy and when move constructor are used IMPORTANT FOR MAX FUN AND GAIN!
     ProtocolClass();
 
-
-    std::string class_to_string(const Class &p_class);
+    std::string class_to_string(Class &p_class);
 
 };
 

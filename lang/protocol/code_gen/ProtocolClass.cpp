@@ -5,12 +5,31 @@
 
 #include "ProtocolClass.h"
 
+#include <iostream>
 
 ProtocolClass::ProtocolClass() {
 
 }
 
-std::string ProtocolClass::class_to_string(const Class &p_class) {
+void ProtocolClass::prepare_fields(Class &p_class) {
+    for(Field& field : p_class.get_fields()) {
+//        field.set_to_string_handler(*this);
+//        ss << "num +=" << field.get_length()->to_string() << ";";
+    }
+}
+
+
+std::string ProtocolClass::field_to_string_handler(const Field& field) {
+    return "field_to_string_handler()";
+}
+
+std::string ProtocolClass::class_to_string(Class &p_class) {
+    prepare_fields(p_class);
+
+    //for(const Field& field : p_class.get_fields()) {
+      //  std::cout << "uint16_t " << &field << " _offset;" << std::endl;
+    //}
+
     ss << "#ifndef PROTOCOL" << "_" << p_class.get_name() << "_H" << std::endl;
     ss << "#define PROTOCOL" << "_" << p_class.get_name() << "_H" << std::endl;
 
@@ -40,8 +59,16 @@ std::string ProtocolClass::class_to_string(const Class &p_class) {
     ss << "uint16_t num = 0;";
 
     for(const Field& field : p_class.get_fields()) {
+        if(field.get_is_included() != nullptr) {
+            ss << "if(" << field.get_is_included()->to_string() << ") {";
+        }
+
         ss << field.get_name() << "_offset = num;";
-        ss << "num += SOME_NUMBER;";
+        ss << "num +=" << field.get_length()->to_string() << ";";
+
+        if(field.get_is_included() != nullptr) {
+            ss << "}";
+        }
     }
 
     ss << "}"; // constructor end
@@ -53,3 +80,4 @@ std::string ProtocolClass::class_to_string(const Class &p_class) {
 
 
 }
+

@@ -14,6 +14,7 @@ add_executable(parser
         lang/protocol/Tokens.h
         lang/protocol/LexerDefs.h
         lang/protocol/GrammarDefs.h
+        lang/protocol/Tokens.cpp
         CodeGen.h
         ParserAction.h
         GrammarToken.cpp
@@ -41,12 +42,10 @@ add_executable(parser
         lang/protocol/code_gen/parse_primitives/Class.h
         lang/protocol/code_gen/parse_primitives/Property.cpp
         lang/protocol/code_gen/parse_primitives/Property.h
-        lang/protocol/code_gen/parse_primitives/ExprElement.cpp
-        lang/protocol/code_gen/parse_primitives/ExprElement.h
-        lang/protocol/code_gen/parse_primitives/Primitive.cpp
-        lang/protocol/code_gen/parse_primitives/Primitive.h
-        lang/protocol/code_gen/parse_primitives/Function.cpp
-        lang/protocol/code_gen/parse_primitives/Function.h
+        lang/protocol/code_gen/parse_primitives/PrimitiveExpr.cpp
+        lang/protocol/code_gen/parse_primitives/PrimitiveExpr.h
+        lang/protocol/code_gen/parse_primitives/FunctionExpr.cpp
+        lang/protocol/code_gen/parse_primitives/FunctionExpr.h
         lang/protocol/code_gen/parse_primitives/DotExpression.cpp
         lang/protocol/code_gen/parse_primitives/DotExpression.h
-        lang/protocol/code_gen/parse_primitives/Operator.cpp lang/protocol/code_gen/parse_primitives/Operator.h lang/protocol/code_gen/ProtocolClass.cpp)
+        lang/protocol/code_gen/parse_primitives/OperatorExpr.cpp lang/protocol/code_gen/parse_primitives/OperatorExpr.h lang/protocol/code_gen/ProtocolClass.cpp lang/protocol/code_gen/parse_primitives/ExpressionHandler.h lang/protocol/code_gen/parse_primitives/FieldExpr.cpp lang/protocol/code_gen/parse_primitives/FieldExpr.h)

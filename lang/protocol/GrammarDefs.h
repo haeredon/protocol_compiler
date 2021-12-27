@@ -171,7 +171,13 @@ namespace ProtocolParser {
                     // conditional
                     ParserAction<Node*>& syn = stack.front();
 
-                    stack[6].add_values(syn.get_values());
+                    if(syn.get_values().size() != 0) {
+                        Node* attr = new Node(nullptr, "CONDITIONAL");
+                        attr->add_child(syn.get_values().front());
+                        stack[6].add_value(attr);
+                    } else {
+                        stack[6].add_values(syn.get_values());
+                    }
                 },
                 [](auto stack) {},
                 [](auto stack) {
@@ -686,7 +692,6 @@ namespace ProtocolParser {
                         stack[4].add_value(syn.get_values().front());
                     },
                     [](auto stack) {},
-                    [](auto stack) {},
                     [](auto stack) {
                         ParserAction<Node*>& syn = stack.front();
                         std::vector<Node*> values = syn.get_values();
@@ -700,8 +705,9 @@ namespace ProtocolParser {
                         top->add_child(name);
                         top->add_child(args);
 
-                        stack[1].add_inherit(top);
+                        stack[3].add_inherit(top);
                     },
+                    [](auto stack) {},
                     [](auto stack) {
                         ParserAction<Node*>& syn = stack.front();
 

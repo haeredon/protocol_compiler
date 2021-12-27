@@ -29,14 +29,14 @@ bool Class::has_field(const std::string& field_name) {
 Field& Class::get_field(const std::string& field_name) {
     for(Field& field : fields) {
         if(field.get_name() == field_name) {
-            return  field;
+            return field;
         }
     }
 
     throw std::exception();
 }
 
-const std::vector<Field> &Class::get_fields() const {
+std::list<Field> &Class::get_fields() {
     return fields;
 }
 

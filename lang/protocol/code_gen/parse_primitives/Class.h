@@ -9,9 +9,11 @@
 #include "FieldGroup.h"
 #include "Property.h"
 
+#include <list>
+
 class Class {
 
-    std::vector<Field> fields;
+    std::list<Field> fields;
 
     std::vector<FieldGroup> field_groups;
 
@@ -32,7 +34,7 @@ public:
 
     Field& get_field(const std::string& field_name);
 
-    const std::vector<Field> &get_fields() const;
+    std::list<Field> &get_fields();
 
     const std::vector<FieldGroup> &get_field_groups() const;
 
