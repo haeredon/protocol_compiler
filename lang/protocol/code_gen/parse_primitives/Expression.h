@@ -28,6 +28,8 @@ public:
     void set_expr_element(ExpressionHandler* expr_element);
 
     std::string to_string() const;
+
+    const ExpressionHandler* get_expression_handler() const;
 };
 
 

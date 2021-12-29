@@ -800,7 +800,7 @@ namespace ProtocolParser {
                 [](auto stack) {
                     ParserAction<Node*>& syn = stack.front();
 
-                    stack[1].add_values(syn.get_values());
+                    stack[1].add_value(new Node(nullptr, Tokens::MINUS));
                 }
             }),
 
@@ -812,7 +812,7 @@ namespace ProtocolParser {
                 [](auto stack) {
                     ParserAction<Node*>& syn = stack.front();
 
-                    stack[1].add_values(syn.get_values());
+                    stack[1].add_value(new Node(nullptr, Tokens::AND));
                 }
             }),
 
@@ -824,7 +824,7 @@ namespace ProtocolParser {
                 [](auto stack) {
                     ParserAction<Node*>& syn = stack.front();
 
-                    stack[1].add_values(syn.get_values());
+                    stack[1].add_value(new Node(nullptr, Tokens::OR));
                 }
             }),
 
@@ -836,7 +836,7 @@ namespace ProtocolParser {
                 [](auto stack) {
                     ParserAction<Node*>& syn = stack.front();
 
-                    stack[1].add_values(syn.get_values());
+                    stack[1].add_value(new Node(nullptr, Tokens::LESS_THAN));
                 }
             }),
 
@@ -848,7 +848,7 @@ namespace ProtocolParser {
                 [](auto stack) {
                     ParserAction<Node*>& syn = stack.front();
 
-                    stack[1].add_values(syn.get_values());
+                    stack[1].add_value(new Node(nullptr, Tokens::GREATER_THAN));
                 }
             }),
 

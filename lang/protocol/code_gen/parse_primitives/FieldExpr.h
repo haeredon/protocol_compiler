@@ -23,6 +23,8 @@ public:
 
     std::string to_string();
 
+    const Field& get_field() const;
+
 };
 
 

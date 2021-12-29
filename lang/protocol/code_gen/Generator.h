@@ -125,7 +125,7 @@ public:
 
         std::vector<ProtocolParser::Node*> fields = ast->get_children().back()->get_children();
         for(ProtocolParser::Node* node : fields) {
-            field_group.add_field(parse_field(ast));
+            field_group.add_field(parse_field(node));
         }
 
         return field_group;
@@ -180,15 +180,11 @@ public:
         std::vector<ProtocolParser::Node*>& children = ast->get_children();
         Expression* expression = new Expression();
 
-        if(ast->get_children().size() == 2) {
-            expression->set_left_expr(parse_expression(children.front()));
-            expression->set_right_expr(parse_expression(children.back()));
-        }
-
         if(ProtocolParser::Tokens::op_precedence.contains(value)) {
             expression->set_expr_element(new OperatorExpr(value));
         } else if(value == "FUN") {
             expression->set_expr_element(parse_function(ast));
+            return expression;
         } else if(parsed_class.has_field(value)) {
             Field& field = parsed_class.get_field(value);
 
@@ -199,6 +195,11 @@ public:
             }
         } else {
             expression->set_expr_element(new PrimitiveExpr(value));
+        }
+
+        if(ast->get_children().size() == 2) {
+            expression->set_left_expr(parse_expression(children.front()));
+            expression->set_right_expr(parse_expression(children.back()));
         }
 
         return expression;

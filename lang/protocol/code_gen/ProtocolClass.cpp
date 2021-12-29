@@ -46,32 +46,76 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
 
     ss << "class " << p_class.get_name() << " : public Protocol " << "{";
 
+    ss << "private:" << std::endl;
+
+    /************************** Private fields **************************************/
     ss << "uint8_t* data;";
 
     for(const Field& field : p_class.get_fields()) {
-        ss << "uint16_t " << field.get_name() << "_offset;";
+        ss << "field " << field.get_name() << ";";
     }
+
+    for(const FieldGroup& group : p_class.get_field_groups()) {
+        for(const Field& field : group.get_fields()) {
+            ss << "field " << field.get_name() << ";";
+        }
+    }
+
+    /************************** Private fields end **************************************/
 
     ss << std::endl << "public:" << std::endl;
 
-    // Constructor
+
+    /*************** Constructor *********************/
     ss << std::endl << p_class.get_name() << "() {" << std::endl;
     ss << "uint16_t num = 0;";
 
+    // Fields
     for(const Field& field : p_class.get_fields()) {
+
         if(field.get_is_included() != nullptr) {
             ss << "if(" << field.get_is_included()->to_string() << ") {";
         }
 
-        ss << field.get_name() << "_offset = num;";
+        ss << field.get_name() << ".offset = num;";
         ss << "num +=" << field.get_length()->to_string() << ";";
+        ss << field.get_name() << ".length = num - " << field.get_name() << ".offset" << ";";
 
         if(field.get_is_included() != nullptr) {
             ss << "}";
         }
     }
 
+    // Field Groups
+    for(const FieldGroup& group : p_class.get_field_groups()) {
+        ss << "{";
+        ss << "uint16_t num_read = 0;";
+
+        ss << "while(" << group.get_is_continue()->to_string() << ") {";
+
+        bool first = true;
+        for(const Field& field : group.get_fields()) {
+
+            if(field.get_is_included() != nullptr) {
+                ss << (first ? "if" : "else if") << "(" << field.get_is_included()->to_string() << ") {";
+            }
+
+            ss << field.get_name() << ".offset = num;";
+            ss << "num +=" << field.get_length()->to_string() << ";";
+            ss << "num_read +=" << field.get_length()->to_string() << ";";
+            ss << field.get_name() << ".length = num - " << field.get_name() << ".offset" << ";";
+
+            if(field.get_is_included() != nullptr) {
+                ss << "}";
+            }
+        }
+
+        ss << "}";
+        ss << "}";
+    }
+
     ss << "}"; // constructor end
+    /*************** Constructor End *********************/
 
     ss << "}"; // class end
     ss << "}"; // namespace end

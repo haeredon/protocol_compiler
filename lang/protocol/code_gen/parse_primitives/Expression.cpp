@@ -25,3 +25,7 @@ std::string Expression::to_string() const {
 Expression::Expression() : expr_element(nullptr), left_expr(nullptr), right_expr(nullptr) {
 
 }
+
+const ExpressionHandler *Expression::get_expression_handler() const {
+    return expr_element;
+}
