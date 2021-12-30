@@ -48,7 +48,7 @@ std::string FunctionExpr::to_string() {
 
     } else if(name == "prefix") {
         std::string base = args[0]->to_string();
-        ss << "Util::range_equals(" << base << ", data[num], 0, " << 43 << ")";
+        ss << "Util::range_equals(" << base << ", data[num], 0, Util::size_of(" << base << "))";
     } else {
         throw "No matching function";
     }

@@ -15,6 +15,8 @@ class Enumeration {
 public:
     void add_val(std::string name, std::size_t val);
 
+    const std::unordered_map<std::string, std::size_t> &get_enum_to_Val() const;
+
 };
 
 

@@ -16,6 +16,7 @@ public:
 
     void append_mapping(std::string name, std::tuple<std::size_t, std::size_t> mapping);
 
+    const std::unordered_map<std::string, std::tuple<std::size_t, std::size_t>> &get_name_to_map() const;
 };
 
 

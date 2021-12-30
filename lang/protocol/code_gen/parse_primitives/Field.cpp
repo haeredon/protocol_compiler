@@ -44,3 +44,11 @@ Expression *Field::get_is_included() const {
 }
 
 Field::Field() : is_included(nullptr) {}
+
+const Enumeration &Field::get_enumeration() const {
+    return enumeration;
+}
+
+const Bitmap &Field::get_bitmap() const {
+    return bitmap;
+}

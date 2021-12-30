@@ -39,11 +39,15 @@ public:
 
     void set_enumeration(Enumeration enumeration);
 
+    const Enumeration &get_enumeration() const;
+
     const std::string& get_name() const;
 
     const Expression* get_length() const;
 
     Expression *get_is_included() const;
+
+    const Bitmap &get_bitmap() const;
 
     std::string to_string();
 

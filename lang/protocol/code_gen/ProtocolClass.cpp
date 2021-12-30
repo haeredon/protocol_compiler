@@ -6,30 +6,15 @@
 #include "ProtocolClass.h"
 
 #include <iostream>
+#include <valarray>
+
 
 ProtocolClass::ProtocolClass() {
 
 }
 
-void ProtocolClass::prepare_fields(Class &p_class) {
-    for(Field& field : p_class.get_fields()) {
-//        field.set_to_string_handler(*this);
-//        ss << "num +=" << field.get_length()->to_string() << ";";
-    }
-}
-
-
-std::string ProtocolClass::field_to_string_handler(const Field& field) {
-    return "field_to_string_handler()";
-}
 
 std::string ProtocolClass::class_to_string(Class &p_class) {
-    prepare_fields(p_class);
-
-    //for(const Field& field : p_class.get_fields()) {
-      //  std::cout << "uint16_t " << &field << " _offset;" << std::endl;
-    //}
-
     ss << "#ifndef PROTOCOL" << "_" << p_class.get_name() << "_H" << std::endl;
     ss << "#define PROTOCOL" << "_" << p_class.get_name() << "_H" << std::endl;
 
@@ -50,14 +35,29 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
 
     /************************** Private fields **************************************/
     ss << "uint8_t* data;";
+    ss << "std::size_t size;";
 
     for(const Field& field : p_class.get_fields()) {
         ss << "field " << field.get_name() << ";";
+
+        for(const auto& name_to_map : field.get_bitmap().get_name_to_map()) {
+            std::string range_name = std::get<0>(name_to_map);
+            std::tuple<std::size_t, std::size_t> range = std::get<1>(name_to_map);;
+            uint64_t mask = std::pow(2, std::get<1>(range)) + (std::pow(2, std::get<1>(range)) - std::pow(2, std::get<0>(range)));
+            ss << "static const uint64_t "<< field.get_name() << "_" << range_name << "= 0x" << std::hex << mask << ";" << std::endl;
+        }
     }
 
     for(const FieldGroup& group : p_class.get_field_groups()) {
         for(const Field& field : group.get_fields()) {
             ss << "field " << field.get_name() << ";";
+
+            for(const auto& name_to_map : field.get_bitmap().get_name_to_map()) {
+                std::string range_name = std::get<0>(name_to_map);
+                std::tuple<std::size_t, std::size_t> range = std::get<1>(name_to_map);;
+                uint64_t mask = std::pow(2, std::get<1>(range)) + (std::pow(2, std::get<1>(range)) - std::pow(2, std::get<0>(range)));
+                ss << "static const uint64_t "<< field.get_name() << "_" << range_name << "= 0x" << std::hex << mask << ";" << std::endl;
+            }
         }
     }
 
@@ -114,8 +114,76 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
         ss << "}";
     }
 
+    ss << "size = num;";
     ss << "}"; // constructor end
     /*************** Constructor End *********************/
+
+    /*************** Getters *********************/
+
+    // Fields
+    for(const Field& field : p_class.get_fields()) {
+        std::string name = field.get_name();
+
+        const std::unordered_map<std::string, std::size_t>& enums = field.get_enumeration().get_enum_to_Val();
+        if(enums.size() != 0) {
+            ss << "enum class " << name << "_enum" << " { ";
+            for(const auto& key_pair : field.get_enumeration().get_enum_to_Val()) {
+                ss << std::get<0>(key_pair) << " = 0x" << std::hex << std::get<1>(key_pair);
+                ss << ", ";
+            }
+            ss << "UNKNOWN ";
+            ss << "};";
+        }
+
+        for(const auto& name_to_map : field.get_bitmap().get_name_to_map()) {
+            std::string bit_mapping_name = name + "_" + std::get<0>(name_to_map);
+            ss << "uint64_t get_" << bit_mapping_name << "() {";
+            ss << "return Util::to_numeric<uint64_t>(data[" << name << ".offset], " << name << ".length) & " <<  bit_mapping_name << ";";
+            ss << "}";
+        }
+
+        ss << "std::vector<uint8_t> get_" << name << "() {";
+        ss << "return std::vector<uint8_t>(data + " << name << ".offset, data + " << name << ".offset + " << name << ".length);";
+        ss << "}";
+    }
+
+    // Field Groups
+    for(const FieldGroup& group : p_class.get_field_groups()) {
+
+        for(const Field& field : group.get_fields()) {
+
+
+        }
+
+    }
+
+    // Protocols get_protocol_type();
+    ss << "Protocols get_protocol_type() {";
+    ss << "return Protocols::" << p_class.get_name() << ";";
+    ss << "}";
+
+    // Protocols get_inner_protocol();
+    ss << "Protocols get_inner_protocol() {";
+    ss << "";
+    ss << "}";
+
+    // std::string to_string();
+    ss << "std::string to_string() {";
+    ss << "Util::binary_to_hex_pretty_print(data, size);";
+    ss << "}";
+
+    // std::size_t get_size();
+    ss << "std::size_t get_size() {";
+    ss << "return size;";
+    ss << "}";
+
+    // std::vector<uint8_t> to_data();
+    ss << "std::vector<uint8_t> to_data() {";
+    ss << "return std::vector<uint8_t>(data, data + size);";
+    ss << "}";
+
+    /*************** Getters End *********************/
+
 
     ss << "}"; // class end
     ss << "}"; // namespace end
@@ -125,3 +193,26 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
 
 }
 
+
+//protocol: (Tcp)
+//field: (src_port, 2)
+//field: (dst_port, 2 + src_port) enum: (ARP, 1544), (IPV4, 8)
+//field: (eth_802_1q_outer, 4, range_equals(0, 3, 34984))
+//field: (protocol_id, 2, equals(222, dst_port, src_port))
+//field: (length, 2, has_not(eth_802_1q_outer))
+//field_group: (num_read < src_port)
+//field: (end, 0, prefix(0))
+//field: (no_op, 0, prefix(1))
+//field: (max_segment_size, 4, prefix(2))
+//end:
+//next_protocol: (dst_port, LLC)
+
+//Protocols get_inner_protocol() {
+//    if(Util::range_equals(static_cast<std::size_t>(dst_port_enum::ARP), data[dst_port.offset], 0, dst_port.length)) {
+//        return Protocols::ARP;
+//    } else if(Util::range_equals(static_cast<std::size_t>(dst_port_enum::IPV4), data[dst_port.offset], 0, dst_port.length)) {
+//        return Protocols::IPV4;
+//    } else {
+//        return Protocols::LLC;
+//    }
+//}
