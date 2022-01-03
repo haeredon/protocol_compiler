@@ -7,7 +7,7 @@
 
 #include "Field.h"
 #include "FieldGroup.h"
-#include "Property.h"
+#include "NextProtocol.h"
 
 #include <list>
 
@@ -17,7 +17,7 @@ class Class {
 
     std::vector<FieldGroup> field_groups;
 
-    std::vector<Property> properties;
+    NextProtocol next_protocol;
 
     std::string name;
 
@@ -28,7 +28,7 @@ public:
 
     void add_field_group(FieldGroup group);
 
-    void add_property(Property property);
+    void set_next_protocol(NextProtocol&& nextProtocol);
 
     bool has_field(const std::string& field_name) ;
 
@@ -38,7 +38,7 @@ public:
 
     const std::vector<FieldGroup> &get_field_groups() const;
 
-    const std::vector<Property> &get_properties() const;
+    const NextProtocol &get_next_protocol() const;
 
     const std::string &get_name() const;
 };

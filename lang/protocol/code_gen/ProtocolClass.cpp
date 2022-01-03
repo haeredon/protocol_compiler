@@ -151,8 +151,29 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
     for(const FieldGroup& group : p_class.get_field_groups()) {
 
         for(const Field& field : group.get_fields()) {
+            std::string name = field.get_name();
 
+            const std::unordered_map<std::string, std::size_t>& enums = field.get_enumeration().get_enum_to_Val();
+            if(enums.size() != 0) {
+                ss << "enum class " << name << "_enum" << " { ";
+                for(const auto& key_pair : field.get_enumeration().get_enum_to_Val()) {
+                    ss << std::get<0>(key_pair) << " = 0x" << std::hex << std::get<1>(key_pair);
+                    ss << ", ";
+                }
+                ss << "UNKNOWN ";
+                ss << "};";
+            }
 
+            for(const auto& name_to_map : field.get_bitmap().get_name_to_map()) {
+                std::string bit_mapping_name = name + "_" + std::get<0>(name_to_map);
+                ss << "uint64_t get_" << bit_mapping_name << "() {";
+                ss << "return Util::to_numeric<uint64_t>(data[" << name << ".offset], " << name << ".length) & " <<  bit_mapping_name << ";";
+                ss << "}";
+            }
+
+            ss << "std::vector<uint8_t> get_" << name << "() {";
+            ss << "return std::vector<uint8_t>(data + " << name << ".offset, data + " << name << ".offset + " << name << ".length);";
+            ss << "}";
         }
 
     }
@@ -160,11 +181,6 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
     // Protocols get_protocol_type();
     ss << "Protocols get_protocol_type() {";
     ss << "return Protocols::" << p_class.get_name() << ";";
-    ss << "}";
-
-    // Protocols get_inner_protocol();
-    ss << "Protocols get_inner_protocol() {";
-    ss << "";
     ss << "}";
 
     // std::string to_string();
@@ -182,10 +198,28 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
     ss << "return std::vector<uint8_t>(data, data + size);";
     ss << "}";
 
+    // get_inner_protocol()
+    ss << "Protocols get_inner_protocol {";
+    for(auto& field : p_class.get_next_protocol().get_priorities()) {
+        const std::string& field_name = field->get_name();
+        const std::unordered_map<std::string, std::size_t>& enums = field->get_enumeration().get_enum_to_Val();
+        if(enums.size() != 0) {
+            for(const auto& key_pair : field->get_enumeration().get_enum_to_Val()) {
+                const std::string& enum_name = std::get<0>(key_pair);
+                ss << "if(Util::range_equals(static_cast<std::size_t>(" << field_name << "_enum::" << enum_name << "), data[" << field_name << ".offset], 0," << field_name << ".length)) {";
+                ss << "return Protocols::" << enum_name << ";";
+                ss << "}";
+            }
+        }
+    }
+    ss << "return Protocols::" << p_class.get_next_protocol().get_default_next() << ";";
+    ss << "}";
+
+
     /*************** Getters End *********************/
 
 
-    ss << "}"; // class end
+    ss << "};"; // class end
     ss << "}"; // namespace end
 
     return ss.str();

@@ -40,12 +40,17 @@ add_executable(parser
         lang/protocol/code_gen/parse_primitives/Enumeration.h
         lang/protocol/code_gen/parse_primitives/Class.cpp
         lang/protocol/code_gen/parse_primitives/Class.h
-        lang/protocol/code_gen/parse_primitives/Property.cpp
-        lang/protocol/code_gen/parse_primitives/Property.h
         lang/protocol/code_gen/parse_primitives/PrimitiveExpr.cpp
         lang/protocol/code_gen/parse_primitives/PrimitiveExpr.h
         lang/protocol/code_gen/parse_primitives/FunctionExpr.cpp
         lang/protocol/code_gen/parse_primitives/FunctionExpr.h
         lang/protocol/code_gen/parse_primitives/DotExpression.cpp
         lang/protocol/code_gen/parse_primitives/DotExpression.h
-        lang/protocol/code_gen/parse_primitives/OperatorExpr.cpp lang/protocol/code_gen/parse_primitives/OperatorExpr.h lang/protocol/code_gen/ProtocolClass.cpp lang/protocol/code_gen/parse_primitives/ExpressionHandler.h lang/protocol/code_gen/parse_primitives/FieldExpr.cpp lang/protocol/code_gen/parse_primitives/FieldExpr.h)
+        lang/protocol/code_gen/parse_primitives/OperatorExpr.cpp
+        lang/protocol/code_gen/parse_primitives/OperatorExpr.h
+        lang/protocol/code_gen/ProtocolClass.cpp
+        lang/protocol/code_gen/parse_primitives/ExpressionHandler.h
+        lang/protocol/code_gen/parse_primitives/FieldExpr.cpp
+        lang/protocol/code_gen/parse_primitives/FieldExpr.h
+        lang/protocol/code_gen/parse_primitives/NextProtocol.cpp
+        lang/protocol/code_gen/parse_primitives/NextProtocol.h)
