@@ -6,7 +6,7 @@
 #define PARSER_CODE_GEN_GENERATOR_H
 
 #include "CodeGen.h"
-#include "BaseClass.h"
+
 //#include "Field.h"
 #include "BuildClass.h"
 #include "parse_primitives/Class.h"

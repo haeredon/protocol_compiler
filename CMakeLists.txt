@@ -8,7 +8,6 @@ include_directories(.)
 
 
 add_executable(parser
-        lang/protocol/code_gen/BaseClass.h
         lang/protocol/code_gen/ProtocolClass.h
         lang/protocol/code_gen/Generator.h
         lang/protocol/Tokens.h
@@ -25,8 +24,6 @@ add_executable(parser
         Production.h
         Token.cpp
         Node.h
-        lang/protocol/code_gen/BuildClass.h
-        lang/protocol/code_gen/ProtocolBaseClass.h
         ParseException.h
         lang/protocol/code_gen/parse_primitives/Bitmap.cpp
         lang/protocol/code_gen/parse_primitives/Bitmap.h
@@ -53,4 +50,4 @@ add_executable(parser
         lang/protocol/code_gen/parse_primitives/FieldExpr.cpp
         lang/protocol/code_gen/parse_primitives/FieldExpr.h
         lang/protocol/code_gen/parse_primitives/NextProtocol.cpp
-        lang/protocol/code_gen/parse_primitives/NextProtocol.h)
+        lang/protocol/code_gen/parse_primitives/NextProtocol.h lang/protocol/code_gen/BuildClass.cpp lang/protocol/code_gen/BuildClass.h)
