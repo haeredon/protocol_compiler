@@ -33,13 +33,13 @@ class Generator : public ProtocolParser::CodeGen<RET_T> {
 
 public:
 
-    std::vector<std::string> generate(ProtocolParser::Node* ast) {
-        std::vector<std::string> classes;
+    std::vector<std::pair<std::string, std::string>> generate(ProtocolParser::Node* ast) {
+        std::vector<std::pair<std::string, std::string>> classes;
 
         for(ProtocolParser::Node* node : ast->get_children()) {
             ProtocolClass protocol_class;
             Class new_class = parse_class(node);
-            classes.push_back(protocol_class.class_to_string(new_class));
+            classes.push_back(std::make_pair(ast->get_children().front()->get_children().front()->get_children().front()->get_value(),protocol_class.class_to_string(new_class)));
         }
 
         return classes;

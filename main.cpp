@@ -87,22 +87,21 @@
 
 /******************************************* CODE GENERATION *****************************************************/
 
-        Generator<std::string> generator;
-        std::vector<std::string> classes = generator.generate(parse_tree);
+        Generator<std::pair<std::string, std::string>> generator;
+        std::vector<std::pair<std::string, std::string>> classes = generator.generate(parse_tree);
 
-        std::vector<std::string>::iterator it;
+        std::vector<std::pair<std::string, std::string>>::iterator it;
 
-        for(it = classes.begin() ; it != classes.end() ; ++it) {
-
+        for(auto& name_class : classes) {
             std::ofstream out_file;
-            out_file.open(out + "test.h");
+            out_file.open(out + std::get<0>(name_class) + ".h");
 
             if (!out_file.good()) {
                 std::cout << "Could not open " << optarg;
                 exit(EXIT_FAILURE);
             }
 
-            out_file << *it;
+            out_file << std::get<1>(name_class);
         }
 
         return 0;
