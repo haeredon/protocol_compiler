@@ -47,8 +47,11 @@ std::string FunctionExpr::to_string() {
         }
 
     } else if(name == "prefix") {
-        std::string base = args[0]->to_string();
+        std::string base = args.front()->to_string();
         ss << "Util::range_equals(" << base << ", data[num], 0, Util::size_of(" << base << "))";
+    } else if(name == "cdata") {
+        std::string size = args.front()->to_string();
+        ss << "Util::to_numeric(data[num], " << size << ")";
     } else {
         throw "No matching function";
     }

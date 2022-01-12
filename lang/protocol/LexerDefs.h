@@ -32,7 +32,7 @@ namespace ProtocolParser {
             std::pair<std::regex, std::string>(std::regex(">"), Tokens::GREATER_THAN),
             std::pair<std::regex, std::string>(std::regex("<"), Tokens::LESS_THAN),
             std::pair<std::regex, std::string>(std::regex("\"[^\"]+\""), Tokens::STRING),
-            std::pair<std::regex, std::string>(std::regex("range_equals|equals|has_not|lte|gt|prefix"), Tokens::CONDITIONAL),
+            std::pair<std::regex, std::string>(std::regex("range_equals|equals|has_not|lte|gt|prefix|cdata"), Tokens::CONDITIONAL),
             std::pair<std::regex, std::string>(std::regex("\\("), Tokens::LEFT_PAR),
             std::pair<std::regex, std::string>(std::regex("\\)"), Tokens::RIGHT_PAR),
             std::pair<std::regex, std::string>(std::regex("\\."), Tokens::DOT),
