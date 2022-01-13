@@ -1,12 +1,42 @@
 cmake_minimum_required(VERSION 3.16.3)
 
-project(protocol_compiler)
+project(protocol_compiler VERSION 0.1)
 
 set(CMAKE_CXX_STANDARD 20)
 
 
 include_directories(.)
 
+#        cmake-build-debug/protocol_compiler-prefix/src/protocol_compiler/Lexer.cpp
+#        cmake-build-debug/protocol_compiler-prefix/src/protocol_compiler/LexerToken.cpp
+#        cmake-build-debug/protocol_compiler-prefix/src/protocol_compiler/Token.cpp
+#        cmake-build-debug/protocol_compiler-prefix/src/protocol_compiler/GrammarToken.cpp read_write/Proxy.h)
+
+
+include(GNUInstallDirs)
+
+add_library(pc SHARED
+        CodeGen.h
+        ParserAction.h
+        GrammarToken.cpp
+        Grammar.h
+        Lexer.cpp
+        LexerToken.cpp
+        Production.h
+        Token.cpp
+        Node.h
+        ParseException.h)
+
+set_target_properties(pc PROPERTIES
+        VERSION ${PROJECT_VERSION}
+        SOVERSION 2
+        PUBLIC_HEADER "CodeGen.h;ParserAction.h;Grammar.h;Production.h;Node.h;ParseException.h")
+
+target_include_directories(pc PRIVATE .)
+
+install(TARGETS pc
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/pc
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/pc)
 
 add_executable(parser
         lang/protocol/code_gen/ProtocolClass.h
@@ -15,17 +45,7 @@ add_executable(parser
         lang/protocol/LexerDefs.h
         lang/protocol/GrammarDefs.h
         lang/protocol/Tokens.cpp
-        CodeGen.h
-        ParserAction.h
-        GrammarToken.cpp
-        Grammar.h
-        Lexer.cpp
-        LexerToken.cpp
         main.cpp
-        Production.h
-        Token.cpp
-        Node.h
-        ParseException.h
         lang/protocol/code_gen/parse_primitives/Bitmap.cpp
         lang/protocol/code_gen/parse_primitives/Bitmap.h
         lang/protocol/code_gen/parse_primitives/Field.cpp
@@ -51,4 +71,10 @@ add_executable(parser
         lang/protocol/code_gen/parse_primitives/FieldExpr.cpp
         lang/protocol/code_gen/parse_primitives/FieldExpr.h
         lang/protocol/code_gen/parse_primitives/NextProtocol.cpp
-        lang/protocol/code_gen/parse_primitives/NextProtocol.h lang/protocol/code_gen/BuildClass.cpp lang/protocol/code_gen/BuildClass.h)
+        lang/protocol/code_gen/parse_primitives/NextProtocol.h
+        lang/protocol/code_gen/BuildClass.cpp
+        lang/protocol/code_gen/BuildClass.h)
+
+add_dependencies(parser pc)
+target_link_libraries(parser pc)
+

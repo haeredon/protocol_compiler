@@ -253,6 +253,8 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
     ss << "};"; // class end
     ss << "}"; // namespace end
 
+    ss << std::endl << "#endif /* PROTOCOL" << "_" << p_class.get_name() << "_H */" << std::endl;
+
     return ss.str();
 
 
