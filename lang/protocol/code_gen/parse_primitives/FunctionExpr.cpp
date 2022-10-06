@@ -17,7 +17,7 @@ std::string FunctionExpr::to_string() {
 
     if(name == "range_equals") {
         std::string base = args[0]->to_string();
-        ss << "Util::range_equals(" << args[2]->to_string() << ", data[num + " << base << "], " << base << ", " << args[1]->to_string() << ")";
+        ss << "Util::range_equals(" << args[2]->to_string() << ", data + " << base << ", " << base << ", " << args[1]->to_string() << ")";
     } else if(name == "equals") {
         std::string to_cmp_with = args.front()->to_string();
 
@@ -28,7 +28,7 @@ std::string FunctionExpr::to_string() {
             }
 
             const FieldExpr* handler = static_cast<const FieldExpr*>(expr->get_expression_handler());
-            ss << "Util::range_equals(" << to_cmp_with << ", " << expr->to_string() << ", 0," << handler->get_field().get_name() << ".length" << ")";
+            ss << "Util::range_equals(" << to_cmp_with << ", data + " << handler->get_field().get_name() << ".offset, 0," << handler->get_field().get_name() << ".length" << ")";
 
             if(expr != args.back()) {
                 ss << " && ";
@@ -48,10 +48,10 @@ std::string FunctionExpr::to_string() {
 
     } else if(name == "prefix") {
         std::string base = args.front()->to_string();
-        ss << "Util::range_equals(" << base << ", data[num], 0, Util::size_of(" << base << "))";
+        ss << "Util::range_equals(" << base << ", &data[num], 0, Util::size_of(" << base << "))";
     } else if(name == "cdata") {
         std::string size = args.front()->to_string();
-        ss << "Util::to_numeric(data[num], " << size << ")";
+        ss << "Util::to_numeric<uint64_t>(&data[num], " << size << ")";
     } else {
         throw "No matching function";
     }

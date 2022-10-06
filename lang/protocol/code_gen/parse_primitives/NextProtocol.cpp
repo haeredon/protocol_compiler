@@ -20,4 +20,4 @@ void NextProtocol::add_next(std::unique_ptr<Field> field) {
     priorities.push_back(std::move(field));
 }
 
-NextProtocol::NextProtocol() {}
+NextProtocol::NextProtocol() : default_next("UNKNOWN") {}

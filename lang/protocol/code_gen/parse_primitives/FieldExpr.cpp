@@ -11,7 +11,7 @@ FieldExpr::FieldExpr(const Field &field) : field(field) {
 
 std::string FieldExpr::to_string() {
     std::stringstream ss;
-    ss << "Util::flip_endian(data[" << field.get_name() << ".offset], " << field.get_name() << ".length" << ")";
+    ss << "Util::flip_endian_to_num<uint64_t>(data +" << field.get_name() << ".offset, " << field.get_name() << ".length" << ")";
     return ss.str();
 }
 

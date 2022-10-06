@@ -104,7 +104,7 @@ std::string BuildClass::class_to_string(Class &p_class) {
 
     // uint8_t get_data()
     ss << "uint8_t* get_data() {";
-    ss << "uint8_t* data = new uint8_t[size]";
+    ss << "uint8_t* data = new uint8_t[size];";
     ss << "std::size_t num_consumed = 0;";
     for(const Field& field : p_class.get_fields()) {
         const std::string& name = field.get_name();
@@ -123,6 +123,8 @@ std::string BuildClass::class_to_string(Class &p_class) {
             ss << "}";
         }
     }
+
+    ss << "return data;";
 
     ss << "}";
 

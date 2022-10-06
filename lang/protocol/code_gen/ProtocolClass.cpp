@@ -5,9 +5,11 @@
 
 #include "ProtocolClass.h"
 #include "BuildClass.h"
+#include "Util.h"
 
 #include <iostream>
 #include <valarray>
+#include <cctype>
 
 
 ProtocolClass::ProtocolClass() {
@@ -114,7 +116,7 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
         for(const auto& name_to_map : field.get_bitmap().get_name_to_map()) {
             std::string bit_mapping_name = name + "_" + std::get<0>(name_to_map);
             ss << "uint64_t get_" << bit_mapping_name << "() {";
-            ss << "return Util::to_numeric<uint64_t>(data[" << name << ".offset], " << name << ".length) & " <<  bit_mapping_name << ";";
+            ss << "return Util::to_numeric<uint64_t>(&data[" << name << ".offset], " << name << ".length) & " <<  bit_mapping_name << ";";
             ss << "}";
         }
 
@@ -143,7 +145,7 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
             for(const auto& name_to_map : field.get_bitmap().get_name_to_map()) {
                 std::string bit_mapping_name = name + "_" + std::get<0>(name_to_map);
                 ss << "uint64_t get_" << bit_mapping_name << "() {";
-                ss << "return Util::to_numeric<uint64_t>(data[" << name << ".offset], " << name << ".length) & " <<  bit_mapping_name << ";";
+                ss << "return Util::to_numeric<uint64_t>(&data[" << name << ".offset], " << name << ".length) & " <<  bit_mapping_name << ";";
                 ss << "}";
             }
 
@@ -156,12 +158,12 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
 
     // Protocols get_protocol_type();
     ss << "Protocols get_protocol_type() {";
-    ss << "return Protocols::" << p_class.get_name() << ";";
+    ss << "return Protocols::" << ProtocolParser::Util::to_upper(p_class.get_name()) << ";";
     ss << "}";
 
     // std::string to_string();
     ss << "std::string to_string() {";
-    ss << "Util::binary_to_hex_pretty_print(data, size);";
+    ss << "return Util::binary_to_hex_pretty_print(data, size);";
     ss << "}";
 
     // std::size_t get_size();
@@ -187,7 +189,7 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
         if(enums.size() != 0) {
             for(const auto& key_pair : field->get_enumeration().get_enum_to_Val()) {
                 const std::string& enum_name = std::get<0>(key_pair);
-                ss << "if(Util::range_equals(static_cast<std::size_t>(" << field_name << "_enum::" << enum_name << "), data[" << field_name << ".offset], 0," << field_name << ".length)) {";
+                ss << "if(Util::range_equals(static_cast<std::size_t>(" << field_name << "_enum::" << enum_name << "), &data[" << field_name << ".offset], 0," << field_name << ".length)) {";
                 ss << "return Protocols::" << enum_name << ";";
                 ss << "}";
             }

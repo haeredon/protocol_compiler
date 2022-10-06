@@ -19,24 +19,28 @@ add_library(pc SHARED
         CodeGen.h
         ParserAction.h
         GrammarToken.cpp
+        GrammarToken.h
         Grammar.h
         Lexer.cpp
         LexerToken.cpp
         Production.h
         Token.cpp
         Node.h
-        ParseException.h)
+        ParseException.h
+        Util.h
+        Lexer.h
+        Util.cpp)
 
 set_target_properties(pc PROPERTIES
         VERSION ${PROJECT_VERSION}
         SOVERSION 2
-        PUBLIC_HEADER "CodeGen.h;ParserAction.h;Grammar.h;Production.h;Node.h;ParseException.h")
+        PUBLIC_HEADER "CodeGen.h;ParserAction.h;Grammar.h;Production.h;Node.h;ParseException.h;GrammarToken.h;Util.h;Token.h;LexerToken.h;Lexer.h")
 
 target_include_directories(pc PRIVATE .)
 
 install(TARGETS pc
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/pc
-        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/pc)
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 add_executable(parser
         lang/protocol/code_gen/ProtocolClass.h
