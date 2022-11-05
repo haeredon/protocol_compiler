@@ -44,7 +44,7 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
           "};";
 
 
-    ss << "uint8_t* data;";
+    ss << "const uint8_t* data;";
     ss << "std::size_t size;";
 
     for(const Field& field : p_class.get_fields()) {
@@ -85,7 +85,7 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
 
     /*************** Constructor *********************/
     // [ProtocolName]()
-    ss << p_class.get_name() << "(uint8_t* data) {";
+    ss << p_class.get_name() << "(const uint8_t* data) {";
     ss << "init(data);";
     ss << "}"; // constructor end
 
@@ -202,7 +202,8 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
     /*************** Getters End *********************/
 
     // void init(uint8_t* data)
-    ss << "void init(uint8_t* data) {";
+    ss << "void init(const uint8_t* data) {";
+    ss << "this->data = data;";
     ss << "uint16_t num = 0;";
 
     // Fields
