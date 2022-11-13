@@ -5,12 +5,13 @@
 #ifndef PROTOCOL_COMPILER_DOTEXPRESSION_H
 #define PROTOCOL_COMPILER_DOTEXPRESSION_H
 
-#include "ExpressionHandler.h"
+
+#include "Expression.h"
 
 #include <string>
 #include <vector>
 
-class DotExpression : public ExpressionHandler  {
+class DotExpression : public Expression  {
 
 //    ExprElement* top;
 

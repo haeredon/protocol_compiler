@@ -6,12 +6,12 @@
 #define PROTOCOL_COMPILER_FIELDEXPR_H
 
 
-#include "ExpressionHandler.h"
+#include "Expression.h"
 #include "Field.h"
 
 #include <string>
 
-class FieldExpr : public ExpressionHandler {
+class FieldExpr : public Expression {
 
 private:
 
@@ -21,7 +21,7 @@ public:
 
     FieldExpr(const Field &field);
 
-    std::string to_string();
+    std::string to_string() const;
 
     const Field& get_field() const;
 

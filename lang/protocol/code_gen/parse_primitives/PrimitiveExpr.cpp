@@ -4,8 +4,8 @@
 
 #include "PrimitiveExpr.h"
 
-PrimitiveExpr::PrimitiveExpr(const std::string& value) : value(value) {}
+PrimitiveExpr::PrimitiveExpr(const std::string& value) : Expression(), value(value) {}
 
-std::string PrimitiveExpr::to_string() {
+std::string PrimitiveExpr::to_string() const {
     return value;
 }

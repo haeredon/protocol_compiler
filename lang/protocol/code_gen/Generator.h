@@ -178,31 +178,27 @@ public:
         std::string value = ast->get_value();
 
         std::vector<ProtocolParser::Node*>& children = ast->get_children();
-        Expression* expression = new Expression();
 
         if(ProtocolParser::Tokens::op_precedence.contains(value)) {
-            expression->set_expr_element(new OperatorExpr(value));
+            OperatorExpr* operator_expr = new OperatorExpr(
+                    value,
+                    parse_expression<FIELD_HANDLER_T>(children.front(), parsed_class),
+                    parse_expression<FIELD_HANDLER_T>(children.back(), parsed_class));
+            return operator_expr;
         } else if(value == "FUN") {
-            expression->set_expr_element(parse_function(ast, parsed_class));
-            return expression;
+            return parse_function(ast, parsed_class);
         } else if(parsed_class.has_field(value)) {
             Field& field = parsed_class.get_field(value);
 
             if(children.size() == 1 && children.front()->get_value() == "DOT") {
 //                expression->set_expr_element(parse_dot_expression(ast));
+                return nullptr;
             } else {
-                expression->set_expr_element(new FIELD_HANDLER_T(field));
+                return new FIELD_HANDLER_T(field);
             }
         } else {
-            expression->set_expr_element(new PrimitiveExpr(value));
+            return new PrimitiveExpr(value);
         }
-
-        if(ast->get_children().size() == 2) {
-            expression->set_left_expr(parse_expression<FIELD_HANDLER_T>(children.front(), parsed_class));
-            expression->set_right_expr(parse_expression<FIELD_HANDLER_T>(children.back(), parsed_class));
-        }
-
-        return expression;
     }
 
     FunctionExpr* parse_function(ProtocolParser::Node* ast, Class& parsed_class) {

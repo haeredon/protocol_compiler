@@ -10,7 +10,7 @@ void FunctionExpr::add_arg(Expression* expression) {
     args.push_back(expression);
 }
 
-std::string FunctionExpr::to_string() {
+std::string FunctionExpr::to_string() const {
     std::stringstream ss;
 
     ss << "(";
@@ -27,8 +27,8 @@ std::string FunctionExpr::to_string() {
                 continue;
             }
 
-            const FieldExpr* handler = static_cast<const FieldExpr*>(expr->get_expression_handler());
-            ss << "Util::range_equals(" << to_cmp_with << ", data + " << handler->get_field().get_name() << ".offset, 0," << handler->get_field().get_name() << ".length" << ")";
+//            const FieldExpr* handler = static_cast<const FieldExpr*>(expr->get_expression_handler());
+//            ss << "Util::range_equals(" << to_cmp_with << ", data + " << handler->get_field().get_name() << ".offset, 0," << handler->get_field().get_name() << ".length" << ")";
 
             if(expr != args.back()) {
                 ss << " && ";
@@ -38,8 +38,8 @@ std::string FunctionExpr::to_string() {
     } else if(name == "has_not") {
 
         for(Expression* expr : args) {
-            const FieldExpr* handler = static_cast<const FieldExpr*>(expr->get_expression_handler());
-            ss << handler->get_field().get_name() << ".length == 0";
+//            const FieldExpr* handler = static_cast<const FieldExpr*>(expr->get_expression_handler());
+//            ss << handler->get_field().get_name() << ".length == 0";
 
             if(expr != args.back()) {
                 ss << " && ";
@@ -47,6 +47,7 @@ std::string FunctionExpr::to_string() {
         }
 
     } else if(name == "prefix") {
+        throw "Prefix expression not supported anymore, use range_equal instead";
         std::string base = args.front()->to_string();
         ss << "Util::range_equals(" << base << ", &data[num], 0, Util::size_of(" << base << "))";
     } else if(name == "cdata") {

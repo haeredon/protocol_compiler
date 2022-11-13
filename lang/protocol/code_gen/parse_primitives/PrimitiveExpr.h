@@ -5,11 +5,11 @@
 #ifndef PROTOCOL_COMPILER_PRIMITIVEEXPR_H
 #define PROTOCOL_COMPILER_PRIMITIVEEXPR_H
 
-#include "ExpressionHandler.h"
+#include "Expression.h"
 
 #include <string>
 
-class PrimitiveExpr : public ExpressionHandler {
+class PrimitiveExpr : public Expression {
 
     std::string value;
 
@@ -18,7 +18,7 @@ public:
 
     PrimitiveExpr(const std::string& value);
 
-    std::string to_string();
+    std::string to_string() const;
 
 };
 

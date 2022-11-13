@@ -1,11 +1,13 @@
 protocol: (Ethernet)
 field: (des_mac, 6)
 field: (src_mac, 6)
-field: (eth_802_1q_outer, 4, range_equals(0, 3, 34984))
+field: (eth_802_1q_outer, 4, range_equals(0, 3, 34984) < 3)
 field: (eth_802_1q_inner, 4, range_equals(0, 3, 33024))
-field: (eth_type, 2, cdata(2) > 56325) enum: (ARP, 1544), (IPV4, 8)
+field: (eth_type, 2, cdata(2) > 1535) enum: (ARP, 2054), (IPV4, 2048)
 field: (length, 2, has_not(eth_type))
 next_protocol: (eth_type, LLC)
+
+
 #######################################
 protocol: (Llc)
 field: (dsap, 1) enum: (STP, 66)

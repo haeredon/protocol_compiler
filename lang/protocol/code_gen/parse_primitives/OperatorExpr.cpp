@@ -4,12 +4,12 @@
 
 #include "OperatorExpr.h"
 
-OperatorExpr::OperatorExpr(const std::string &value) : value(value) {
+OperatorExpr::OperatorExpr(const std::string& value, Expression* lhs, Expression* rhs): Expression(), value(value), left_expr(lhs), right_expr(rhs) {
 
 }
 
 
-std::string OperatorExpr::to_string() {
+std::string OperatorExpr::to_string() const {
     return OperatorExpr::symbol_to_op.at(value);
 }
 

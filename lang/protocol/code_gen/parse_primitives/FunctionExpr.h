@@ -6,12 +6,12 @@
 #define PROTOCOL_COMPILER_FUNCTIONEXPR_H
 
 #include "Expression.h"
-#include "ExpressionHandler.h"
+
 
 #include <string>
 #include <vector>
 
-class FunctionExpr : public ExpressionHandler {
+class FunctionExpr : public Expression {
 
     std::string name;
 
@@ -22,7 +22,7 @@ public:
 
     void set_name(const std::string &name);
 
-    std::string to_string();
+    std::string to_string() const;
 };
 
 
