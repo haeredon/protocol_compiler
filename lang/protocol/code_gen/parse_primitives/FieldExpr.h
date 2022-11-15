@@ -25,6 +25,8 @@ public:
 
     const Field& get_field() const;
 
+    std::endian get_endianness();
+
 };
 
 

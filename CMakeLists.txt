@@ -76,7 +76,8 @@ add_executable(parser
         lang/protocol/code_gen/parse_primitives/NextProtocol.cpp
         lang/protocol/code_gen/parse_primitives/NextProtocol.h
         lang/protocol/code_gen/BuildClass.cpp
-        lang/protocol/code_gen/BuildClass.h)
+        lang/protocol/code_gen/BuildClass.h
+        lang/protocol/code_gen/ProtocolUtil.h)
 
 add_dependencies(parser pc)
 target_link_libraries(parser pc)

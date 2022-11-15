@@ -9,3 +9,8 @@ PrimitiveExpr::PrimitiveExpr(const std::string& value) : Expression(), value(val
 std::string PrimitiveExpr::to_string() const {
     return value;
 }
+
+
+std::endian PrimitiveExpr::get_endianness() {
+    return std::endian::little;
+}

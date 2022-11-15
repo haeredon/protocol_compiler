@@ -23,6 +23,8 @@ public:
     void set_name(const std::string &name);
 
     std::string to_string() const;
+
+    std::endian get_endianness();
 };
 
 

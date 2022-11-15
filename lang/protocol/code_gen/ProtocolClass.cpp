@@ -5,7 +5,7 @@
 
 #include "ProtocolClass.h"
 #include "BuildClass.h"
-#include "Util.h"
+#include "ProtocolUtil.h"
 
 #include <iostream>
 #include <valarray>
@@ -108,8 +108,7 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
             ss << "enum class " << name << "_enum" << " { ";
             for(const auto& key_pair : field.get_enumeration().get_enum_to_Val()) {
                 uint64_t val = std::get<1>(key_pair);
-                std::string type = length_to_type(std::stoi(field.get_length()->to_string()));
-                ss << std::get<0>(key_pair) << " = Util::flip_endian_to_num((" << type << ")" << val << ")";
+                ss << std::get<0>(key_pair) << " = Util::little_to_big(" << val << ", " << field.get_length()->to_string() << ")";
                 ss << ", ";
             }
             ss << "UNKNOWN ";

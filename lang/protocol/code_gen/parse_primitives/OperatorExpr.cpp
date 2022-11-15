@@ -10,9 +10,14 @@ OperatorExpr::OperatorExpr(const std::string& value, Expression* lhs, Expression
 
 
 std::string OperatorExpr::to_string() const {
-    return OperatorExpr::symbol_to_op.at(value);
-}
+    std::stringstream ss;
 
+    ss << left_expr->to_string();
+    ss << OperatorExpr::symbol_to_op.at(value);
+    ss << right_expr->to_string();
+
+    return ss.str();
+}
 
 const std::unordered_map<std::string , std::string> OperatorExpr::symbol_to_op = {
         std::pair<std::string, std::string>(ProtocolParser::Tokens::PLUS, "+"),
@@ -22,3 +27,19 @@ const std::unordered_map<std::string , std::string> OperatorExpr::symbol_to_op =
         std::pair<std::string, std::string>(ProtocolParser::Tokens::AND, "&"),
         std::pair<std::string, std::string>(ProtocolParser::Tokens::OR, "|")
 };
+
+
+std::endian OperatorExpr::get_endianness() {
+    return std::endian::little;
+}
+
+
+//template<class NUM_T>
+//static bool less_than(NUM_T little_endian, NUM_T big_endian) {
+//    less_greater_compare<NUM_T, less>(little_endian, big_endian);
+//}
+//
+//template<class NUM_T>
+//static bool greater_than(NUM_T little_endian, NUM_T big_endian) {
+//    less_greater_compare<NUM_T, greater>(little_endian, big_endian);
+//}

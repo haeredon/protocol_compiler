@@ -22,6 +22,8 @@ public:
     void add_chain_element(const std::string &chain_element);
 
     std::string to_string();
+
+    std::endian get_endianness();
 };
 
 

@@ -26,6 +26,8 @@ public:
     OperatorExpr(const std::string& value, Expression* lhs, Expression* rhs);
 
     std::string to_string() const;
+
+    std::endian get_endianness();
 };
 
 
