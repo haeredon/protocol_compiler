@@ -55,12 +55,12 @@ namespace ProtocolParser {
                     stack[3].add_inherits(syn.get_values());
                     stack[3].add_inherits(syn.get_inherits());
                 },
-                        [](auto stack) {},
-                        [](auto stack) {
-                            ParserAction<Node*>& syn = stack.front();
+                [](auto stack) {},
+                [](auto stack) {
+                    ParserAction<Node*>& syn = stack.front();
 
-                            stack[1].add_value(syn.get_values().front());
-                        }
+                    stack[1].add_value(syn.get_values().front());
+                }
             }),
 
             // definition --> epsilon                           : S.val = epsilon
@@ -147,8 +147,26 @@ namespace ProtocolParser {
                         }
             }),
 
-            // stmt_2 -> 'field:' '(' ID ',' expr conditional ')' bitmap enum
+            // stmt_2 -> stmt_3
             Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::STMT_2_TOKEN,
+            std::vector<GrammarToken> { Tokens::STMT_3_TOKEN },
+            [](auto stack) {},
+            std::vector<void (*)(std::deque<ParserAction<Node*>>&)> {
+                [](auto stack) {},
+                        [](auto stack) {},
+            }),
+
+            // stmt_2 -> 'switch:' '(' expr ')' case_list 'end:'
+            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::STMT_2_TOKEN,
+            std::vector<GrammarToken> {Tokens::SWITCH_TOKEN, Tokens::LEFT_PAR_TOKEN, Tokens::EXPR_TOKEN, Tokens::RIGHT_PAR_TOKEN, Tokens::WHILE_TOKEN, Tokens::END_TOKEN },
+            [](auto stack) {},
+            std::vector<void (*)(std::deque<ParserAction<Node*>>&)> {
+                [](auto stack) {},
+                        [](auto stack) {}
+            }),
+
+            // stmt_3 -> 'field:' '(' string ',' expr optional ')' bitmap enum
+            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::STMT_3_TOKEN,
             std::vector<GrammarToken> {Tokens::FIELD_TOKEN, Tokens::Tokens::LEFT_PAR_TOKEN, Tokens::Tokens::ID_TOKEN, Tokens::Tokens::COMMA_TOKEN, Tokens::Tokens::EXPR_TOKEN, Tokens::OPTIONAL_TOKEN, Tokens::Tokens::RIGHT_PAR_TOKEN, Tokens::Tokens::BITMAP_TOKEN, Tokens::Tokens::ENUM_TOKEN },
             [](auto stack) {},
             std::vector<void (*)(std::deque<ParserAction<Node*>>&)> {
@@ -242,9 +260,9 @@ namespace ProtocolParser {
                 [](auto stack) {}
             }),
 
-            // stmt_1 -> 'field_group:' '(' expr ')' field_group 'end:' stmt_1
+            // stmt_1 -> 'while:' '(' expr ')' while 'end:' stmt_1
             Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::STMT_1_TOKEN,
-             std::vector<GrammarToken> { Tokens::FIELD_GROUP_TOKEN_T, Tokens::LEFT_PAR_TOKEN, Tokens::EXPR_TOKEN, Tokens::RIGHT_PAR_TOKEN, Tokens::FIELD_GROUP_TOKEN, Tokens::END_TOKEN, Tokens::STMT_1_TOKEN },
+             std::vector<GrammarToken> { Tokens::WHILE_TOKEN_T, Tokens::LEFT_PAR_TOKEN, Tokens::EXPR_TOKEN, Tokens::RIGHT_PAR_TOKEN, Tokens::WHILE_TOKEN, Tokens::END_TOKEN, Tokens::STMT_1_TOKEN },
              [](auto stack) {
                 ParserAction<Node*>& act = stack.front();
 
@@ -323,10 +341,10 @@ namespace ProtocolParser {
                 }
             }),
 
-            // field_group -> stmt_2 field_group
-            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::FIELD_GROUP_TOKEN,
-             std::vector<GrammarToken> { Tokens::STMT_2_TOKEN, Tokens::FIELD_GROUP_TOKEN },
-             [](auto stack) {
+            // while -> stmt_2 while
+            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::WHILE_TOKEN,
+            std::vector<GrammarToken> { Tokens::STMT_2_TOKEN, Tokens::WHILE_TOKEN },
+            [](auto stack) {
                 ParserAction<Node*>& act = stack.front();
 
                 stack[3].add_inherits(act.get_inherits());
@@ -338,16 +356,48 @@ namespace ProtocolParser {
 
                     stack[1].add_inherits(values);
                 },
+                        [](auto stack) {
+                            ParserAction<Node*>& syn = stack.front();
+                            stack[1].add_values(syn.get_values());
+                        }
+            }),
+
+            // while -> epsilon
+            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::WHILE_TOKEN,
+            std::vector<GrammarToken> { Tokens::EPS_TOKEN },
+            [](auto stack) {
+                ParserAction<Node*>& act = stack.front();
+
+                stack[1].add_inherits(act.get_inherits());
+            },
+            std::vector<void (*)(std::deque<ParserAction<Node*>>&)> {
                 [](auto stack) {
                     ParserAction<Node*>& syn = stack.front();
-                    stack[1].add_values(syn.get_values());
+                    std::vector<Node*> inherits = syn.get_inherits();
+                    stack[1].add_values(inherits);
                 }
             }),
 
-            // field_group -> epsilon
-            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::FIELD_GROUP_TOKEN,
-             std::vector<GrammarToken> { Tokens::Tokens::EPS_TOKEN },
-             [](auto stack) {
+            // case_list -> expr ':' stmt_3
+            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::CASE_LIST,
+            std::vector<GrammarToken> { Tokens::EXPR_TOKEN, Tokens::COLON_TOKEN, Tokens::STMT_3_TOKEN },
+            [](auto stack) {
+                ParserAction<Node*>& act = stack.front();
+
+                stack[1].add_inherits(act.get_inherits());
+            },
+            std::vector<void (*)(std::deque<ParserAction<Node*>>&)> {
+                [](auto stack) {
+                    ParserAction<Node*>& syn = stack.front();
+                    std::vector<Node*> inherits = syn.get_inherits();
+                    stack[1].add_values(inherits);
+                }
+            }),
+
+            // case_list -> epsilon
+            Production<GrammarToken, void (*)(std::deque<ParserAction<Node*>>&)>(Tokens::CASE_LIST,
+            std::vector<GrammarToken> { Tokens::EPS_TOKEN },
+            [](auto stack) {
                 ParserAction<Node*>& act = stack.front();
 
                 stack[1].add_inherits(act.get_inherits());
@@ -1054,14 +1104,20 @@ termination -> '-' termination
 termination -> epsilon
 
 stmt_1 -> 'next_protocol:' '(' arg_list ')'
-stmt_1 -> 'field_group:' '(' expr ')' field_group 'end:' stmt_1
+stmt_1 -> 'while:' '(' expr ')' while 'end:' stmt_1                     #
 stmt_1 -> stmt_2 stmt_1
 stmt_1 -> epsilon
 
-field_group -> stmt_2 field_group
-field_group -> epsilon
+while -> stmt_2 while                                                   #
+while -> epsilon                                                        #
 
-stmt_2 -> 'field:' '(' string ',' expr optional ')' bitmap enum
+stmt_2 -> stmt_3
+stmt_2 -> 'switch:' '(' expr ')' case_list 'end:'                       #
+
+stmt_3 -> 'field:' '(' string ',' expr optional ')' bitmap enum
+
+case_list -> expr ':' stmt_3
+case_list -> epsilon
 
 optional -> ',' expr
 optional -> epsilon

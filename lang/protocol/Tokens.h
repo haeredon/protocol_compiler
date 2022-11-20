@@ -37,6 +37,9 @@ namespace ProtocolParser {
         static const std::string OR;
         static const std::string LESS_THAN;
         static const std::string GREATER_THAN;
+        static const std::string COLON;
+        static const std::string WHILE;
+        static const std::string SWITCH;
         static const std::string ID;
         static const std::string INT;
         static const std::string END;
@@ -55,6 +58,8 @@ namespace ProtocolParser {
         static const GrammarToken FUN_TOKEN;
         static const GrammarToken STMT_1_TOKEN;
         static const GrammarToken STMT_2_TOKEN;
+        static const GrammarToken STMT_3_TOKEN;
+        static const GrammarToken CASE_LIST;
         static const GrammarToken STRING_TOKEN;
         static const GrammarToken FIELD_GROUP_TOKEN;
         static const GrammarToken BITMAP_TOKEN;
@@ -81,6 +86,7 @@ namespace ProtocolParser {
         static const GrammarToken INNER_TOKEN_T;
         static const GrammarToken ENUM_TOKEN_T;
         static const GrammarToken COND_TOKEN_T;
+        static const GrammarToken WHILE_TOKEN_T;
         static const GrammarToken FIELD_GROUP_TOKEN_T;
         static const GrammarToken END_TOKEN;
         static const GrammarToken DOT_TOKEN;
@@ -91,6 +97,9 @@ namespace ProtocolParser {
         static const GrammarToken GREATER_THAN_TOKEN;
         static const GrammarToken QUOTE_TOKEN;
         static const GrammarToken STRING_TOKEN_T;
+        static const GrammarToken COLON_TOKEN;
+        static const GrammarToken WHILE_TOKEN;
+        static const GrammarToken SWITCH_TOKEN;
 
         static const std::unordered_map<std::string , short> op_precedence;
 

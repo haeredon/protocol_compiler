@@ -28,6 +28,9 @@ namespace ProtocolParser {
     const std::string Tokens::OR = "OR";
     const std::string Tokens::LESS_THAN = "LESS_THAN";
     const std::string Tokens::GREATER_THAN = "GREATER_THAN";
+    const std::string Tokens::COLON = "COLON";
+    const std::string Tokens::WHILE = "WHILE";
+    const std::string Tokens::SWITCH = "SWITCH";
     const std::string Tokens::AND = "AND";
     const std::string Tokens::STRING = "STRING";
 
@@ -45,6 +48,8 @@ namespace ProtocolParser {
     const GrammarToken Tokens::OP_TOKEN("NON_TERM", "OP", false);
     const GrammarToken Tokens::STMT_1_TOKEN("NON_TERM", "STMT_1", false);
     const GrammarToken Tokens::STMT_2_TOKEN("NON_TERM", "STMT_2", false);
+    const GrammarToken Tokens::STMT_3_TOKEN("NON_TERM", "STMT_3", false);
+    const GrammarToken Tokens::CASE_LIST("NON_TERM", "CASE_LIST", false);
     const GrammarToken Tokens::BITMAP_TOKEN("NON_TERM", "BITMAP", false);
     const GrammarToken Tokens::INNER_TOKEN("NON_TERM", "INNER", false);
     const GrammarToken Tokens::FUN_TOKEN("NON_TERM", "FUN", false);
@@ -58,6 +63,7 @@ namespace ProtocolParser {
     const GrammarToken Tokens::DOT_EXPR_TOKEN("NON_TERM", "DOT_EXPR_TOKEN", false);
     const GrammarToken Tokens::FIELD_GROUP_TOKEN("TERM", "FIELD_GROUP_TOKEN", false);
     const GrammarToken Tokens::STRING_TOKEN("TERM", "STRING_TOKEN", false);
+    const GrammarToken Tokens::WHILE_TOKEN("TERM", Tokens::WHILE, false);
 
     const GrammarToken Tokens::ID_TOKEN("TERM", Tokens::ID, true, std::regex("[a-zA-Z_]+[a-zA-Z_0-9]*"));
     const GrammarToken Tokens::INT_TOKEN("TERM", Tokens::INT, true, std::regex("\\d+"));
@@ -81,6 +87,10 @@ namespace ProtocolParser {
     const GrammarToken Tokens::OR_TOKEN("TERM", Tokens::OR, true);
     const GrammarToken Tokens::LESS_THAN_TOKEN("TERM", Tokens::LESS_THAN, true);
     const GrammarToken Tokens::GREATER_THAN_TOKEN("TERM", Tokens::GREATER_THAN, true);
+    const GrammarToken Tokens::COLON_TOKEN("TERM", Tokens::COLON, true);
+    const GrammarToken Tokens::WHILE_TOKEN_T("TERM", Tokens::WHILE, true);
+    const GrammarToken Tokens::SWITCH_TOKEN("TERM", Tokens::SWITCH, true);
+
     const GrammarToken Tokens::STRING_TOKEN_T("TERM", Tokens::STRING, true, std::regex("[a-zA-Z_]+[a-zA-Z_0-9]*"));
 
     const std::unordered_map<std::string, short> Tokens::op_precedence = {

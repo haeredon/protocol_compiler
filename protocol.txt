@@ -6,8 +6,6 @@ field: (eth_802_1q_inner, 4, range_equals(0, 3, 33024))
 field: (eth_type, 2, cdata(2) > 1535) enum: (ARP, 2054), (IPV4, 2048)
 field: (length, 2, has_not(eth_type))
 next_protocol: (eth_type, LLC)
-
-
 #######################################
 protocol: (Llc)
 field: (dsap, 1) enum: (STP, 66)
@@ -43,3 +41,73 @@ field: (sender_id_type, 2)
 field: (sender_id_length, 2)
 field: (sender_id, sender_id_length - 4)
 ########################################################
+protocol: (Udp)
+field: (src_port, 2)
+field: (dst_port, 2)
+field: (length, 2)
+field: (checksum, 2)
+########################################################
+protocol: (Ipv4)
+field: (flags_1, 2) bitmap: (version, 4), (IHL, 4)
+field: (flags_2, 1) bitmap: (DSCP, 6), (ECN, 2)
+field: (total_length, 2)
+field: (identification, 2)
+field: (flags_3, 2) bitmap: (reserved, 1), (df, 1), (mf, 1), (fragment_offset, 13)
+field: (time_to_live, 1)
+field: (protocol, 1)
+field: (header_checksum, 2)
+field: (src_ip, 4)
+field: (dst_ip, 4)
+list: (flags_1.IHL < 6):
+    switch: (cdata(1) & 127)
+        0:
+            field: (type, 1)
+            field: (length, 1)
+            field: (data, length - 2)
+        1:
+            field: (type, 1)
+            field: (length, 1)
+            field: (data, length - 2)
+        2:
+            field: (type, 1)
+            field: (length, 1)
+            field: (data, length - 2)
+        3:
+            field: (type, 1)
+            field: (length, 1)
+            field: (data, length - 2)
+        9:
+            field: (type, 1)
+            field: (length, 1)
+            field: (data, length - 2)
+        7:
+            field: (type, 1)
+            field: (length, 1)
+            field: (data, length - 2)
+        8:
+            field: (type, 1)
+            field: (length, 1)
+            field: (data, length - 2)
+        68:
+            field: (type, 1)
+            field: (length, 1)
+            field: (data, length - 2)
+end: (read_bytes_equals(flags_1.IHL * 32)):
+
+
+
+########################################################
+protocol: (Tcp)
+field: (src_port, 2)
+field: (dst_port, 2)
+field: (sequence_num, 4)
+field: (ack_num, 4)
+field: (flags, 2) bitmap: (data_offset, 4), (reserved, 3), (ns, 1), (cwr, 1), (ece, 1), (urg, 1), (ack, 1), (psh, 1), (rst, 1), (syn, 1), (fin, 1)
+field: (window_size, 2)
+field: (checksum, 2)
+field: (urgent_pointer, 2)
+unordered_until(equals(read, flags.data_offset)):
+    field: (end, 0, prefix(0))
+    field: (no_op, 0, prefix(1))
+    field: (max_segment_size, range(1,1), prefix(2), 2)
+end:
