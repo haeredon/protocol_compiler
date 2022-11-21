@@ -27,7 +27,6 @@ public:
 
     std::string to_string() const;
 
-    std::endian get_endianness();
 };
 
 

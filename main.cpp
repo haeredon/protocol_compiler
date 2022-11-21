@@ -80,6 +80,8 @@
             parse_tree = grammar.parse(tokens);
         } catch (ParseException<LexerToken> e) {
             std::cout << e.get_info() << ". At position: " << e.get_lexer_token().get_position() << std::endl;
+            std::cout << "Value: " << e.get_lexer_token().get_value() << std::endl;
+            std::cout << "Tag: " << e.get_lexer_token().get_tag() << std::endl;
             exit(EXIT_FAILURE);
         }
 

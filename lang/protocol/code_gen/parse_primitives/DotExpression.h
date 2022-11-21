@@ -23,7 +23,6 @@ public:
 
     std::string to_string();
 
-    std::endian get_endianness();
 };
 
 

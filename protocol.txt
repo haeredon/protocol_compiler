@@ -58,56 +58,6 @@ field: (protocol, 1)
 field: (header_checksum, 2)
 field: (src_ip, 4)
 field: (dst_ip, 4)
-list: (flags_1.IHL < 6):
-    switch: (cdata(1) & 127)
-        0:
-            field: (type, 1)
-            field: (length, 1)
-            field: (data, length - 2)
-        1:
-            field: (type, 1)
-            field: (length, 1)
-            field: (data, length - 2)
-        2:
-            field: (type, 1)
-            field: (length, 1)
-            field: (data, length - 2)
-        3:
-            field: (type, 1)
-            field: (length, 1)
-            field: (data, length - 2)
-        9:
-            field: (type, 1)
-            field: (length, 1)
-            field: (data, length - 2)
-        7:
-            field: (type, 1)
-            field: (length, 1)
-            field: (data, length - 2)
-        8:
-            field: (type, 1)
-            field: (length, 1)
-            field: (data, length - 2)
-        68:
-            field: (type, 1)
-            field: (length, 1)
-            field: (data, length - 2)
-end: (read_bytes_equals(flags_1.IHL * 32)):
-
-
-
-########################################################
-protocol: (Tcp)
-field: (src_port, 2)
-field: (dst_port, 2)
-field: (sequence_num, 4)
-field: (ack_num, 4)
-field: (flags, 2) bitmap: (data_offset, 4), (reserved, 3), (ns, 1), (cwr, 1), (ece, 1), (urg, 1), (ack, 1), (psh, 1), (rst, 1), (syn, 1), (fin, 1)
-field: (window_size, 2)
-field: (checksum, 2)
-field: (urgent_pointer, 2)
-unordered_until(equals(read, flags.data_offset)):
-    field: (end, 0, prefix(0))
-    field: (no_op, 0, prefix(1))
-    field: (max_segment_size, range(1,1), prefix(2), 2)
+while: (2 < 3)
+    field: (type, 1)
 end:

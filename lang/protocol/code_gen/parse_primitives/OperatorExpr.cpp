@@ -29,10 +29,6 @@ const std::unordered_map<std::string , std::string> OperatorExpr::symbol_to_op =
 };
 
 
-std::endian OperatorExpr::get_endianness() {
-    return std::endian::little;
-}
-
 
 //template<class NUM_T>
 //static bool less_than(NUM_T little_endian, NUM_T big_endian) {

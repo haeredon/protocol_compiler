@@ -15,7 +15,3 @@ void DotExpression::add_chain_element(const std::string &chain_element) {
 std::string DotExpression::to_string() {
     return std::string();
 }
-
-std::endian DotExpression::get_endianness() {
-    throw "not implemented";
-}

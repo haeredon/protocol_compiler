@@ -64,7 +64,3 @@ std::string FunctionExpr::to_string() const {
 void FunctionExpr::set_name(const std::string &name) {
     this->name = name;
 }
-
-std::endian FunctionExpr::get_endianness() {
-
-}

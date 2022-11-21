@@ -21,6 +21,3 @@ const Field &FieldExpr::get_field() const {
     return field;
 }
 
-std::endian FieldExpr::get_endianness() {
-
-}

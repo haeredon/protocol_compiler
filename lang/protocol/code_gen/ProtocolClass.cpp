@@ -6,6 +6,7 @@
 #include "ProtocolClass.h"
 #include "BuildClass.h"
 #include "ProtocolUtil.h"
+#include "Util.h"
 
 #include <iostream>
 #include <valarray>
