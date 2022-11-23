@@ -8,12 +8,13 @@
 #include "Expression.h"
 #include "Bitmap.h"
 #include "Enumeration.h"
+#include "Statement.h"
 
 #include <string>
 #include <iostream>
 #include <memory>
 
-class Field {
+class Field : public Statement {
 
     std::string name;
 

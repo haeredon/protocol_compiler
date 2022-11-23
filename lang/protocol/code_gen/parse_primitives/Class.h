@@ -6,7 +6,7 @@
 #define PROTOCOL_COMPILER_CLASS_H
 
 #include "Field.h"
-#include "FieldGroup.h"
+#include "While.h"
 #include "NextProtocol.h"
 
 #include <list>
@@ -15,7 +15,7 @@ class Class {
 
     std::list<Field> fields;
 
-    std::vector<FieldGroup> field_groups;
+    std::vector<While> whiles;
 
     NextProtocol next_protocol;
 
@@ -26,7 +26,7 @@ public:
 
     void add_field(Field field);
 
-    void add_field_group(FieldGroup group);
+    void add_while(While while_obj);
 
     void set_next_protocol(NextProtocol&& nextProtocol);
 
@@ -36,7 +36,7 @@ public:
 
     std::list<Field> &get_fields();
 
-    const std::vector<FieldGroup> &get_field_groups() const;
+    const std::vector<While> &get_while() const;
 
     const NextProtocol &get_next_protocol() const;
 

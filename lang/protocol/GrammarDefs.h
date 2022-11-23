@@ -135,7 +135,7 @@ namespace ProtocolParser {
                             std::vector<Node*>::iterator it;
                             for(it = ++values.begin() ; it != values.end() ; ++it) {
                                 Node* node = (*it);
-                                if(node->get_value() == "FIELD" || node->get_value() == "FIELD_GROUP") {
+                                if(node->get_value() != "PROPERTY") {
                                     fields->add_child(*it);
                                 } else {
                                     properties->add_child(*it);

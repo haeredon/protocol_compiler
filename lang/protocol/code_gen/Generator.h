@@ -10,7 +10,9 @@
 //#include "Field.h"
 #include "BuildClass.h"
 #include "parse_primitives/Class.h"
-#include "parse_primitives/FieldGroup.h"
+#include "parse_primitives/While.h"
+#include "parse_primitives/Switch.h"
+#include "parse_primitives/Case.h"
 #include "parse_primitives/Field.h"
 #include "parse_primitives/Bitmap.h"
 #include "parse_primitives/Expression.h"
@@ -71,8 +73,10 @@ public:
 
             if(attr_name == "FIELD") {
                 parsed_class.add_field(parse_field(node, parsed_class));
-            } else if(attr_name == "FIELD_GROUP") {
-                parsed_class.add_field_group(parse_field_group(node, parsed_class));
+            } else if(attr_name == "WHILE") {
+                parsed_class.add_while(parse_while(node, parsed_class));
+            } else if(attr_name == "SWITCH") {
+//                parsed_class.add_switch(parse_field_group(node, parsed_class));
             }
         }
 
@@ -87,6 +91,40 @@ public:
                 parsed_class.set_next_protocol(parse_next_protocol(node, parsed_class));
             }
         }
+    }
+
+    While parse_while(ProtocolParser::Node* ast, Class& parsed_class) {
+        Expression* continue_conditional = parse_expression(ast->get_children().front());
+        std::list<Statement> stmts;
+
+        for(ProtocolParser::Node* node : ast->get_children().back()->get_children()) {
+            std::string attr_name = node->get_value();
+
+            if(attr_name == "FIELD") {
+                stmts.insert(parse_field(node, parsed_class));
+            } else if(attr_name == "WHILE") {
+                stmts.insert(parse_while(node, parsed_class));
+            } else if(attr_name == "SWITCH") {
+                stmts.insert(parse_switch(node, parsed_class));
+            }
+        }
+
+        return While(continue_conditional, std::move(stmts));
+    }
+
+    Switch parse_switch(ProtocolParser::Node* ast, Class& parsed_class) {
+        Expression* compare_value = parse_expression(ast->get_children().front());
+        std::list<Case> cases;
+
+        ProtocolParser::Node* cases_node = ast->get_children().back();
+        for(ProtocolParser::Node* node : cases_node->get_children()) {
+            std::string attr_name = node->get_value();
+
+            Expression* match = parse_expression(node->get_children().front());
+            cases.emplace_back(match, parse_field(node->get_children().back()));
+        }
+
+        return Switch(compare_value, std::move(cases));
     }
 
     Field parse_field(ProtocolParser::Node* ast, Class& parsed_class) {
@@ -114,15 +152,15 @@ public:
         return field;
     }
 
-    FieldGroup parse_field_group(ProtocolParser::Node* ast, Class& parsed_class) {
-        FieldGroup field_group;
+    While parse_field_group(ProtocolParser::Node* ast, Class& parsed_class) {
+        While field_group;
 
         ProtocolParser::Node* cond_expr = ast->get_children().front();
         field_group.set_is_continue(parse_expression(cond_expr, parsed_class));
 
         std::vector<ProtocolParser::Node*> fields = ast->get_children().back()->get_children();
         for(ProtocolParser::Node* node : fields) {
-            field_group.add_field(parse_field(node, parsed_class));
+            field_group.add_statement(parse_field(node, parsed_class));
         }
 
         return field_group;

@@ -54,8 +54,8 @@ add_executable(parser
         lang/protocol/code_gen/parse_primitives/Bitmap.h
         lang/protocol/code_gen/parse_primitives/Field.cpp
         lang/protocol/code_gen/parse_primitives/Field.h
-        lang/protocol/code_gen/parse_primitives/FieldGroup.cpp
-        lang/protocol/code_gen/parse_primitives/FieldGroup.h
+        lang/protocol/code_gen/parse_primitives/While.cpp
+        lang/protocol/code_gen/parse_primitives/While.h
         lang/protocol/code_gen/parse_primitives/Expression.h
         lang/protocol/code_gen/parse_primitives/Expression.cpp
         lang/protocol/code_gen/parse_primitives/Enumeration.cpp

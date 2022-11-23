@@ -60,4 +60,10 @@ field: (src_ip, 4)
 field: (dst_ip, 4)
 while: (2 < 3)
     field: (type, 1)
+    switch: (type)
+        3213:
+            field: (B, 1)
+        32:
+            field: (A, 4)
+    end:
 end:

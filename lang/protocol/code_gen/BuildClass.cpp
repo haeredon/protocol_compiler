@@ -34,11 +34,11 @@ std::string BuildClass::class_to_string(Class &p_class) {
         ss << "build_field "<< field.get_name() << ";";
     }
 
-    for(const FieldGroup& group : p_class.get_field_groups()) {
-        for(const Field& field : group.get_fields()) {
-            ss << "build_field "<< field.get_name() << ";";
-        }
-    }
+//    for(const While& group : p_class.get_while()) {
+//        for(const Field& field : group.get_statement()) {
+//            ss << "build_field "<< field.get_name() << ";";
+//        }
+//    }
 
 
 
@@ -62,12 +62,12 @@ std::string BuildClass::class_to_string(Class &p_class) {
         first = false;
     }
 
-    for(const FieldGroup& group : p_class.get_field_groups()) {
-        for(const Field& field : group.get_fields()) {
-            std::string is_included_str = field.get_is_included() == nullptr ? "false" : "true";
-            ss << "," << field.get_name() << "(0, " << is_included_str << ", false)";
-        }
-    }
+//    for(const While& group : p_class.get_while()) {
+//        for(const Field& field : group.get_statement()) {
+//            std::string is_included_str = field.get_is_included() == nullptr ? "false" : "true";
+//            ss << "," << field.get_name() << "(0, " << is_included_str << ", false)";
+//        }
+//    }
 
     ss << "{}";
 
@@ -83,13 +83,13 @@ std::string BuildClass::class_to_string(Class &p_class) {
         ss << "}";
     }
 
-    for(const FieldGroup& group : p_class.get_field_groups()) {
-        for(const Field& field : group.get_fields()) {
-            ss << "if(" << field.get_name() << ".initialized) {";
-            ss << "delete[] " << field.get_name() << ".data;";
-            ss << "}";
-        }
-    }
+//    for(const While& group : p_class.get_while()) {
+//        for(const Field& field : group.get_statement()) {
+//            ss << "if(" << field.get_name() << ".initialized) {";
+//            ss << "delete[] " << field.get_name() << ".data;";
+//            ss << "}";
+//        }
+//    }
 
     ss << "}";
 
@@ -114,15 +114,15 @@ std::string BuildClass::class_to_string(Class &p_class) {
         ss << "}";
     }
 
-    for(const FieldGroup& group : p_class.get_field_groups()) {
-        for(const Field& field : group.get_fields()) {
-            const std::string& name = field.get_name();
-            ss << "if(" << name << ".initialized) {";
-            ss << "memcpy(data + num_consumed, " << name << ".data, " << name  << ".length);";
-            ss << "num_consumed += " << name  << ".length;";
-            ss << "}";
-        }
-    }
+//    for(const While& group : p_class.get_while()) {
+//        for(const Field& field : group.get_statement()) {
+//            const std::string& name = field.get_name();
+//            ss << "if(" << name << ".initialized) {";
+//            ss << "memcpy(data + num_consumed, " << name << ".data, " << name  << ".length);";
+//            ss << "num_consumed += " << name  << ".length;";
+//            ss << "}";
+//        }
+//    }
 
     ss << "return data;";
 
@@ -153,28 +153,28 @@ std::string BuildClass::class_to_string(Class &p_class) {
         ss << "}";
     }
 
-    for(const FieldGroup& group : p_class.get_field_groups()) {
-        for(const Field& field : group.get_fields()) {
-            std::string name = field.get_name();
-
-            ss << "Builder& " << "set_" << field.get_name() << "(std::vector<uint8_t> data) {";
-            ss << "return set_" << field.get_name() << "(data.data(), data.size());";
-            ss << "}";
-
-            ss << "Builder& " << "set_" << field.get_name() << "(uint8_t* data, std::size_t build_field_length) {";
-            ss << "if(" << field.get_name() << ".length != 0) {";
-            ss << "size -= " << field.get_name() << ".length;";
-            ss << "delete[] " << field.get_name() << ".data;";
-            ss << "}";
-            ss << field.get_name() << ".data = new uint8_t[build_field_length];";
-            ss << "memcpy(" << field.get_name() << ".data, data, build_field_length);";
-            ss << field.get_name() << ".initialized = true;";
-            ss << field.get_name() << ".length = build_field_length;";
-            ss << "size += " << field.get_name() << ".length;";
-            ss << "return *this;";
-            ss << "}";
-        }
-    }
+//    for(const While& group : p_class.get_while()) {
+//        for(const Field& field : group.get_statement()) {
+//            std::string name = field.get_name();
+//
+//            ss << "Builder& " << "set_" << field.get_name() << "(std::vector<uint8_t> data) {";
+//            ss << "return set_" << field.get_name() << "(data.data(), data.size());";
+//            ss << "}";
+//
+//            ss << "Builder& " << "set_" << field.get_name() << "(uint8_t* data, std::size_t build_field_length) {";
+//            ss << "if(" << field.get_name() << ".length != 0) {";
+//            ss << "size -= " << field.get_name() << ".length;";
+//            ss << "delete[] " << field.get_name() << ".data;";
+//            ss << "}";
+//            ss << field.get_name() << ".data = new uint8_t[build_field_length];";
+//            ss << "memcpy(" << field.get_name() << ".data, data, build_field_length);";
+//            ss << field.get_name() << ".initialized = true;";
+//            ss << field.get_name() << ".length = build_field_length;";
+//            ss << "size += " << field.get_name() << ".length;";
+//            ss << "return *this;";
+//            ss << "}";
+//        }
+//    }
 
     /*************** Setters End *********************/
 

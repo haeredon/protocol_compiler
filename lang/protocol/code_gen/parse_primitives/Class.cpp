@@ -14,8 +14,8 @@ void Class::add_field(Field field) {
     fields.push_back(field);
 }
 
-void Class::add_field_group(FieldGroup group) {
-    field_groups.push_back(group);
+void Class::add_while(While while_obj) {
+    whiles.push_back(while_obj);
 }
 
 bool Class::has_field(const std::string& field_name) {
@@ -36,8 +36,8 @@ std::list<Field> &Class::get_fields() {
     return fields;
 }
 
-const std::vector<FieldGroup> &Class::get_field_groups() const {
-    return field_groups;
+const std::vector<While> &Class::get_while() const {
+    return whiles;
 }
 
 const std::string &Class::get_name() const {

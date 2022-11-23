@@ -60,18 +60,18 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
         }
     }
 
-    for(const FieldGroup& group : p_class.get_field_groups()) {
-        for(const Field& field : group.get_fields()) {
-            ss << "field " << field.get_name() << ";";
-
-            for(const auto& name_to_map : field.get_bitmap().get_name_to_map()) {
-                std::string range_name = std::get<0>(name_to_map);
-                std::tuple<std::size_t, std::size_t> range = std::get<1>(name_to_map);;
-                uint64_t mask = std::pow(2, std::get<1>(range)) + (std::pow(2, std::get<1>(range)) - std::pow(2, std::get<0>(range)));
-                ss << "static const uint64_t "<< field.get_name() << "_" << range_name << "= 0x" << std::hex << mask << ";" << std::endl;
-            }
-        }
-    }
+//    for(const While& group : p_class.get_while()) {
+//        for(const Field& field : group.get_statement()) {
+//            ss << "field " << field.get_name() << ";";
+//
+//            for(const auto& name_to_map : field.get_bitmap().get_name_to_map()) {
+//                std::string range_name = std::get<0>(name_to_map);
+//                std::tuple<std::size_t, std::size_t> range = std::get<1>(name_to_map);;
+//                uint64_t mask = std::pow(2, std::get<1>(range)) + (std::pow(2, std::get<1>(range)) - std::pow(2, std::get<0>(range)));
+//                ss << "static const uint64_t "<< field.get_name() << "_" << range_name << "= 0x" << std::hex << mask << ";" << std::endl;
+//            }
+//        }
+//    }
 
     /************************** Builder **************************************/
 
@@ -129,35 +129,35 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
     }
 
     // Field Groups
-    for(const FieldGroup& group : p_class.get_field_groups()) {
-
-        for(const Field& field : group.get_fields()) {
-            std::string name = field.get_name();
-
-            const std::unordered_map<std::string, std::size_t>& enums = field.get_enumeration().get_enum_to_Val();
-            if(enums.size() != 0) {
-                ss << "enum class " << name << "_enum" << " { ";
-                for(const auto& key_pair : field.get_enumeration().get_enum_to_Val()) {
-                    ss << std::get<0>(key_pair) << " = 0x" << std::hex << std::get<1>(key_pair);
-                    ss << ", ";
-                }
-                ss << "UNKNOWN ";
-                ss << "};";
-            }
-
-            for(const auto& name_to_map : field.get_bitmap().get_name_to_map()) {
-                std::string bit_mapping_name = name + "_" + std::get<0>(name_to_map);
-                ss << "uint64_t get_" << bit_mapping_name << "() {";
-                ss << "return Util::to_numeric<uint64_t>(&data[" << name << ".offset], " << name << ".length) & " <<  bit_mapping_name << ";";
-                ss << "}";
-            }
-
-            ss << "std::vector<uint8_t> get_" << name << "() {";
-            ss << "return std::vector<uint8_t>(data + " << name << ".offset, data + " << name << ".offset + " << name << ".length);";
-            ss << "}";
-        }
-
-    }
+//    for(const While& group : p_class.get_while()) {
+//
+//        for(const Field& field : group.get_statement()) {
+//            std::string name = field.get_name();
+//
+//            const std::unordered_map<std::string, std::size_t>& enums = field.get_enumeration().get_enum_to_Val();
+//            if(enums.size() != 0) {
+//                ss << "enum class " << name << "_enum" << " { ";
+//                for(const auto& key_pair : field.get_enumeration().get_enum_to_Val()) {
+//                    ss << std::get<0>(key_pair) << " = 0x" << std::hex << std::get<1>(key_pair);
+//                    ss << ", ";
+//                }
+//                ss << "UNKNOWN ";
+//                ss << "};";
+//            }
+//
+//            for(const auto& name_to_map : field.get_bitmap().get_name_to_map()) {
+//                std::string bit_mapping_name = name + "_" + std::get<0>(name_to_map);
+//                ss << "uint64_t get_" << bit_mapping_name << "() {";
+//                ss << "return Util::to_numeric<uint64_t>(&data[" << name << ".offset], " << name << ".length) & " <<  bit_mapping_name << ";";
+//                ss << "}";
+//            }
+//
+//            ss << "std::vector<uint8_t> get_" << name << "() {";
+//            ss << "return std::vector<uint8_t>(data + " << name << ".offset, data + " << name << ".offset + " << name << ".length);";
+//            ss << "}";
+//        }
+//
+//    }
 
     // Protocols get_protocol_type();
     ss << "Protocols get_protocol_type() {";
@@ -226,32 +226,32 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
     }
 
     // Field Groups
-    for(const FieldGroup& group : p_class.get_field_groups()) {
-        ss << "{";
-        ss << "uint16_t num_read = 0;";
-
-        ss << "while(" << group.get_is_continue()->to_string() << ") {";
-
-        bool first = true;
-        for(const Field& field : group.get_fields()) {
-
-            if(field.get_is_included() != nullptr) {
-                ss << (first ? "if" : "else if") << "(" << field.get_is_included()->to_string() << ") {";
-            }
-
-            ss << field.get_name() << ".offset = num;";
-            ss << "num +=" << field.get_length()->to_string() << ";";
-            ss << "num_read +=" << field.get_length()->to_string() << ";";
-            ss << field.get_name() << ".length = num - " << field.get_name() << ".offset" << ";";
-
-            if(field.get_is_included() != nullptr) {
-                ss << "}";
-            }
-        }
-
-        ss << "}";
-        ss << "}";
-    }
+//    for(const While& group : p_class.get_while()) {
+//        ss << "{";
+//        ss << "uint16_t num_read = 0;";
+//
+//        ss << "while(" << group.get_is_continue()->to_string() << ") {";
+//
+//        bool first = true;
+//        for(const Field& field : group.get_statement()) {
+//
+//            if(field.get_is_included() != nullptr) {
+//                ss << (first ? "if" : "else if") << "(" << field.get_is_included()->to_string() << ") {";
+//            }
+//
+//            ss << field.get_name() << ".offset = num;";
+//            ss << "num +=" << field.get_length()->to_string() << ";";
+//            ss << "num_read +=" << field.get_length()->to_string() << ";";
+//            ss << field.get_name() << ".length = num - " << field.get_name() << ".offset" << ";";
+//
+//            if(field.get_is_included() != nullptr) {
+//                ss << "}";
+//            }
+//        }
+//
+//        ss << "}";
+//        ss << "}";
+//    }
 
     ss << "size = num;";
     ss << "}";
