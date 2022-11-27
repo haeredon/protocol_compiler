@@ -10,34 +10,12 @@ void Class::set_name(std::string name) {
     this->name = name;
 }
 
-void Class::add_field(Field field) {
-    fields.push_back(field);
+void Class::add_statement(Statement *stmt) {
+    statements.push_back(stmt);
 }
 
-void Class::add_while(While while_obj) {
-    whiles.push_back(while_obj);
-}
-
-bool Class::has_field(const std::string& field_name) {
-    return std::any_of(fields.begin(), fields.end(), [field_name](Field& field){ return field.get_name() == field_name; });
-}
-
-Field& Class::get_field(const std::string& field_name) {
-    for(Field& field : fields) {
-        if(field.get_name() == field_name) {
-            return field;
-        }
-    }
-
-    throw std::exception();
-}
-
-std::list<Field> &Class::get_fields() {
-    return fields;
-}
-
-const std::vector<While> &Class::get_while() const {
-    return whiles;
+std::list<Statement*> &Class::get_statements() {
+    return statements;
 }
 
 const std::string &Class::get_name() const {
@@ -50,4 +28,16 @@ const NextProtocol &Class::get_next_protocol() const {
 
 void Class::set_next_protocol(NextProtocol&& nextProtocol) {
     next_protocol = std::move(nextProtocol);
+}
+
+bool Class::has_variable(std::string name) {
+    return name_to_field.contains(name);
+}
+
+Field* Class::get_variable(std::string name) {
+    return name_to_field.at(name);
+}
+
+void Class::add_variable(std::string name, Field* stmt) {
+    name_to_field.emplace(name, stmt);
 }

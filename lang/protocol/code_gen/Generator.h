@@ -72,9 +72,9 @@ public:
             std::string attr_name = node->get_value();
 
             if(attr_name == "FIELD") {
-                parsed_class.add_field(parse_field(node, parsed_class));
+                parsed_class.add_statement(parse_field(node, parsed_class));
             } else if(attr_name == "WHILE") {
-                parsed_class.add_while(parse_while(node, parsed_class));
+                parsed_class.add_statement(parse_while(node, parsed_class));
             } else if(attr_name == "SWITCH") {
 //                parsed_class.add_switch(parse_field_group(node, parsed_class));
             }
@@ -94,18 +94,18 @@ public:
     }
 
     While parse_while(ProtocolParser::Node* ast, Class& parsed_class) {
-        Expression* continue_conditional = parse_expression(ast->get_children().front());
-        std::list<Statement> stmts;
+        Expression* continue_conditional = parse_expression(ast->get_children().front(), parsed_class);
+        std::list<Statement*> stmts;
 
         for(ProtocolParser::Node* node : ast->get_children().back()->get_children()) {
             std::string attr_name = node->get_value();
 
             if(attr_name == "FIELD") {
-                stmts.insert(parse_field(node, parsed_class));
+                stmts.push_back(parse_field(node, parsed_class));
             } else if(attr_name == "WHILE") {
-                stmts.insert(parse_while(node, parsed_class));
+                stmts.push_back(parse_while(node, parsed_class));
             } else if(attr_name == "SWITCH") {
-                stmts.insert(parse_switch(node, parsed_class));
+                stmts.push_back(parse_switch(node, parsed_class));
             }
         }
 
@@ -113,57 +113,44 @@ public:
     }
 
     Switch parse_switch(ProtocolParser::Node* ast, Class& parsed_class) {
-        Expression* compare_value = parse_expression(ast->get_children().front());
+        Expression* compare_value = parse_expression(ast->get_children().front(), parsed_class);
         std::list<Case> cases;
 
         ProtocolParser::Node* cases_node = ast->get_children().back();
         for(ProtocolParser::Node* node : cases_node->get_children()) {
             std::string attr_name = node->get_value();
 
-            Expression* match = parse_expression(node->get_children().front());
-            cases.emplace_back(match, parse_field(node->get_children().back()));
+            Expression* match = parse_expression(node->get_children().front(), parsed_class);
+            cases.emplace_back(match, parse_field(node->get_children().back(), parsed_class));
         }
 
         return Switch(compare_value, std::move(cases));
     }
 
-    Field parse_field(ProtocolParser::Node* ast, Class& parsed_class) {
-        Field field;
+    Field* parse_field(ProtocolParser::Node* ast, Class& parsed_class) {
+        Field* field = new Field();
 
         for(ProtocolParser::Node* node : ast->get_children()) {
             std::string attr_name = node->get_value();
 
             if(attr_name == "NAME") {
                 std::string name = node->get_children().front()->get_value();
-                field.set_name(name);
+                field->set_name(name);
             } else if(attr_name == "LENGTH") {
                 Expression* length_expr = parse_expression(node->get_children().front(), parsed_class);
-                field.set_length(length_expr);
+                field->set_length(length_expr);
             } else if(attr_name == "CONDITIONAL") {
                 Expression* is_included_expr = parse_expression(node->get_children().front(), parsed_class);
-                field.set_is_included(is_included_expr);
+                field->set_is_included(is_included_expr);
             } else if(attr_name == "MAP") {
-                field.set_bitmap(parse_bitmap(node));
+                field->set_bitmap(parse_bitmap(node));
             } else if(attr_name == "ENUM") {
-                field.set_enumeration(parse_enumeration(node));
+                field->set_enumeration(parse_enumeration(node));
             }
         }
 
+        parsed_class.add_variable(field->get_name(), field);
         return field;
-    }
-
-    While parse_field_group(ProtocolParser::Node* ast, Class& parsed_class) {
-        While field_group;
-
-        ProtocolParser::Node* cond_expr = ast->get_children().front();
-        field_group.set_is_continue(parse_expression(cond_expr, parsed_class));
-
-        std::vector<ProtocolParser::Node*> fields = ast->get_children().back()->get_children();
-        for(ProtocolParser::Node* node : fields) {
-            field_group.add_statement(parse_field(node, parsed_class));
-        }
-
-        return field_group;
     }
 
     NextProtocol parse_next_protocol(ProtocolParser::Node* ast, Class& parsed_class) {
@@ -172,8 +159,8 @@ public:
         std::vector<ProtocolParser::Node*>& args = ast->get_children().back()->get_children();
         for(ProtocolParser::Node* node : args) {
             std::string& name = node->get_value();
-            if(parsed_class.has_field(name)) {
-                next_protocol.add_next(std::make_unique<Field>(parsed_class.get_field(name)));
+            if(parsed_class.has_variable(name)) {
+                next_protocol.add_next(std::make_unique<Field>(parsed_class.get_variable(name)));
             } else {
                 next_protocol.set_default_next(name);
             }
@@ -225,8 +212,8 @@ public:
             return operator_expr;
         } else if(value == "FUN") {
             return parse_function(ast, parsed_class);
-        } else if(parsed_class.has_field(value)) {
-            Field& field = parsed_class.get_field(value);
+        } else if(parsed_class.has_variable(value)) {
+            Field* field = parsed_class.get_variable(value);
 
             if(children.size() == 1 && children.front()->get_value() == "DOT") {
 //                expression->set_expr_element(parse_dot_expression(ast));

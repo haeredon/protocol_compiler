@@ -44,6 +44,8 @@ install(TARGETS pc
 
 add_executable(parser
         lang/protocol/code_gen/ProtocolClass.h
+        lang/protocol/code_gen/ProtocolClassInit.cpp
+        lang/protocol/code_gen/ClassVisitor.h
         lang/protocol/code_gen/Generator.h
         lang/protocol/Tokens.h
         lang/protocol/LexerDefs.h
@@ -52,10 +54,14 @@ add_executable(parser
         main.cpp
         lang/protocol/code_gen/parse_primitives/Bitmap.cpp
         lang/protocol/code_gen/parse_primitives/Bitmap.h
+        lang/protocol/code_gen/parse_primitives/Statement.h
+        lang/protocol/code_gen/parse_primitives/Statement.cpp
         lang/protocol/code_gen/parse_primitives/Field.cpp
         lang/protocol/code_gen/parse_primitives/Field.h
         lang/protocol/code_gen/parse_primitives/While.cpp
         lang/protocol/code_gen/parse_primitives/While.h
+        lang/protocol/code_gen/parse_primitives/Case.cpp
+        lang/protocol/code_gen/parse_primitives/Case.h
         lang/protocol/code_gen/parse_primitives/Expression.h
         lang/protocol/code_gen/parse_primitives/Expression.cpp
         lang/protocol/code_gen/parse_primitives/Enumeration.cpp
@@ -75,6 +81,8 @@ add_executable(parser
         lang/protocol/code_gen/parse_primitives/FieldExpr.h
         lang/protocol/code_gen/parse_primitives/NextProtocol.cpp
         lang/protocol/code_gen/parse_primitives/NextProtocol.h
+        lang/protocol/code_gen/parse_primitives/Switch.cpp
+        lang/protocol/code_gen/parse_primitives/Switch.h
         lang/protocol/code_gen/BuildClass.cpp
         lang/protocol/code_gen/BuildClass.h
         lang/protocol/code_gen/ProtocolUtil.h)

@@ -11,6 +11,8 @@
 
 #include <list>
 
+class ClassVisitor;
+
 class Switch : public Statement {
 
 private:
@@ -26,6 +28,8 @@ public:
     const Expression* get_compare_value() const;
 
     const std::list<Case>& get_cases() const;
+
+    virtual void visit(ClassVisitor* visitor);
 
 };
 

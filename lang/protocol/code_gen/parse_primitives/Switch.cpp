@@ -3,6 +3,7 @@
 //
 
 #include "Switch.h"
+#include "../ClassVisitor.h"
 
 
 Switch::Switch(Expression* compare_value, std::list<Case>&& cases) :
@@ -14,4 +15,8 @@ const Expression* Switch::get_compare_value() const {
 
 const std::list<Case>& Switch::get_cases() const {
     return cases;
+}
+
+void Switch::visit(ClassVisitor* visitor) {
+    visitor->visit(*this);
 }

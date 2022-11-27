@@ -8,14 +8,16 @@
 #include "Field.h"
 #include "While.h"
 #include "NextProtocol.h"
+#include "Statement.h"
 
 #include <list>
+#include "unordered_map"
 
 class Class {
 
-    std::list<Field> fields;
+    std::list<Statement*> statements;
 
-    std::vector<While> whiles;
+    std::unordered_map<std::string, Field*> name_to_field;
 
     NextProtocol next_protocol;
 
@@ -24,19 +26,17 @@ class Class {
 public:
     void set_name(std::string name);
 
-    void add_field(Field field);
+    void add_statement(Statement* stmt);
 
-    void add_while(While while_obj);
+    bool has_variable(std::string name);
+
+    void add_variable(std::string name, Field* stmt);
+
+    Field* get_variable(std::string name);
 
     void set_next_protocol(NextProtocol&& nextProtocol);
 
-    bool has_field(const std::string& field_name) ;
-
-    Field& get_field(const std::string& field_name);
-
-    std::list<Field> &get_fields();
-
-    const std::vector<While> &get_while() const;
+    std::list<Statement*> &get_statements();
 
     const NextProtocol &get_next_protocol() const;
 

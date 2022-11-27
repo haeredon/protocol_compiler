@@ -16,13 +16,13 @@ class Case {
 
     Expression* match;
 
-    Statement stmt;
+    Statement* stmt;
 
 public:
 
-    Case(Expression* match, Statement&& stmt);
+    Case(Expression* match, Statement* stmt);
 
-    const Statement& get_statement() const;
+    const Statement* get_statement() const;
 
     Expression *get_match() const;
 };

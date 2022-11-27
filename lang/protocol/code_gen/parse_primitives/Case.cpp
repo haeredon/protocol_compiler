@@ -4,9 +4,9 @@
 
 #include "Case.h"
 
-Case::Case(Expression* match, Statement&& stmt) : match(match), stmt(std::move(stmt)) {}
+Case::Case(Expression* match, Statement* stmt) : match(match), stmt(stmt) {}
 
-const Statement& Case::get_statement() const {
+const Statement* Case::get_statement() const {
     return stmt;
 }
 

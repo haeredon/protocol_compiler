@@ -14,6 +14,8 @@
 #include <iostream>
 #include <memory>
 
+class ClassVisitor;
+
 class Field : public Statement {
 
     std::string name;
@@ -51,7 +53,9 @@ public:
 
     const Bitmap &get_bitmap() const;
 
-    std::string to_string();
+    virtual std::string to_string();
+
+    virtual void visit(ClassVisitor* visitor);
 
 };
 

@@ -3,6 +3,7 @@
 //
 
 #include "Field.h"
+#include "../ClassVisitor.h"
 
 #include <iostream>
 
@@ -51,4 +52,8 @@ const Enumeration &Field::get_enumeration() const {
 
 const Bitmap &Field::get_bitmap() const {
     return bitmap;
+}
+
+void Field::visit(ClassVisitor* visitor) {
+    visitor->visit(*this);
 }
