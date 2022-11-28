@@ -11,6 +11,7 @@
 #include <string>
 #include <unordered_map>
 
+class ClassVisitor;
 
 class OperatorExpr : public Expression {
 
@@ -26,6 +27,8 @@ public:
     OperatorExpr(const std::string& value, Expression* lhs, Expression* rhs);
 
     std::string to_string() const;
+
+    virtual void visit(ClassVisitor* visitor) const;
 
 };
 

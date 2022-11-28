@@ -3,6 +3,7 @@
 //
 
 #include "OperatorExpr.h"
+#include "../ClassVisitor.h"
 
 OperatorExpr::OperatorExpr(const std::string& value, Expression* lhs, Expression* rhs): Expression(), value(value), left_expr(lhs), right_expr(rhs) {
 
@@ -27,6 +28,10 @@ const std::unordered_map<std::string , std::string> OperatorExpr::symbol_to_op =
         std::pair<std::string, std::string>(ProtocolParser::Tokens::AND, "&"),
         std::pair<std::string, std::string>(ProtocolParser::Tokens::OR, "|")
 };
+
+void OperatorExpr::visit(ClassVisitor *visitor) const {
+    visitor->visit(*this);
+}
 
 
 

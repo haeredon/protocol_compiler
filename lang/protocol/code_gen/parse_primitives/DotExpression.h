@@ -11,6 +11,8 @@
 #include <string>
 #include <vector>
 
+class ClassVisitor;
+
 class DotExpression : public Expression  {
 
 //    ExprElement* top;
@@ -22,6 +24,8 @@ public:
     void add_chain_element(const std::string &chain_element);
 
     std::string to_string();
+
+    virtual void visit(ClassVisitor* visitor) const;
 
 };
 

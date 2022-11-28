@@ -3,21 +3,26 @@
 //
 
 #include "FieldExpr.h"
+#include "../ClassVisitor.h"
 
 #include<sstream>
 
 
-FieldExpr::FieldExpr(const Field &field) : Expression(), field(field) {
+FieldExpr::FieldExpr(const Field* field) : Expression(), field(field) {
 }
 
 std::string FieldExpr::to_string() const {
     std::stringstream ss;
 
-    ss << "Util::big_to_little(data + " << field.get_name() << ".offset, " << field.get_name() << ".length" << ")";
+    ss << "Util::big_to_little(data + " << field->get_name() << ".offset, " << field->get_name() << ".length" << ")";
     return ss.str();
 }
 
-const Field &FieldExpr::get_field() const {
+const Field* FieldExpr::get_field() const {
     return field;
+}
+
+void FieldExpr::visit(ClassVisitor *visitor) const {
+    visitor->visit(*this);
 }
 

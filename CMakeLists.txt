@@ -52,6 +52,7 @@ add_executable(parser
         lang/protocol/GrammarDefs.h
         lang/protocol/Tokens.cpp
         main.cpp
+        lang/protocol/code_gen/parse_primitives/Visitable.h
         lang/protocol/code_gen/parse_primitives/Bitmap.cpp
         lang/protocol/code_gen/parse_primitives/Bitmap.h
         lang/protocol/code_gen/parse_primitives/Statement.h

@@ -93,7 +93,7 @@ public:
         }
     }
 
-    While parse_while(ProtocolParser::Node* ast, Class& parsed_class) {
+    Statement* parse_while(ProtocolParser::Node* ast, Class& parsed_class) {
         Expression* continue_conditional = parse_expression(ast->get_children().front(), parsed_class);
         std::list<Statement*> stmts;
 
@@ -109,10 +109,11 @@ public:
             }
         }
 
-        return While(continue_conditional, std::move(stmts));
+
+        return new While(continue_conditional, std::move(stmts));
     }
 
-    Switch parse_switch(ProtocolParser::Node* ast, Class& parsed_class) {
+    Statement* parse_switch(ProtocolParser::Node* ast, Class& parsed_class) {
         Expression* compare_value = parse_expression(ast->get_children().front(), parsed_class);
         std::list<Case> cases;
 
@@ -124,7 +125,7 @@ public:
             cases.emplace_back(match, parse_field(node->get_children().back(), parsed_class));
         }
 
-        return Switch(compare_value, std::move(cases));
+        return new Switch(compare_value, std::move(cases));
     }
 
     Field* parse_field(ProtocolParser::Node* ast, Class& parsed_class) {
@@ -160,7 +161,7 @@ public:
         for(ProtocolParser::Node* node : args) {
             std::string& name = node->get_value();
             if(parsed_class.has_variable(name)) {
-                next_protocol.add_next(std::make_unique<Field>(parsed_class.get_variable(name)));
+                next_protocol.add_next(parsed_class.get_variable(name));
             } else {
                 next_protocol.set_default_next(name);
             }

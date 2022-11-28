@@ -21,7 +21,9 @@ ProtocolClass::ProtocolClass() {
 
 std::string ProtocolClass::class_to_string(Class &p_class) {
     ProtocolClassInit init;
-    p_class.get_fields().front().visit(&init);
+    p_class.get_statements().front()->visit(&init);
+
+    std::cout << init.to_string() << std::endl;
 
 //    ss << "#ifndef PROTOCOL" << "_" << p_class.get_name() << "_H" << std::endl;
 //    ss << "#define PROTOCOL" << "_" << p_class.get_name() << "_H" << std::endl;

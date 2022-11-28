@@ -11,6 +11,8 @@
 #include <string>
 #include <vector>
 
+class ClassVisitor;
+
 class FunctionExpr : public Expression {
 
     std::string name;
@@ -23,6 +25,8 @@ public:
     void set_name(const std::string &name);
 
     std::string to_string() const;
+
+    virtual void visit(ClassVisitor* visitor) const;
 
 };
 

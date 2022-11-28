@@ -4,6 +4,8 @@
 
 #include "FunctionExpr.h"
 #include "FieldExpr.h"
+#include "../ClassVisitor.h"
+
 #include<sstream>
 
 void FunctionExpr::add_arg(Expression* expression) {
@@ -28,7 +30,7 @@ std::string FunctionExpr::to_string() const {
             }
 
             const FieldExpr* field = static_cast<const FieldExpr*>(expr);
-            ss << "EndianUtil::range_equals((uint8_t*) &" << to_cmp_with << ", data + " << field->get_field().get_name() << ".offset, 0," << field->get_field().get_name() << ".length" << ")";
+            ss << "EndianUtil::range_equals((uint8_t*) &" << to_cmp_with << ", data + " << field->get_field()->get_name() << ".offset, 0," << field->get_field()->get_name() << ".length" << ")";
 
             if(expr != args.back()) {
                 ss << " && ";
@@ -39,7 +41,7 @@ std::string FunctionExpr::to_string() const {
 
         for(Expression* expr : args) {
             const FieldExpr* field_expr = static_cast<const FieldExpr*>(expr);
-            ss << field_expr->get_field().get_name() << ".length == 0";
+            ss << field_expr->get_field()->get_name() << ".length == 0";
 
             if(expr != args.back()) {
                 ss << " && ";
@@ -63,4 +65,8 @@ std::string FunctionExpr::to_string() const {
 
 void FunctionExpr::set_name(const std::string &name) {
     this->name = name;
+}
+
+void FunctionExpr::visit(ClassVisitor *visitor) const {
+    visitor->visit(*this);
 }

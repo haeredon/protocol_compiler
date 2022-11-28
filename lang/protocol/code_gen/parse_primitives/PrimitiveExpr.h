@@ -9,6 +9,8 @@
 
 #include <string>
 
+class ClassVisitor;
+
 class PrimitiveExpr : public Expression {
 
     std::string value;
@@ -20,7 +22,7 @@ public:
 
     std::string to_string() const;
 
-
+    virtual void visit(ClassVisitor* visitor) const;
 };
 
 

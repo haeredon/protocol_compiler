@@ -24,21 +24,26 @@ private:
     std::stringstream ss;
 
 public:
-//
-//    virtual void visit(While& while_stmt);
-//
-//    virtual void visit(Switch& switch_stmt);
 
-//    virtual void visit(Field& field_stmt);
+    ProtocolClassInit();
 
-    virtual void visit(int x);
+    virtual void visit(const Field& x);
 
-    virtual void visit(Field& x);
+    virtual void visit(const While& x);
 
-    virtual void visit(While& x);
+    virtual void visit(const Switch& x);
 
-    virtual void visit(Switch& x);
+    virtual void visit(const DotExpression& x);
 
+    virtual void visit(const FieldExpr& x);
+
+    virtual void visit(const FunctionExpr& x);
+
+    virtual void visit(const OperatorExpr& x);
+
+    virtual void visit(const PrimitiveExpr& x);
+
+    std::string to_string();
 
 
 };

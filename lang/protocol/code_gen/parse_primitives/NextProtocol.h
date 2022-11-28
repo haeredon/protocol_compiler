@@ -19,7 +19,7 @@ private:
 
     std::string default_next;
 
-    std::list<std::unique_ptr<Field>> priorities;
+    std::list<Field*> priorities;
 
 public:
 
@@ -27,11 +27,11 @@ public:
 
     const std::string &get_default_next() const;
 
-    const std::list<std::unique_ptr<Field>>& get_priorities() const;
+    const std::list<Field*>& get_priorities() const;
 
     void set_default_next(const std::string &defaultNext);
 
-    void add_next(std::unique_ptr<Field> field);
+    void add_next(Field* field);
 
     NextProtocol(const NextProtocol& other) = delete;
     NextProtocol& operator=(const NextProtocol& other) = delete;

@@ -5,11 +5,13 @@
 #ifndef PROTOCOL_COMPILER_EXPRESSION_H
 #define PROTOCOL_COMPILER_EXPRESSION_H
 
+#include "Visitable.h"
+
 #include <string>
 #include <functional>
 #include <bit>
 
-class Expression {
+class Expression : public Visitable {
 
 
 public:

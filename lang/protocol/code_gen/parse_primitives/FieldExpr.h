@@ -11,21 +11,23 @@
 
 #include <string>
 
+class ClassVisitor;
+
 class FieldExpr : public Expression {
 
 private:
 
-    const Field& field;
+    const Field* field;
 
 public:
 
-    FieldExpr(const Field &field);
+    FieldExpr(const Field* field);
 
     std::string to_string() const;
 
-    const Field& get_field() const;
+    const Field* get_field() const;
 
-
+    virtual void visit(ClassVisitor* visitor) const;
 };
 
 
