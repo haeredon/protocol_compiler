@@ -24,6 +24,10 @@ public:
 
     void set_name(const std::string &name);
 
+    const std::string get_name() const;
+
+    const std::vector<Expression*>& get_args() const;
+
     std::string to_string() const;
 
     virtual void visit(ClassVisitor* visitor) const;

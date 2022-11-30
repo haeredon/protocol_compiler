@@ -26,7 +26,11 @@ public:
 
     OperatorExpr(const std::string& value, Expression* lhs, Expression* rhs);
 
-    std::string to_string() const;
+    std::string get_operator() const;
+
+    Expression* get_left_expr() const;
+
+    Expression* get_right_expr() const;
 
     virtual void visit(ClassVisitor* visitor) const;
 

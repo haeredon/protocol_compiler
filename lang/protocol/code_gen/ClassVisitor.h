@@ -14,6 +14,7 @@
 #include "parse_primitives/FunctionExpr.h"
 #include "parse_primitives/OperatorExpr.h"
 #include "parse_primitives/PrimitiveExpr.h"
+#include "parse_primitives/Class.h"
 
 class ClassVisitor {
 
@@ -23,6 +24,7 @@ public:
 //
 //    virtual void visit(Switch& switch_stmt) = 0;
 
+    virtual void visit(const Class& x) = 0;
 
     virtual void visit(const Field& x) = 0;
 

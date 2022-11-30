@@ -13,7 +13,9 @@
 #include <list>
 #include "unordered_map"
 
-class Class {
+class ClassVisitor;
+
+class Class : public Visitable {
 
     std::list<Statement*> statements;
 
@@ -36,11 +38,13 @@ public:
 
     void set_next_protocol(NextProtocol&& nextProtocol);
 
-    std::list<Statement*> &get_statements();
+    const std::list<Statement*> &get_statements() const;
 
     const NextProtocol &get_next_protocol() const;
 
     const std::string &get_name() const;
+
+    virtual void visit(ClassVisitor* visitor) const;
 };
 
 

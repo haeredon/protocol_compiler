@@ -9,16 +9,17 @@ OperatorExpr::OperatorExpr(const std::string& value, Expression* lhs, Expression
 
 }
 
+std::string OperatorExpr::get_operator() const {
+    return OperatorExpr::symbol_to_op.at(value);
+};
 
-std::string OperatorExpr::to_string() const {
-    std::stringstream ss;
-
-    ss << left_expr->to_string();
-    ss << OperatorExpr::symbol_to_op.at(value);
-    ss << right_expr->to_string();
-
-    return ss.str();
+Expression* OperatorExpr::get_left_expr() const {
+    return left_expr;
 }
+
+Expression* OperatorExpr::get_right_expr() const {
+    return right_expr;
+};
 
 const std::unordered_map<std::string , std::string> OperatorExpr::symbol_to_op = {
         std::pair<std::string, std::string>(ProtocolParser::Tokens::PLUS, "+"),

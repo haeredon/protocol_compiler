@@ -23,8 +23,6 @@ public:
 
     FieldExpr(const Field* field);
 
-    std::string to_string() const;
-
     const Field* get_field() const;
 
     virtual void visit(ClassVisitor* visitor) const;

@@ -55,7 +55,7 @@ public:
 
     virtual std::string to_string();
 
-    virtual void visit(ClassVisitor* visitor);
+    virtual void visit(ClassVisitor* visitor) const;
 
 };
 

@@ -17,6 +17,6 @@ const std::list<Case>& Switch::get_cases() const {
     return cases;
 }
 
-void Switch::visit(ClassVisitor* visitor) {
+void Switch::visit(ClassVisitor* visitor) const {
     visitor->visit(*this);
 }

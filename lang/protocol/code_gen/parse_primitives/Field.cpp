@@ -54,6 +54,6 @@ const Bitmap &Field::get_bitmap() const {
     return bitmap;
 }
 
-void Field::visit(ClassVisitor* visitor) {
+void Field::visit(ClassVisitor* visitor) const {
     visitor->visit(*this);
 }

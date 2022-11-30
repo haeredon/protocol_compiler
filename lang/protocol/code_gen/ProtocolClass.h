@@ -27,6 +27,8 @@ public:
 
     ProtocolClassInit();
 
+    virtual void visit(const Class& x);
+
     virtual void visit(const Field& x);
 
     virtual void visit(const While& x);
@@ -49,16 +51,39 @@ public:
 };
 
 
-class ProtocolClass {
+class ProtocolClass : public ClassVisitor {
 
 private:
 
     std::stringstream ss;
+    std::stringstream private_ss;
+    std::stringstream public_ss;
+
+    std::stringstream* target_ss;
 
 public:
 
     // TODO: check when copy and when move constructor are used IMPORTANT FOR MAX FUN AND GAIN!
     ProtocolClass();
+
+    virtual void visit(const Class& x);
+
+    virtual void visit(const Field& x);
+
+    virtual void visit(const While& x);
+
+    virtual void visit(const Switch& x);
+
+    virtual void visit(const DotExpression& x);
+
+    virtual void visit(const FieldExpr& x);
+
+    virtual void visit(const FunctionExpr& x);
+
+    virtual void visit(const OperatorExpr& x);
+
+    virtual void visit(const PrimitiveExpr& x);
+
 
     std::string class_to_string(Class &p_class);
 

@@ -13,7 +13,7 @@ void While::add_statement(Statement* statement) {
     statements.push_back(statement);
 }
 
-const std::list<Statement*> &While::get_statement() const {
+const std::list<Statement*> &While::get_statements() const {
     return statements;
 }
 
@@ -21,7 +21,7 @@ Expression *While::get_continue_conditional() const {
     return continue_conditional;
 }
 
-void While::visit(ClassVisitor* visitor) {
+void While::visit(ClassVisitor* visitor) const {
     visitor->visit(*this);
 }
 

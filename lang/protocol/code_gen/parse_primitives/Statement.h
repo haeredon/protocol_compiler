@@ -5,18 +5,20 @@
 #ifndef PROTOCOL_COMPILER_STATEMENT_H
 #define PROTOCOL_COMPILER_STATEMENT_H
 
+#include "Visitable.h"
+
 #include <string>
 
 class ClassVisitor;
 
-class Statement {
+class Statement : public Visitable {
 
 
 public:
 
     virtual std::string to_string() { return "NONE"; };
 
-    virtual void visit(ClassVisitor* visitor) = 0;
+    virtual void visit(ClassVisitor* visitor) const = 0;
 
 };
 

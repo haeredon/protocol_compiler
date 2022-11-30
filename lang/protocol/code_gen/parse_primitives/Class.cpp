@@ -3,6 +3,7 @@
 //
 
 #include "Class.h"
+#include "../ClassVisitor.h"
 
 #include <algorithm>
 
@@ -14,7 +15,7 @@ void Class::add_statement(Statement *stmt) {
     statements.push_back(stmt);
 }
 
-std::list<Statement*> &Class::get_statements() {
+const std::list<Statement*> &Class::get_statements() const {
     return statements;
 }
 
@@ -40,4 +41,8 @@ Field* Class::get_variable(std::string name) {
 
 void Class::add_variable(std::string name, Field* stmt) {
     name_to_field.emplace(name, stmt);
+}
+
+void Class::visit(ClassVisitor *visitor) const {
+    visitor->visit(*this);
 }

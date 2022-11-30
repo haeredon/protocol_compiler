@@ -27,11 +27,11 @@ public:
 
     void add_statement(Statement* statement);
 
-    const std::list<Statement*> &get_statement() const;
+    const std::list<Statement*> &get_statements() const;
 
     Expression *get_continue_conditional() const;
 
-    virtual void visit(ClassVisitor* visitor);
+    virtual void visit(ClassVisitor* visitor) const;
 };
 
 

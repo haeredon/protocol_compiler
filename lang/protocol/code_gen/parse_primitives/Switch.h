@@ -29,7 +29,7 @@ public:
 
     const std::list<Case>& get_cases() const;
 
-    virtual void visit(ClassVisitor* visitor);
+    virtual void visit(ClassVisitor* visitor) const;
 
 };
 
