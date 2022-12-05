@@ -21,7 +21,7 @@ private:
 
 public:
 
-    explicit EqualsExpr(std::vector<Expression*>&& args;);
+    explicit EqualsExpr(std::vector<Expression*>&& args);
 
     virtual void visit(ClassVisitor* visitor) const;
 

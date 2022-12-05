@@ -6,7 +6,7 @@ Expression *SubRangeExpr::get_arg() {
 }
 
 void SubRangeExpr::visit(ClassVisitor *visitor) const {
-    visitor->visit(this);
+    visitor->visit(*this);
 }
 
 SubRangeExpr::SubRangeExpr(Expression *arg) : arg(arg) {}

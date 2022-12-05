@@ -291,7 +291,21 @@ void ProtocolClass::ProtocolClassInit::visit(const FieldExpr &x) {
 }
 
 void ProtocolClass::ProtocolClassInit::visit(const RangeEqualsExpr &x) {
+    ss << "{";
+    ss << "uint64_t offset = ";
+    x.get_offset()->visit(this);
+    ss << ";";
 
+    ss << "uint64_t length = ";
+    x.get_length()->visit(this);
+    ss << ";";
+
+    ss << "uint8_t* value = (uint8_t*) ";
+    x.get_value()->visit(this);
+    ss << ";";
+
+    ss << "to_include = Util::range_equals(value, data + offset, length);";
+    ss << "}";
 }
 
 void ProtocolClass::ProtocolClassInit::visit(const EqualsExpr &x) {
@@ -306,66 +320,66 @@ void ProtocolClass::ProtocolClassInit::visit(const SubRangeExpr &x) {
 
 }
 
-void ProtocolClass::ProtocolClassInit::visit(const FunctionExpr &x) {
-    const std::vector<Expression*>& args = x.get_args();
-    const std::string& name = x.get_name();
-
-    if(name == "range_equals") {
-        ss << "{";
-        ss << "uint64_t offset = ";
-        args[0]->visit(this);
-        ss << ";";
-
-        ss << "uint64_t length = ";
-        args[1]->visit(this);
-        ss << ";";
-
-        ss << "uint8_t* value = (uint8_t*) ";
-        args[2]->visit(this);
-        ss << ";";
-
-        ss << "to_include = Util::range_equals(value, data + offset, length);";
-        ss << "}";
-    } else if(name == "equals") {
-        Expression* to_cmp_with = args.front();
-
-        for(Expression* expr : args) {
-
-            if(expr == args.front()) {
-                continue;
-            }
-
-            const FieldExpr* field = static_cast<const FieldExpr*>(expr);
-            const std::string& field_name = field->get_field()->get_name();
-            ss << "Util::range_equals((uint8_t*) ";
-            expect_little_end = false;
-            to_cmp_with->visit(this);
-            expect_little_end = true;
-            ss << ", data + " << field_name << ".offset," << field_name<< ".length" << ")";
-
-            if(expr != args.back()) {
-                ss << " && ";
-            }
-        }
-
-    } else if(name == "has_not") {
-        for(Expression* expr : args) {
-            const FieldExpr* field_expr = static_cast<const FieldExpr*>(expr);
-            ss << field_expr->get_field()->get_name() << ".length == 0";
-
-            if(expr != args.back()) {
-                ss << " && ";
-            }
-        }
-
-    } else if(name == "cdata") {
-        ss << "EndianUtil::big_to_little(data + num,";
-        args.front()->visit(this);
-        ss << ")";
-    } else {
-        throw "No matching function";
-    }
-}
+//void ProtocolClass::ProtocolClassInit::visit(const FunctionExpr &x) {
+//    const std::vector<Expression*>& args = x.get_args();
+//    const std::string& name = x.get_name();
+//
+//    if(name == "range_equals") {
+//        ss << "{";
+//        ss << "uint64_t offset = ";
+//        args[0]->visit(this);
+//        ss << ";";
+//
+//        ss << "uint64_t length = ";
+//        args[1]->visit(this);
+//        ss << ";";
+//
+//        ss << "uint8_t* value = (uint8_t*) ";
+//        args[2]->visit(this);
+//        ss << ";";
+//
+//        ss << "to_include = Util::range_equals(value, data + offset, length);";
+//        ss << "}";
+//    } else if(name == "equals") {
+//        Expression* to_cmp_with = args.front();
+//
+//        for(Expression* expr : args) {
+//
+//            if(expr == args.front()) {
+//                continue;
+//            }
+//
+//            const FieldExpr* field = static_cast<const FieldExpr*>(expr);
+//            const std::string& field_name = field->get_field()->get_name();
+//            ss << "Util::range_equals((uint8_t*) ";
+//            expect_little_end = false;
+//            to_cmp_with->visit(this);
+//            expect_little_end = true;
+//            ss << ", data + " << field_name << ".offset," << field_name<< ".length" << ")";
+//
+//            if(expr != args.back()) {
+//                ss << " && ";
+//            }
+//        }
+//
+//    } else if(name == "has_not") {
+//        for(Expression* expr : args) {
+//            const FieldExpr* field_expr = static_cast<const FieldExpr*>(expr);
+//            ss << field_expr->get_field()->get_name() << ".length == 0";
+//
+//            if(expr != args.back()) {
+//                ss << " && ";
+//            }
+//        }
+//
+//    } else if(name == "cdata") {
+//        ss << "EndianUtil::big_to_little(data + num,";
+//        args.front()->visit(this);
+//        ss << ")";
+//    } else {
+//        throw "No matching function";
+//    }
+//}
 
 void ProtocolClass::ProtocolClassInit::visit(const OperatorExpr &x) {
     x.get_left_expr()->visit(this);

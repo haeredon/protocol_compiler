@@ -5,17 +5,17 @@ RangeEqualsExpr::RangeEqualsExpr(Expression *offset, Expression *length, Express
     offset(offset), length(length), value(value) {}
 
 void RangeEqualsExpr::visit(ClassVisitor *visitor) const {
-    visitor->visit(this);
+    visitor->visit(*this);
 }
 
-Expression *RangeEqualsExpr::get_offset() {
+const Expression *RangeEqualsExpr::get_offset() const  {
     return offset;
 }
 
-Expression *RangeEqualsExpr::get_length() {
+const Expression *RangeEqualsExpr::get_length() const  {
     return length;
 }
 
-Expression *RangeEqualsExpr::get_value() {
+const Expression *RangeEqualsExpr::get_value() const {
     return value;
 }

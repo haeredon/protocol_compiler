@@ -252,7 +252,7 @@ public:
         } else if(fun_name == "has_not") {
             std::vector<FieldExpr*> args;
             for(ProtocolParser::Node* node : children.back()->get_children()) {
-                args.push_back(parse_expression(node, parsed_class));
+                args.push_back(static_cast<FieldExpr*>(parse_expression(node, parsed_class)));
             }
 
             function = new HasNotExpr(std::move(args));

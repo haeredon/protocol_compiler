@@ -27,11 +27,11 @@ public:
 
     virtual void visit(ClassVisitor* visitor) const;
 
-    Expression* get_offset();
+    const Expression* get_offset() const ;
 
-    Expression* get_length();
+    const Expression* get_length() const ;
 
-    Expression* get_value();
+    const Expression* get_value() const ;
 };
 
 

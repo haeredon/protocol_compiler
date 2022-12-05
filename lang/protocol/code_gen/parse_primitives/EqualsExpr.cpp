@@ -2,7 +2,7 @@
 #include "../ClassVisitor.h"
 
 void EqualsExpr::visit(ClassVisitor *visitor) const {
-    visitor->visit(this);
+    visitor->visit(*this);
 }
 
 std::vector<Expression *> &EqualsExpr::get_args() {
