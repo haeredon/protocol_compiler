@@ -27,6 +27,23 @@ public:
         }
     }
 
+    static short get_minimum_byte_representation(uint64_t x) {
+        uint64_t eraser = 0xFF00000000000000;
+        short max_bytes = sizeof(uint64_t);
+
+        if(x == 0) {
+            return 1;
+        }
+
+        for (int i = 0; i < max_bytes; ++i) {
+            if((eraser & x) == 0) {
+                eraser >>= 8;
+            } else {
+                return max_bytes - i;
+            }
+        }
+        throw;
+    }
 
 };
 

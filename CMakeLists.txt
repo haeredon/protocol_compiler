@@ -44,7 +44,6 @@ install(TARGETS pc
 
 add_executable(parser
         lang/protocol/code_gen/ProtocolClass.h
-        lang/protocol/code_gen/ProtocolClassInit.cpp
         lang/protocol/code_gen/ClassVisitor.h
         lang/protocol/code_gen/Generator.h
         lang/protocol/Tokens.h
@@ -52,6 +51,14 @@ add_executable(parser
         lang/protocol/GrammarDefs.h
         lang/protocol/Tokens.cpp
         main.cpp
+        lang/protocol/code_gen/parse_primitives/RangeEqualsExpr.cpp
+        lang/protocol/code_gen/parse_primitives/RangeEqualsExpr.h
+        lang/protocol/code_gen/parse_primitives/EqualsExpr.cpp
+        lang/protocol/code_gen/parse_primitives/EqualsExpr.h
+        lang/protocol/code_gen/parse_primitives/HasNotExpr.cpp
+        lang/protocol/code_gen/parse_primitives/HasNotExpr.h
+        lang/protocol/code_gen/parse_primitives/SubRangeExpr.cpp
+        lang/protocol/code_gen/parse_primitives/SubRangeExpr.h
         lang/protocol/code_gen/parse_primitives/Visitable.h
         lang/protocol/code_gen/parse_primitives/Bitmap.cpp
         lang/protocol/code_gen/parse_primitives/Bitmap.h

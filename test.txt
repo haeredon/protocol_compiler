@@ -1,0 +1,6 @@
+protocol: (SomeProtocol)
+field: (A, 4)
+field: (B, A)
+field: (C, B)
+field: (D, C)
+field: (D, C, range_equals(D, B, 34984))

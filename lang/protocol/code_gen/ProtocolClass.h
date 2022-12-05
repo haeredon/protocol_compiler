@@ -17,49 +17,61 @@
 
 #include<sstream>
 
-class ProtocolClassInit : public ClassVisitor {
 
-private:
-
-    std::stringstream ss;
-
-public:
-
-    ProtocolClassInit();
-
-    virtual void visit(const Class& x);
-
-    virtual void visit(const Field& x);
-
-    virtual void visit(const While& x);
-
-    virtual void visit(const Switch& x);
-
-    virtual void visit(const DotExpression& x);
-
-    virtual void visit(const FieldExpr& x);
-
-    virtual void visit(const FunctionExpr& x);
-
-    virtual void visit(const OperatorExpr& x);
-
-    virtual void visit(const PrimitiveExpr& x);
-
-    std::string to_string();
-
-
-};
 
 
 class ProtocolClass : public ClassVisitor {
 
 private:
 
-    std::stringstream ss;
+    class ProtocolClassInit : public ClassVisitor {
+
+    private:
+
+        std::stringstream ss;
+        bool expect_little_end = true;
+
+    public:
+
+        ProtocolClassInit();
+
+        virtual void visit(const Class& x);
+
+        virtual void visit(const Field& x);
+
+        virtual void visit(const While& x);
+
+        virtual void visit(const Switch& x);
+
+        virtual void visit(const DotExpression& x);
+
+        virtual void visit(const FieldExpr& x);
+
+        virtual void visit(const RangeEqualsExpr &x);
+
+        virtual void visit(const EqualsExpr &x);
+
+        virtual void visit(const HasNotExpr &x);
+
+        virtual void visit(const SubRangeExpr &x);
+
+        virtual void visit(const OperatorExpr& x);
+
+        virtual void visit(const PrimitiveExpr& x);
+
+        std::string to_string();
+
+
+    };
+
+
+    std::stringstream ss_start;
+    std::stringstream ss_end;
     std::stringstream private_ss;
     std::stringstream public_ss;
-
     std::stringstream* target_ss;
+
+    ProtocolClassInit initMethod;
 
 public:
 
@@ -73,14 +85,6 @@ public:
     virtual void visit(const While& x);
 
     virtual void visit(const Switch& x);
-
-    virtual void visit(const DotExpression& x);
-
-    virtual void visit(const FieldExpr& x);
-
-    virtual void visit(const FunctionExpr& x);
-
-    virtual void visit(const OperatorExpr& x);
 
     virtual void visit(const PrimitiveExpr& x);
 

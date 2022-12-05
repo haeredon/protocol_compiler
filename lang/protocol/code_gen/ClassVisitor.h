@@ -14,15 +14,15 @@
 #include "parse_primitives/FunctionExpr.h"
 #include "parse_primitives/OperatorExpr.h"
 #include "parse_primitives/PrimitiveExpr.h"
+#include "parse_primitives/RangeEqualsExpr.h"
+#include "parse_primitives/EqualsExpr.h"
+#include "parse_primitives/HasNotExpr.h"
+#include "parse_primitives/SubRangeExpr.h"
 #include "parse_primitives/Class.h"
 
 class ClassVisitor {
 
 public:
-
-//    virtual void visit(While& while_stmt) = 0;
-//
-//    virtual void visit(Switch& switch_stmt) = 0;
 
     virtual void visit(const Class& x) = 0;
 
@@ -33,25 +33,40 @@ public:
     virtual void visit(const Switch& x) = 0;
 
     virtual void visit(const DotExpression& x) {
-        std::cout << "DotExpression" << std::endl;
+        throw "Not implemented";
     };
 
     virtual void visit(const FieldExpr& x) {
-        std::cout << "FieldExpr" << std::endl;
+        throw "Not implemented";
     };
 
     virtual void visit(const FunctionExpr& x) {
-        std::cout << "FunctionExpr" << std::endl;
+        throw "Not implemented";
     };
 
     virtual void visit(const OperatorExpr& x) {
-        std::cout << "OperatorExpr" << std::endl;
+        throw "Not implemented";
     };
 
     virtual void visit(const PrimitiveExpr& x) {
-        std::cout << "PrimitiveExpr" << std::endl;
+        throw "Not implemented";
     };
 
+    virtual void visit(const RangeEqualsExpr& x) {
+        throw "Not implemented";
+    };
+
+    virtual void visit(const EqualsExpr& x) {
+        throw "Not implemented";
+    };
+
+    virtual void visit(const SubRangeExpr& x) {
+        throw "Not implemented";
+    };
+
+    virtual void visit(const HasNotExpr& x) {
+        throw "Not implemented";
+    };
 };
 
 #endif //PROTOCOL_COMPILER_CLASSVISITOR_H

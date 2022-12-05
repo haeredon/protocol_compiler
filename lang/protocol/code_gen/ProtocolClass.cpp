@@ -20,6 +20,10 @@ ProtocolClass::ProtocolClass() {
 
 
 std::string ProtocolClass::class_to_string(Class &p_class) {
+    p_class.visit(this);
+    p_class.visit(&initMethod);
+
+
 //
 //    /************************** Builder **************************************/
 //
@@ -64,29 +68,15 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
 
 
 
-    return private_ss.str();
-
-
+    return ss_start.str()
+        .append(private_ss.str())
+        .append(public_ss.str())
+        .append(initMethod.to_string())
+        .append(ss_end.str());
 }
 
 void ProtocolClass::visit(const PrimitiveExpr &x) {
     *target_ss << x.to_string();
-}
-
-void ProtocolClass::visit(const OperatorExpr &x) {
-
-}
-
-void ProtocolClass::visit(const FunctionExpr &x) {
-
-}
-
-void ProtocolClass::visit(const FieldExpr &x) {
-
-}
-
-void ProtocolClass::visit(const DotExpression &x) {
-
 }
 
 void ProtocolClass::visit(const Switch &x) {
@@ -130,9 +120,9 @@ void ProtocolClass::visit(const Field &x) {
         public_ss << "enum class " << name << "_enum" << " { ";
         for(const auto& key_pair : x.get_enumeration().get_enum_to_Val()) {
             uint64_t val = std::get<1>(key_pair);
-            public_ss << std::get<0>(key_pair) << " = Util::little_to_big(" << val << ", ";
+            public_ss << std::get<0>(key_pair) << " = EndianUtil::little_to_big(" << val << ", ";
             target_ss = &public_ss;
-            x.visit(this);
+            x.get_length()->visit(this);
             public_ss << ")";
             public_ss << ", ";
         }
@@ -150,22 +140,22 @@ void ProtocolClass::visit(const Field &x) {
 void ProtocolClass::visit(const Class &x) {
     const std::string& class_name = x.get_name();
 
-    ss << "#ifndef PROTOCOL" << "_" << class_name << "_H" << std::endl;
-    ss << "#define PROTOCOL" << "_" << class_name<< "_H" << std::endl;
+    ss_start << "#ifndef PROTOCOL" << "_" << class_name << "_H" << std::endl;
+    ss_start << "#define PROTOCOL" << "_" << class_name << "_H" << std::endl;
 
-    ss << "#include <vector>" << std::endl;
-    ss << "#include <string>" << std::endl;
-    ss << "#include <cstdint>" << std::endl;
-    ss << "#include <cstring>" << std::endl << std::endl;
+    ss_start << "#include <vector>" << std::endl;
+    ss_start << "#include <string>" << std::endl;
+    ss_start << "#include <cstdint>" << std::endl;
+    ss_start << "#include <cstring>" << std::endl << std::endl;
 
-    ss << "#include \"Util.h\"" << std::endl;
-    ss << "#include \"Protocols.h\"" << std::endl;
-    ss << "#include \"Config.h\"" << std::endl;
-    ss << "#include \"Protocol.h\"" << std::endl << std::endl;
+    ss_start << "#include \"Util.h\"" << std::endl;
+    ss_start << "#include \"Protocols.h\"" << std::endl;
+    ss_start << "#include \"Config.h\"" << std::endl;
+    ss_start << "#include \"Protocol.h\"" << std::endl << std::endl;
 
-    ss << "namespace Tunneler {";
+    ss_start << "namespace Tunneler {";
 
-    ss << "class " << class_name << " : public Protocol " << "{";
+    ss_start << "class " << class_name << " : public Protocol " << "{";
 
     private_ss << std::endl << "private:" << std::endl;
 
@@ -227,14 +217,169 @@ void ProtocolClass::visit(const Class &x) {
     public_ss << "return Protocols::" << x.get_next_protocol().get_default_next() << ";";
     public_ss << "}";
 
+    ss_end << "};}";
+    ss_end << std::endl << "#endif /* PROTOCOL" << "_" << class_name << "_H */" << std::endl;
+}
 
-    // TODO: concatinate streams
+/*********************************** INIT FUNCTION **********************************************/
 
-    ss << "};"; // class end
-    ss << "}"; // namespace end
-
-    ss << std::endl << "#endif /* PROTOCOL" << "_" << class_name << "_H */" << std::endl;
+ProtocolClass::ProtocolClassInit::ProtocolClassInit() {
+    ss << "void init(const uint8_t* data) {";
+    ss << "this->data = data;";
+    ss << "uint16_t num = 0;";
 }
 
 
+void ProtocolClass::ProtocolClassInit::visit(const Class &x) {
+    for(const Statement* stmt : x.get_statements()) {
+        stmt->visit(this);
+    }
+}
 
+void ProtocolClass::ProtocolClassInit::visit(const Field& field_stmt) {
+    if(field_stmt.get_is_included() != nullptr) {
+        field_stmt.get_is_included()->visit(this);
+        ss << "if(to_include" << ") {";
+    }
+
+    ss << field_stmt.get_name() << ".offset = num;";
+    ss << "num +=";
+    field_stmt.get_length()->visit(this);
+    ss << ";";
+    ss << field_stmt.get_name() << ".length = num - " << field_stmt.get_name() << ".offset" << ";";
+
+    if(field_stmt.get_is_included() != nullptr) {
+        ss << "}";
+    }
+}
+
+void ProtocolClass::ProtocolClassInit::visit(const While& while_stmt) {
+    ss << "while(";
+    while_stmt.get_continue_conditional()->visit(this);
+    ss << ") {";
+    for(const Statement* stmt: while_stmt.get_statements()) {
+        stmt->visit(this);
+    }
+    ss << "}";
+}
+
+void ProtocolClass::ProtocolClassInit::visit(const Switch& switch_stmt) {
+    ss << "switch(";
+    switch_stmt.get_compare_value()->visit(this);
+    ss << ") {";
+    for(const Case& a_case: switch_stmt.get_cases()) {
+        ss << "case ";
+        a_case.get_match()->visit(this);
+        ss << ":";
+        a_case.get_statement()->visit(this);
+    }
+    ss << "default: throw \"protocol class reached default in switch\";";
+    ss << "}";
+}
+
+// length endianess
+// value endianess
+// reference string to length value
+// reference string to value
+// reference to expression
+
+void ProtocolClass::ProtocolClassInit::visit(const DotExpression &x) {}
+
+void ProtocolClass::ProtocolClassInit::visit(const FieldExpr &x) {
+    const std::string& name = x.get_field()->get_name();
+    ss << "EndianUtil::big_to_little(data + " << name << ".offset, " << name << ".length" << ")";
+}
+
+void ProtocolClass::ProtocolClassInit::visit(const RangeEqualsExpr &x) {
+
+}
+
+void ProtocolClass::ProtocolClassInit::visit(const EqualsExpr &x) {
+
+}
+
+void ProtocolClass::ProtocolClassInit::visit(const HasNotExpr &x) {
+
+}
+
+void ProtocolClass::ProtocolClassInit::visit(const SubRangeExpr &x) {
+
+}
+
+void ProtocolClass::ProtocolClassInit::visit(const FunctionExpr &x) {
+    const std::vector<Expression*>& args = x.get_args();
+    const std::string& name = x.get_name();
+
+    if(name == "range_equals") {
+        ss << "{";
+        ss << "uint64_t offset = ";
+        args[0]->visit(this);
+        ss << ";";
+
+        ss << "uint64_t length = ";
+        args[1]->visit(this);
+        ss << ";";
+
+        ss << "uint8_t* value = (uint8_t*) ";
+        args[2]->visit(this);
+        ss << ";";
+
+        ss << "to_include = Util::range_equals(value, data + offset, length);";
+        ss << "}";
+    } else if(name == "equals") {
+        Expression* to_cmp_with = args.front();
+
+        for(Expression* expr : args) {
+
+            if(expr == args.front()) {
+                continue;
+            }
+
+            const FieldExpr* field = static_cast<const FieldExpr*>(expr);
+            const std::string& field_name = field->get_field()->get_name();
+            ss << "Util::range_equals((uint8_t*) ";
+            expect_little_end = false;
+            to_cmp_with->visit(this);
+            expect_little_end = true;
+            ss << ", data + " << field_name << ".offset," << field_name<< ".length" << ")";
+
+            if(expr != args.back()) {
+                ss << " && ";
+            }
+        }
+
+    } else if(name == "has_not") {
+        for(Expression* expr : args) {
+            const FieldExpr* field_expr = static_cast<const FieldExpr*>(expr);
+            ss << field_expr->get_field()->get_name() << ".length == 0";
+
+            if(expr != args.back()) {
+                ss << " && ";
+            }
+        }
+
+    } else if(name == "cdata") {
+        ss << "EndianUtil::big_to_little(data + num,";
+        args.front()->visit(this);
+        ss << ")";
+    } else {
+        throw "No matching function";
+    }
+}
+
+void ProtocolClass::ProtocolClassInit::visit(const OperatorExpr &x) {
+    x.get_left_expr()->visit(this);
+    ss << x.get_operator();
+    x.get_right_expr()->visit(this);
+}
+
+void ProtocolClass::ProtocolClassInit::visit(const PrimitiveExpr &x) {
+    ss << "((uint64_t)";
+    ss << x.to_string() << ")";
+}
+
+std::string ProtocolClass::ProtocolClassInit::to_string() {
+    ss << "size = num;";
+    ss << "}";
+    return ss.str();
+}

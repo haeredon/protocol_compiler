@@ -229,13 +229,35 @@ public:
 
     FunctionExpr* parse_function(ProtocolParser::Node* ast, Class& parsed_class) {
         std::vector<ProtocolParser::Node*>& children = ast->get_children();
+        std::string& fun_name = children.front()->get_children().front()->get_value();
 
-        FunctionExpr* function = new FunctionExpr();
+        FunctionExpr* function;
 
-        function->set_name(children.front()->get_children().front()->get_value());
+        if(fun_name == "sub_range") {
+            Expression* arg = parse_expression(children.back()->get_children().front(), parsed_class);
+            function = new SubRangeExpr(arg);
+        } else if(fun_name == "range_equals") {
+            Expression* offset = parse_expression(children.back()->get_children()[0], parsed_class);
+            Expression* length = parse_expression(children.back()->get_children()[1], parsed_class);
+            Expression* value = parse_expression(children.back()->get_children()[2], parsed_class);
 
-        for(ProtocolParser::Node* node : children.back()->get_children()) {
-            function->add_arg(parse_expression(node, parsed_class));
+            function = new RangeEqualsExpr(offset, length, value);
+        } else if(fun_name == "equals") {
+            std::vector<Expression*> args;
+            for(ProtocolParser::Node* node : children.back()->get_children()) {
+                args.push_back(parse_expression(node, parsed_class));
+            }
+
+            function = new EqualsExpr(std::move(args));
+        } else if(fun_name == "has_not") {
+            std::vector<FieldExpr*> args;
+            for(ProtocolParser::Node* node : children.back()->get_children()) {
+                args.push_back(parse_expression(node, parsed_class));
+            }
+
+            function = new HasNotExpr(std::move(args));
+        } else {
+            throw "no matching function expression name";
         }
 
         return function;
