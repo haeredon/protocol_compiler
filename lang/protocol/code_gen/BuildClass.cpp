@@ -10,176 +10,108 @@ BuildClass::BuildClass() {
 
 
 std::string BuildClass::class_to_string(Class &p_class) {
-//
-//    ss << "class Builder {";
-//
-//    ss << "friend " << p_class.get_name() << ";" << std::endl << std::endl;
-//
-//    ss << "private:" << std::endl;
-//
-//    /************************** Private fields **************************************/
-//
-//    ss << "struct build_field {"
-//            "uint8_t *data;"
-//            "std::size_t length;"
-//            "bool optional;"
-//            "bool initialized;"
-//            "build_field(std::size_t length, bool optional, bool initialized) : length(length), optional(optional), initialized(initialized) {}"
-//        "};";
-//
-//
-//    ss << "std::size_t size = 0;";
-//
-//    for(const Field& field : p_class.get_fields()) {
-//        ss << "build_field "<< field.get_name() << ";";
-//    }
-//
-////    for(const While& group : p_class.get_while()) {
-////        for(const Field& field : group.get_statement()) {
-////            ss << "build_field "<< field.get_name() << ";";
-////        }
-////    }
-//
-//
-//
-//    /************************** Private fields end **************************************/
-//
-//    ss << std::endl << "public:" << std::endl;
-//
-//
-//    /*************** Constructor *********************/
-//
-//    ss << "Builder() : ";
-//
-//    bool first = true;
-//    for(const Field& field : p_class.get_fields()) {
-//        if(!first) {
-//            ss << ",";
-//        }
-//
-//        std::string is_included_str = field.get_is_included() == nullptr ? "false" : "true";
-//        ss << field.get_name() << "(0, " << is_included_str << ", false)";
-//        first = false;
-//    }
-//
-////    for(const While& group : p_class.get_while()) {
-////        for(const Field& field : group.get_statement()) {
-////            std::string is_included_str = field.get_is_included() == nullptr ? "false" : "true";
-////            ss << "," << field.get_name() << "(0, " << is_included_str << ", false)";
-////        }
-////    }
-//
-//    ss << "{}";
-//
-//    /*************** Constructor End *********************/
-//
-//    /*************** Destructor *********************/
-//
-//    ss << "~Builder() {";
-//
-//    for(const Field& field : p_class.get_fields()) {
-//        ss << "if(" << field.get_name() << ".initialized) {";
-//        ss << "delete[] " << field.get_name() << ".data;";
-//        ss << "}";
-//    }
-//
-////    for(const While& group : p_class.get_while()) {
-////        for(const Field& field : group.get_statement()) {
-////            ss << "if(" << field.get_name() << ".initialized) {";
-////            ss << "delete[] " << field.get_name() << ".data;";
-////            ss << "}";
-////        }
-////    }
-//
-//    ss << "}";
-//
-//    /*************** Destructor End *********************/
-//
-//    /*************** Getters *********************/
-//
-//    // [PROTOCOL] build()
-//    ss << p_class.get_name() << "* " << "build() { ";
-//    ss << "return new " << p_class.get_name() << "(*this);";
-//    ss << "}";
-//
-//    // uint8_t get_data()
-//    ss << "uint8_t* get_data() {";
-//    ss << "uint8_t* data = new uint8_t[size];";
-//    ss << "std::size_t num_consumed = 0;";
-//    for(const Field& field : p_class.get_fields()) {
-//        const std::string& name = field.get_name();
-//        ss << "if(" << name << ".initialized) {";
-//        ss << "memcpy(data + num_consumed, " << name << ".data, " << name  << ".length);";
-//        ss << "num_consumed += " << name  << ".length;";
-//        ss << "}";
-//    }
-//
-////    for(const While& group : p_class.get_while()) {
-////        for(const Field& field : group.get_statement()) {
-////            const std::string& name = field.get_name();
-////            ss << "if(" << name << ".initialized) {";
-////            ss << "memcpy(data + num_consumed, " << name << ".data, " << name  << ".length);";
-////            ss << "num_consumed += " << name  << ".length;";
-////            ss << "}";
-////        }
-////    }
-//
-//    ss << "return data;";
-//
-//    ss << "}";
-//
-//    /*************** Getters End *********************/
-//
-//    /*************** Setters *********************/
-//
-//    for(const Field& field : p_class.get_fields()) {
-//        std::string name = field.get_name();
-//
-//        ss << "Builder& " << "set_" << field.get_name() << "(std::vector<uint8_t> data) {";
-//        ss << "return set_" << field.get_name() << "(data.data(), data.size());";
-//        ss << "}";
-//
-//        ss << "Builder& " << "set_" << field.get_name() << "(uint8_t* data, std::size_t build_field_length) {";
-//        ss << "if(" << field.get_name() << ".length != 0) {";
-//        ss << "size -= " << field.get_name() << ".length;";
-//        ss << "delete[] " << field.get_name() << ".data;";
-//        ss << "}";
-//        ss << field.get_name() << ".data = new uint8_t[build_field_length];";
-//        ss << "memcpy(" << field.get_name() << ".data, data, build_field_length);";
-//        ss << field.get_name() << ".initialized = true;";
-//        ss << field.get_name() << ".length = build_field_length;";
-//        ss << "size += " << field.get_name() << ".length;";
-//        ss << "return *this;";
-//        ss << "}";
-//    }
-//
-////    for(const While& group : p_class.get_while()) {
-////        for(const Field& field : group.get_statement()) {
-////            std::string name = field.get_name();
-////
-////            ss << "Builder& " << "set_" << field.get_name() << "(std::vector<uint8_t> data) {";
-////            ss << "return set_" << field.get_name() << "(data.data(), data.size());";
-////            ss << "}";
-////
-////            ss << "Builder& " << "set_" << field.get_name() << "(uint8_t* data, std::size_t build_field_length) {";
-////            ss << "if(" << field.get_name() << ".length != 0) {";
-////            ss << "size -= " << field.get_name() << ".length;";
-////            ss << "delete[] " << field.get_name() << ".data;";
-////            ss << "}";
-////            ss << field.get_name() << ".data = new uint8_t[build_field_length];";
-////            ss << "memcpy(" << field.get_name() << ".data, data, build_field_length);";
-////            ss << field.get_name() << ".initialized = true;";
-////            ss << field.get_name() << ".length = build_field_length;";
-////            ss << "size += " << field.get_name() << ".length;";
-////            ss << "return *this;";
-////            ss << "}";
-////        }
-////    }
-//
-//    /*************** Setters End *********************/
-//
-//
-//    ss << "};"; // class end
+    p_class.visit(this);
 
-    return ss.str();
+    return start_ss.str()
+        .append(private_ss.str())
+        .append(public_ss.str())
+        .append(constructor_ss.str())
+        .append(destructor_ss.str())
+        .append(get_data_ss.str())
+        .append(end_ss.str());
+}
+
+void BuildClass::visit(const PrimitiveExpr &x) {
+    ClassVisitor::visit(x);
+}
+
+void BuildClass::visit(const Switch &x) {
+    for (const Case &a_case: x.get_cases()) {
+        a_case.get_statement()->visit(this);
+    }
+}
+
+void BuildClass::visit(const While &x) {
+    for (const Statement *stmt: x.get_statements()) {
+        stmt->visit(this);
+    }
+}
+
+void BuildClass::visit(const Field &x) {
+    const std::string& field_name = x.get_name();
+
+    private_ss << "build_field " << field_name << ";";
+
+    std::string is_included_str = x.get_is_included() == nullptr ? "false" : "true";
+    constructor_ss << x.get_name() << "(0, " << is_included_str << ", false),";
+
+    destructor_ss << "if(" << field_name << ".initialized) {";
+    destructor_ss << "delete[] " << field_name << ".data;";
+    destructor_ss << "}";
+
+    get_data_ss << "if(" << field_name << ".initialized) {";
+    get_data_ss << "memcpy(data + num_consumed, " << field_name << ".data, " << field_name << ".length);";
+    get_data_ss << "num_consumed += " << field_name << ".length;";
+    get_data_ss << "}";
+
+    public_ss << "Builder& " << "set_" << field_name << "(std::vector<uint8_t> data) {";
+    public_ss << "return set_" << field_name<< "(data.data(), data.size());";
+    public_ss << "}";
+
+    public_ss << "Builder& " << "set_" << field_name << "(uint8_t* data, std::size_t build_field_length) {";
+    public_ss << "if(" << field_name<< ".length != 0) {";
+    public_ss << "size -= " << field_name << ".length;";
+    public_ss << "delete[] " << field_name << ".data;";
+    public_ss << "}";
+    public_ss << field_name << ".data = new uint8_t[build_field_length];";
+    public_ss << "memcpy(" << field_name << ".data, data, build_field_length);";
+    public_ss << field_name << ".initialized = true;";
+    public_ss << field_name << ".length = build_field_length;";
+    public_ss << "size += " << field_name << ".length;";
+    public_ss << "return *this;";
+    public_ss << "}";
+}
+
+void BuildClass::visit(const Class &x) {
+    const std::string& class_name = x.get_name();
+
+    start_ss << "class Builder {";
+    start_ss << "friend " << class_name << ";" << std::endl << std::endl;
+
+    end_ss << "};";
+
+    private_ss << "private:" << std::endl;
+    private_ss << "struct build_field {"
+            "uint8_t *data;"
+            "std::size_t length;"
+            "bool optional;"
+            "bool initialized;"
+            "build_field(std::size_t length, bool optional, bool initialized) : length(length), optional(optional), initialized(initialized) {}"
+        "};";
+    private_ss << "std::size_t size = 0;";
+
+    public_ss << std::endl << "public:" << std::endl;
+
+    constructor_ss << "Builder() : ";
+    destructor_ss << "~Builder() {";
+
+    get_data_ss << "uint8_t* get_data() {";
+    get_data_ss << "uint8_t* data = new uint8_t[size];";
+    get_data_ss << "std::size_t num_consumed = 0;";
+
+    for(const Statement* stmt : x.get_statements()) {
+        stmt->visit(this);
+    }
+
+    destructor_ss << "}";
+    constructor_ss.seekp(-1, std::ios_base::end); // remove last comma in initializer list
+    constructor_ss << "{}";
+
+    get_data_ss << "return data;";
+    get_data_ss << "}";
+
+    // [PROTOCOL] build()
+    public_ss << class_name << "* " << "build() { ";
+    public_ss << "return new " << class_name << "(*this);";
+    public_ss << "}";
 }

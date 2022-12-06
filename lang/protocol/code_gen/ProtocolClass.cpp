@@ -23,56 +23,14 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
     p_class.visit(this);
     p_class.visit(&initMethod);
 
-
-//
-//    /************************** Builder **************************************/
-//
-//    BuildClass build_class;
-//    ss << build_class.class_to_string(p_class);
-//
-//    /************************** Builder end **************************************/
-//
-//    /************************** Private fields end **************************************/
-//
-//    ss << std::endl << "public:" << std::endl;
-//
-//
-//    /*************** Constructor *********************/
-
-//
-//    // [ProtocolName](Builder& builder)
-//    ss << p_class.get_name() << "(Builder& builder) {";
-//    ss << "init(builder.get_data());";
-//    ss << "}";
-//
-//    /*************** Constructor End *********************/
-//
-//    /*************** Getters *********************/
-//
-//
-
-//
-//    // static Builder get_builder()
-//    ss << "static Builder get_builder() {";
-//    ss << "return Builder();";
-//    ss << "}";
-//
-
-//
-//
-//    /*************** Getters End *********************/
-
-
-
-
-
-
+    BuildClass build_class;
+    private_ss << build_class.class_to_string(p_class);
 
     return ss_start.str()
-            .append(private_ss.str())
-            .append(public_ss.str())
-            .append(initMethod.to_string())
-            .append(ss_end.str());
+        .append(private_ss.str())
+        .append(public_ss.str())
+        .append(initMethod.to_string())
+        .append(ss_end.str());
 }
 
 void ProtocolClass::visit(const PrimitiveExpr &x) {
