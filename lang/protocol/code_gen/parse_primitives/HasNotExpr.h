@@ -26,7 +26,7 @@ public:
 
     virtual void visit(ClassVisitor* visitor) const;
 
-    std::vector<FieldExpr*>& get_args();
+    const std::vector<FieldExpr*>& get_args() const;
 };
 
 

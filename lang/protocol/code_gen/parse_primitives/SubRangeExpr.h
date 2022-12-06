@@ -24,7 +24,7 @@ public:
 
     virtual void visit(ClassVisitor* visitor) const;
 
-    Expression* get_arg();
+    const Expression* get_arg() const;
 };
 
 

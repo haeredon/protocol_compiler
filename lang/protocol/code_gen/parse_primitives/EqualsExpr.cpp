@@ -5,7 +5,7 @@ void EqualsExpr::visit(ClassVisitor *visitor) const {
     visitor->visit(*this);
 }
 
-std::vector<Expression *> &EqualsExpr::get_args() {
+const std::vector<Expression *> &EqualsExpr::get_args() const {
     return args;
 }
 

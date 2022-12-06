@@ -25,7 +25,7 @@ public:
 
     virtual void visit(ClassVisitor* visitor) const;
 
-    std::vector<Expression*>& get_args();
+    const std::vector<Expression*>& get_args() const;
 };
 
 

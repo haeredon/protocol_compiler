@@ -43,8 +43,6 @@ private:
 
         virtual void visit(const Switch& x);
 
-        virtual void visit(const DotExpression& x);
-
         virtual void visit(const FieldExpr& x);
 
         virtual void visit(const RangeEqualsExpr &x);

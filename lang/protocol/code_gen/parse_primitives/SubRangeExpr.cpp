@@ -1,7 +1,7 @@
 #include "SubRangeExpr.h"
 #include "../ClassVisitor.h"
 
-Expression *SubRangeExpr::get_arg() {
+const Expression *SubRangeExpr::get_arg() const {
     return arg;
 }
 

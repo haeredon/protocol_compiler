@@ -7,6 +7,6 @@ void HasNotExpr::visit(ClassVisitor *visitor) const {
     visitor->visit(*this);
 }
 
-std::vector<FieldExpr *> &HasNotExpr::get_args() {
+const std::vector<FieldExpr *> &HasNotExpr::get_args() const {
     return args;
 }
