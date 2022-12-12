@@ -49,6 +49,10 @@ void ProtocolClass::visit(const While &x) {
     }
 }
 
+void ProtocolClass::visit(const FieldExpr &x) {
+    throw "FieldExpr should not be possible here. You have done a type mismatch. Maybe you but an enum on a variable length field?.";
+}
+
 void ProtocolClass::visit(const Field &x) {
     const std::string &name = x.get_name();
 
@@ -109,6 +113,7 @@ void ProtocolClass::visit(const Class &x) {
     ss_start << "#include <cstring>" << std::endl << std::endl;
 
     ss_start << "#include \"Util.h\"" << std::endl;
+    ss_start << "#include \"EndianUtil.h\"" << std::endl;
     ss_start << "#include \"Protocols.h\"" << std::endl;
     ss_start << "#include \"Config.h\"" << std::endl;
     ss_start << "#include \"Protocol.h\"" << std::endl << std::endl;
@@ -138,7 +143,11 @@ void ProtocolClass::visit(const Class &x) {
     // [ProtocolName]()
     public_ss << class_name << "(const uint8_t* data) {";
     public_ss << "init(data);";
-    public_ss << "}"; // constructor end
+    public_ss << "}";
+
+    public_ss << class_name << "(const Builder& builder) {";
+    public_ss << "init(builder.get_data());";
+    public_ss << "}";
 
     // Protocols get_protocol_type();
     public_ss << "Protocols get_protocol_type() {";
@@ -168,8 +177,8 @@ void ProtocolClass::visit(const Class &x) {
         if (enums.size() != 0) {
             for (const auto &key_pair: field->get_enumeration().get_enum_to_Val()) {
                 const std::string &enum_name = std::get<0>(key_pair);
-                public_ss << "if(Util::range_equals(static_cast<std::size_t>(" << field_name << "_enum::" << enum_name
-                          << "), &data[" << field_name << ".offset], 0," << field_name << ".length)) {";
+                public_ss << "if(Util::range_equals(static_cast<uint8_t*>(" << field_name << "_enum::" << enum_name
+                          << "), data +" << field_name << ".offset, " << field_name << ".length)) {";
                 public_ss << "return Protocols::" << enum_name << ";";
                 public_ss << "}";
             }
@@ -258,7 +267,7 @@ void ProtocolClass::ProtocolClassInit::visit(const RangeEqualsExpr &x) {
     x.get_value()->visit(this);
     ss << ";";
 
-    ss << "to_include = Util::range_equals(value, data + offset, length);";
+    ss << "to_include = EndianUtil::range_equals(value, data + offset, length);";
     ss << "}";
 }
 

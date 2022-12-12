@@ -86,6 +86,8 @@ public:
 
     virtual void visit(const PrimitiveExpr& x);
 
+    virtual void visit(const FieldExpr& x);
+
 
     std::string class_to_string(Class &p_class);
 

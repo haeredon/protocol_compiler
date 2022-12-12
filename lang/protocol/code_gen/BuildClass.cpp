@@ -95,7 +95,7 @@ void BuildClass::visit(const Class &x) {
     constructor_ss << "Builder() : ";
     destructor_ss << "~Builder() {";
 
-    get_data_ss << "uint8_t* get_data() {";
+    get_data_ss << "uint8_t* get_data() const {";
     get_data_ss << "uint8_t* data = new uint8_t[size];";
     get_data_ss << "std::size_t num_consumed = 0;";
 
