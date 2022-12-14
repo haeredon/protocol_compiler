@@ -167,6 +167,11 @@ void ProtocolClass::visit(const Class &x) {
     public_ss << "return std::vector<uint8_t>(data, data + size);";
     public_ss << "}";
 
+    // static Builder get_builder()
+    public_ss << "static Builder get_builder() {";
+    public_ss << "return Builder();";
+    public_ss << "}";
+
     // get_inner_protocol()
     public_ss << "Protocols get_inner_protocol() {";
     for (auto &field: x.get_next_protocol().get_priorities()) {
