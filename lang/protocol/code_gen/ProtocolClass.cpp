@@ -266,11 +266,11 @@ void ProtocolClass::ProtocolClassInit::visit(const RangeEqualsExpr &x) {
     x.get_length()->visit(this);
     ss << ";";
 
-    ss << "uint8_t* value = (uint8_t*) ";
+    ss << "uint64_t value = ";
     x.get_value()->visit(this);
     ss << ";";
 
-    ss << "expr_result = EndianUtil::range_equals(value, data + offset, length);";
+    ss << "expr_result = EndianUtil::range_equals((uint8_t*)&value, data + offset, length);";
     ss << "}";
 }
 
