@@ -34,7 +34,7 @@ std::string ProtocolClass::class_to_string(Class &p_class) {
 }
 
 void ProtocolClass::visit(const PrimitiveExpr &x) {
-    *target_ss << x.to_string();
+    last_enum_length = stoi(x.to_string());
 }
 
 void ProtocolClass::visit(const Switch &x) {
@@ -83,11 +83,9 @@ void ProtocolClass::visit(const Field &x) {
         public_ss << "enum class " << name << "_enum" << " { ";
         for (const auto &key_pair: x.get_enumeration().get_enum_to_Val()) {
             uint64_t val = std::get<1>(key_pair);
-            public_ss << std::get<0>(key_pair) << " = EndianUtil::little_to_big(" << val << ", ";
-            target_ss = &public_ss;
             x.get_length()->visit(this);
-            public_ss << ")";
-            public_ss << ", ";
+            uint64_t enum_value = ProtocolUtil::little_to_big(reinterpret_cast<uint8_t*>(&val), last_enum_length);
+            public_ss << std::get<0>(key_pair) << " = " << std::to_string(enum_value) << ",";
         }
         public_ss << "UNKNOWN ";
         public_ss << "};";
@@ -177,7 +175,7 @@ void ProtocolClass::visit(const Class &x) {
         if (enums.size() != 0) {
             for (const auto &key_pair: field->get_enumeration().get_enum_to_Val()) {
                 const std::string &enum_name = std::get<0>(key_pair);
-                public_ss << "if(Util::range_equals(static_cast<uint8_t*>(" << field_name << "_enum::" << enum_name
+                public_ss << "if(Util::range_equals((uint8_t*)(" << field_name << "_enum::" << enum_name
                           << "), data +" << field_name << ".offset, " << field_name << ".length)) {";
                 public_ss << "return Protocols::" << enum_name << ";";
                 public_ss << "}";

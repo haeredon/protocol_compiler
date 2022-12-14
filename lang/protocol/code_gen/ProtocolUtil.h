@@ -45,6 +45,18 @@ public:
         throw;
     }
 
+    static uint64_t little_to_big(const uint8_t* little_end_data, const uint64_t length) {
+        uint64_t num = 0;
+
+        uint8_t* data_ptr = (uint8_t*) little_end_data;
+        uint8_t* num_ptr = (uint8_t*) &num;
+
+        for(int i = 0 ; i < length ; i++) {
+            num_ptr[i] = data_ptr[length - i - 1];
+        }
+        return num;
+    }
+
 };
 
 

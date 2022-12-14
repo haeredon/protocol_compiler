@@ -67,7 +67,7 @@ private:
     std::stringstream ss_end;
     std::stringstream private_ss;
     std::stringstream public_ss;
-    std::stringstream* target_ss;
+    uint64_t last_enum_length;
 
     ProtocolClassInit initMethod;
 
