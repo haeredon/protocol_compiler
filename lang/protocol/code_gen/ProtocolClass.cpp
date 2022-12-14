@@ -180,7 +180,7 @@ void ProtocolClass::visit(const Class &x) {
         if (enums.size() != 0) {
             for (const auto &key_pair: field->get_enumeration().get_enum_to_Val()) {
                 const std::string &enum_name = std::get<0>(key_pair);
-                public_ss << "if(Util::range_equals((uint8_t*)(" << field_name << "_enum::" << enum_name
+                public_ss << "if(Util::range_equals((uint64_t)(" << field_name << "_enum::" << enum_name
                           << "), data +" << field_name << ".offset, " << field_name << ".length)) {";
                 public_ss << "return Protocols::" << enum_name << ";";
                 public_ss << "}";
@@ -200,7 +200,7 @@ ProtocolClass::ProtocolClassInit::ProtocolClassInit() {
     ss << "void init(const uint8_t* data) {";
     ss << "this->data = data;";
     ss << "uint16_t num = 0;";
-    ss << "bool expr_result = false;";
+    ss << "uint64_t expr_result = false;";
 }
 
 
