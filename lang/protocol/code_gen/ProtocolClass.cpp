@@ -195,7 +195,7 @@ ProtocolClass::ProtocolClassInit::ProtocolClassInit() {
     ss << "void init(const uint8_t* data) {";
     ss << "this->data = data;";
     ss << "uint16_t num = 0;";
-    ss << "bool to_include = false;";
+    ss << "bool expr_result = false;";
 }
 
 
@@ -208,7 +208,7 @@ void ProtocolClass::ProtocolClassInit::visit(const Class &x) {
 void ProtocolClass::ProtocolClassInit::visit(const Field &field_stmt) {
     if (field_stmt.get_is_included() != nullptr) {
         field_stmt.get_is_included()->visit(this);
-        ss << "if(to_include" << ") {";
+        ss << "if(expr_result) {";
     }
 
     ss << field_stmt.get_name() << ".offset = num;";
@@ -265,7 +265,7 @@ void ProtocolClass::ProtocolClassInit::visit(const RangeEqualsExpr &x) {
     x.get_value()->visit(this);
     ss << ";";
 
-    ss << "to_include = EndianUtil::range_equals(value, data + offset, length);";
+    ss << "expr_result = EndianUtil::range_equals(value, data + offset, length);";
     ss << "}";
 }
 
@@ -279,7 +279,7 @@ void ProtocolClass::ProtocolClassInit::visit(const EqualsExpr &x) {
     to_cmp_with->visit(this);
     ss << ";";
 
-    ss << "to_include = ";
+    ss << "expr_result = ";
 
     for (Expression *expr: args) {
 
@@ -302,7 +302,7 @@ void ProtocolClass::ProtocolClassInit::visit(const HasNotExpr &x) {
 
     ss << "{";
 
-    ss << "to_include = ";
+    ss << "expr_result = ";
 
     for (FieldExpr *expr: args) {
         ss << expr->get_field()->get_name() << ".length == 0";
@@ -319,7 +319,7 @@ void ProtocolClass::ProtocolClassInit::visit(const HasNotExpr &x) {
 void ProtocolClass::ProtocolClassInit::visit(const SubRangeExpr &x) {
     ss << "{";
 
-    ss << "to_include = EndianUtil::big_to_little(data + num,";
+    ss << "expr_result = EndianUtil::big_to_little(data + num,";
     x.get_arg()->visit(this);
     ss << ")";
 
@@ -328,8 +328,10 @@ void ProtocolClass::ProtocolClassInit::visit(const SubRangeExpr &x) {
 
 void ProtocolClass::ProtocolClassInit::visit(const OperatorExpr &x) {
     x.get_left_expr()->visit(this);
+    ss << "expr_result = expr_result ";
     ss << x.get_operator();
     x.get_right_expr()->visit(this);
+    ss << ";";
 }
 
 void ProtocolClass::ProtocolClassInit::visit(const PrimitiveExpr &x) {
